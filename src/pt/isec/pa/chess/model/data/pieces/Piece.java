@@ -1,63 +1,65 @@
 package pt.isec.pa.chess.model.data.pieces;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+class Position {
+    private char cColumn;
+    private int iRow;
 
-class Position{
-    Set<Character> sPossibleColumns = new HashSet<>(Arrays.asList('a','b','c','d','e','f','g','h'));
-    Set<Integer> sPossibleRows = new HashSet<>(Arrays.asList(1,2,3,4,5,6,7,8,9));
-
-    char cColumn;
-    int iRow;
-
-    public Position(char cColumn, int iRow){
-        if(!this.sPossibleColumns.contains(cColumn) || !this.sPossibleRows.contains(iRow)){
-            throw new IllegalArgumentException("Invalid row or column");
+    public Position(char cColumn, int iRow) {
+        if (cColumn < 'a' || cColumn > 'h' || iRow < 1 || iRow > 8) {
+            throw new IllegalArgumentException("Invalid position: " + cColumn + iRow);
         }
         this.cColumn = cColumn;
         this.iRow = iRow;
     }
 
-    void setcColumn(char cColumn){
-        if(!this.sPossibleColumns.contains(cColumn)){
-            throw new IllegalArgumentException("Invalid column");
+    public void setColumn(char cColumn) {
+        if (cColumn < 'a' || cColumn > 'h') {
+            throw new IllegalArgumentException("Invalid column: " + cColumn);
         }
         this.cColumn = cColumn;
     }
 
-    void setiRow(int iRow){
-        if(!this.sPossibleRows.contains(iRow)){
-            throw new IllegalArgumentException("Invalid row");
+    public void setRow(int iRow) {
+        if (iRow < 1 || iRow > 8) {
+            throw new IllegalArgumentException("Invalid row: " + iRow);
         }
         this.iRow = iRow;
     }
 
-    char getcColumn(){
-        return this.cColumn;
+    public char getColumn() {
+        return cColumn;
     }
 
-    int getiRow(){
-        return this.iRow;
+    public int getRow() {
+        return iRow;
     }
 }
 
 abstract public class Piece {
+    protected char cDefinition;
+    protected Color eColor;
+    protected Position pPos;
 
-    char cDefinition;
-    boolean bIsWhite;
-    Position pPos;
-
-    Piece(char cDefinition, boolean bIsWhite, char cColumn, int iRow){
-        char cDef = cDefinition;
-        if(bIsWhite){
-            this.cDefinition = Character.toUpperCase(cDef);
-        }else{
-            this.cDefinition = Character.toLowerCase(cDef);
-        }
-        this.bIsWhite = bIsWhite;
-        this.pPos.setcColumn(cColumn);
-        this.pPos.setiRow(iRow);
+    Piece(char cDefinition, Color eColor, char cColumn, int iRow) {
+        this.cDefinition = (eColor == Color.WHITE) ? Character.toUpperCase(cDefinition) : Character.toLowerCase(cDefinition);
+        this.eColor = eColor;
+        this.pPos = new Position(cColumn, iRow);
     }
 
+    public char getDefinition() {
+        return cDefinition;
+    }
+
+    public Color getColor() {
+        return eColor;
+    }
+
+    public Position getPosition() {
+        return pPos;
+    }
+
+    @Override
+    public String toString() {
+        return this.getDefinition() + String.valueOf(pPos.getColumn()) + pPos.getRow();
+    }
 }

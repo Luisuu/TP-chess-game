@@ -1,18 +1,23 @@
 package pt.isec.pa.chess.model.data.pieces;
 
-import java.util.*;
-
-public class King extends Piece{
-    private static final Map<Position, Set<Position>> possibleMovesMap = new HashMap<>();
+public class King extends Piece {
     private boolean bHasMoved;
 
-    public King(boolean bIsWhite, char cColumn, int iRow){
-        super('k', bIsWhite, cColumn, iRow);
+    public King(Color color, char cColumn, int iRow) {
+        super('K', color, cColumn, iRow);
         this.bHasMoved = false;
-        initializePossibleMoves();
     }
 
-    void initializePossibleMoves(){
+    public boolean hasMoved() {
+        return bHasMoved;
+    }
 
+    public void setHasMoved(boolean hasMoved) {
+        this.bHasMoved = hasMoved;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + (bHasMoved ? "" : "*");
     }
 }
