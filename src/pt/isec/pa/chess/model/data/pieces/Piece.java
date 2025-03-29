@@ -1,39 +1,8 @@
 package pt.isec.pa.chess.model.data.pieces;
 
-class Position {
-    private char cColumn;
-    private int iRow;
+import pt.isec.pa.chess.model.data.Board;
 
-    public Position(char cColumn, int iRow) {
-        if (cColumn < 'a' || cColumn > 'h' || iRow < 1 || iRow > 8) {
-            throw new IllegalArgumentException("Invalid position: " + cColumn + iRow);
-        }
-        this.cColumn = cColumn;
-        this.iRow = iRow;
-    }
-
-    public void setColumn(char cColumn) {
-        if (cColumn < 'a' || cColumn > 'h') {
-            throw new IllegalArgumentException("Invalid column: " + cColumn);
-        }
-        this.cColumn = cColumn;
-    }
-
-    public void setRow(int iRow) {
-        if (iRow < 1 || iRow > 8) {
-            throw new IllegalArgumentException("Invalid row: " + iRow);
-        }
-        this.iRow = iRow;
-    }
-
-    public char getColumn() {
-        return cColumn;
-    }
-
-    public int getRow() {
-        return iRow;
-    }
-}
+import java.util.Set;
 
 abstract public class Piece {
     protected char cDefinition;
@@ -45,6 +14,8 @@ abstract public class Piece {
         this.eColor = eColor;
         this.pPos = new Position(cColumn, iRow);
     }
+
+    abstract public Set<Position> getPossibleMoves();
 
     public char getDefinition() {
         return cDefinition;
