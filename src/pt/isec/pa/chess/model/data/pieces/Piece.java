@@ -17,6 +17,10 @@ abstract public class Piece {
 
     abstract public Set<Position> getPossibleMoves();
 
+    public void setPosition(Position pos) {
+        this.pPos = pos;
+    }
+
     public char getDefinition() {
         return cDefinition;
     }

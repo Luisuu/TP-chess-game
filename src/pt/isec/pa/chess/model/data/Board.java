@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Board {
-    private Map<String, Piece> mBoard;
+    private Map<Position, Piece> mBoard;
 
     public Board() {
         mBoard = new HashMap<>();
@@ -18,38 +18,45 @@ public class Board {
 
     public void initializeBoard() {
         for (char cCol = 'a'; cCol <= 'h'; cCol++) {
-            mBoard.put("" + cCol + 2, PieceFactory.PAWN.createPiece(Color.WHITE, this, cCol, 2));
-            mBoard.put("" + cCol + 7, PieceFactory.PAWN.createPiece(Color.BLACK, this, cCol, 7));
+            mBoard.put(new Position(cCol, 2), PieceFactory.PAWN.createPiece(Color.WHITE, this, cCol, 2));
+            mBoard.put(new Position(cCol, 7), PieceFactory.PAWN.createPiece(Color.BLACK, this, cCol, 7));
         }
 
-        mBoard.put("a1", PieceFactory.ROOK.createPiece(Color.WHITE, this, 'a', 1));
-        mBoard.put("b1", PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'b', 1));
-        mBoard.put("c1", PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'c', 1));
-        mBoard.put("d1", PieceFactory.QUEEN.createPiece(Color.WHITE, this, 'd', 1));
-        mBoard.put("e1", PieceFactory.KING.createPiece(Color.WHITE, this, 'e', 1));
-        mBoard.put("f1", PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'f', 1));
-        mBoard.put("g1", PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'g', 1));
-        mBoard.put("h1", PieceFactory.ROOK.createPiece(Color.WHITE, this, 'h', 1));
+        mBoard.put(new Position('a',1), PieceFactory.ROOK.createPiece(Color.WHITE, this, 'a', 1));
+        mBoard.put(new Position('b',1), PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'b', 1));
+        mBoard.put(new Position('c',1), PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'c', 1));
+        mBoard.put(new Position('d',1), PieceFactory.QUEEN.createPiece(Color.WHITE, this, 'd', 1));
+        mBoard.put(new Position('e',1), PieceFactory.KING.createPiece(Color.WHITE, this, 'e', 1));
+        mBoard.put(new Position('f',1), PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'f', 1));
+        mBoard.put(new Position('g',1), PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'g', 1));
+        mBoard.put(new Position('h',1), PieceFactory.ROOK.createPiece(Color.WHITE, this, 'h', 1));
 
-        mBoard.put("a8", PieceFactory.ROOK.createPiece(Color.BLACK, this, 'a', 8));
-        mBoard.put("b8", PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'b', 8));
-        mBoard.put("c8", PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'c', 8));
-        mBoard.put("d8", PieceFactory.QUEEN.createPiece(Color.BLACK, this, 'd', 8));
-        mBoard.put("e8", PieceFactory.KING.createPiece(Color.BLACK, this, 'e', 8));
-        mBoard.put("f8", PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'f', 8));
-        mBoard.put("g8", PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'g', 8));
-        mBoard.put("h8", PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
+        mBoard.put(new Position('a',8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'a', 8));
+        mBoard.put(new Position('b',8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'b', 8));
+        mBoard.put(new Position('c',8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'c', 8));
+        mBoard.put(new Position('d',8), PieceFactory.QUEEN.createPiece(Color.BLACK, this, 'd', 8));
+        mBoard.put(new Position('e',8), PieceFactory.KING.createPiece(Color.BLACK, this, 'e', 8));
+        mBoard.put(new Position('f',8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'f', 8));
+        mBoard.put(new Position('g',8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'g', 8));
+        mBoard.put(new Position('h',8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
     }
 
-    public void addPiece(String position, Piece piece) {
+    public void movePiece(Position position, Position newPosition){
+        Piece pMover = getPiece(position);
+        if(pMover.getPossibleMoves().contains(newPosition)){
+            pMover.setPosition(newPosition);
+        }
+    }
+
+    public void addPiece(Position position, Piece piece) {
         mBoard.put(position, piece);
     }
 
-    public void removePiece(String position) {
+    public void removePiece(Position position) {
         mBoard.remove(position);
     }
 
-    public Piece getPiece(String position) {
+    public Piece getPiece(Position position) {
         return mBoard.get(position);
     }
 
