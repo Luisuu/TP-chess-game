@@ -10,7 +10,6 @@ public class ChessMain {
         System.out.println(b.printPieces());
         System.out.println(b.debug());
 
-
         /*System.out.println((char)('h'-3));
         System.out.println((int)'d'-96);*/
     }
