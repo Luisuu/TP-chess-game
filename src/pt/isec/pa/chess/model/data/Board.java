@@ -22,28 +22,28 @@ public class Board {
             mBoard.put(new Position(cCol, 7), PieceFactory.PAWN.createPiece(Color.BLACK, this, cCol, 7));
         }
 
-        mBoard.put(new Position('a',1), PieceFactory.ROOK.createPiece(Color.WHITE, this, 'a', 1));
-        mBoard.put(new Position('b',1), PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'b', 1));
-        mBoard.put(new Position('c',1), PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'c', 1));
-        mBoard.put(new Position('d',1), PieceFactory.QUEEN.createPiece(Color.WHITE, this, 'd', 1));
-        mBoard.put(new Position('e',1), PieceFactory.KING.createPiece(Color.WHITE, this, 'e', 1));
-        mBoard.put(new Position('f',1), PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'f', 1));
-        mBoard.put(new Position('g',1), PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'g', 1));
-        mBoard.put(new Position('h',1), PieceFactory.ROOK.createPiece(Color.WHITE, this, 'h', 1));
+        mBoard.put(new Position('a', 1), PieceFactory.ROOK.createPiece(Color.WHITE, this, 'a', 1));
+        mBoard.put(new Position('b', 1), PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'b', 1));
+        mBoard.put(new Position('c', 1), PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'c', 1));
+        mBoard.put(new Position('d', 1), PieceFactory.QUEEN.createPiece(Color.WHITE, this, 'd', 1));
+        mBoard.put(new Position('e', 1), PieceFactory.KING.createPiece(Color.WHITE, this, 'e', 1));
+        mBoard.put(new Position('f', 1), PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'f', 1));
+        mBoard.put(new Position('g', 1), PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'g', 1));
+        mBoard.put(new Position('h', 1), PieceFactory.ROOK.createPiece(Color.WHITE, this, 'h', 1));
 
-        mBoard.put(new Position('a',8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'a', 8));
-        mBoard.put(new Position('b',8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'b', 8));
-        mBoard.put(new Position('c',8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'c', 8));
-        mBoard.put(new Position('d',8), PieceFactory.QUEEN.createPiece(Color.BLACK, this, 'd', 8));
-        mBoard.put(new Position('e',8), PieceFactory.KING.createPiece(Color.BLACK, this, 'e', 8));
-        mBoard.put(new Position('f',8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'f', 8));
-        mBoard.put(new Position('g',8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'g', 8));
-        mBoard.put(new Position('h',8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
+        mBoard.put(new Position('a', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'a', 8));
+        mBoard.put(new Position('b', 8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'b', 8));
+        mBoard.put(new Position('c', 8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'c', 8));
+        mBoard.put(new Position('d', 8), PieceFactory.QUEEN.createPiece(Color.BLACK, this, 'd', 8));
+        mBoard.put(new Position('e', 8), PieceFactory.KING.createPiece(Color.BLACK, this, 'e', 8));
+        mBoard.put(new Position('f', 8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'f', 8));
+        mBoard.put(new Position('g', 8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'g', 8));
+        mBoard.put(new Position('h', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
     }
 
-    public void movePiece(Position position, Position newPosition){
+    public void movePiece(Position position, Position newPosition) {
         Piece pMover = getPiece(position);
-        if(pMover.getPossibleMoves().contains(newPosition)){
+        if (pMover.getPossibleMoves().contains(newPosition)) {
             pMover.setPosition(newPosition);
         }
     }
@@ -54,6 +54,15 @@ public class Board {
 
     public void removePiece(Position position) {
         mBoard.remove(position);
+    }
+
+    public boolean isEmpty(Position position) {
+        for (Piece piece : mBoard.values()) {
+            if (piece.getPosition().equals(position)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Piece getPiece(Position position) {

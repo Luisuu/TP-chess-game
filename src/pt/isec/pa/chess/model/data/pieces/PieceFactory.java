@@ -9,52 +9,47 @@ public enum PieceFactory {
             if (column < 'a' || column > 'h' || row < 1 || row > 8) {
                 return null;
             }
-            return new King(color, column, row);
+            return new King(color, board, column, row);
         }
-    },
-    QUEEN {
+    }, QUEEN {
         @Override
         public Piece createPiece(Color color, Board board, char column, int row) {
             if (column < 'a' || column > 'h' || row < 1 || row > 8) {
                 return null;
             }
-            return new Queen(color, column, row);
+            return new Queen(color, board, column, row);
         }
-    },
-    BISHOP {
+    }, BISHOP {
         @Override
         public Piece createPiece(Color color, Board board, char column, int row) {
             if (column < 'a' || column > 'h' || row < 1 || row > 8) {
                 return null;
             }
-            return new Bishop(color, column, row);
+            return new Bishop(color, board, column, row);
         }
-    },
-    KNIGHT {
+    }, KNIGHT {
         @Override
         public Piece createPiece(Color color, Board board, char column, int row) {
             if (column < 'a' || column > 'h' || row < 1 || row > 8) {
                 return null;
             }
-            return new Knight(color, column, row);
+            return new Knight(color, board, column, row);
         }
-    },
-    ROOK {
+    }, ROOK {
         @Override
         public Piece createPiece(Color color, Board board, char column, int row) {
             if (column < 'a' || column > 'h' || row < 1 || row > 8) {
                 return null;
             }
-            return new Rook(color, column, row);
+            return new Rook(color, board, column, row);
         }
-    },
-    PAWN {
+    }, PAWN {
         @Override
         public Piece createPiece(Color color, Board board, char column, int row) {
             if (column < 'a' || column > 'h' || row < 1 || row > 8) {
                 return null;
             }
-            return new Pawn(color, column, row);
+            return new Pawn(color, board, column, row);
         }
     };
 

@@ -1,28 +1,82 @@
 package pt.isec.pa.chess.model.data.pieces;
 
+import pt.isec.pa.chess.model.data.Board;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class Rook extends Piece {
     private boolean bHasMoved;
 
-    public Rook(Color color, char cColumn, int iRow) {
-        super('R', color, cColumn, iRow);
+    public Rook(Color color, Board board, char cColumn, int iRow) {
+        super('R', board, color, cColumn, iRow);
         this.bHasMoved = false;
     }
 
     public Set<Position> getPossibleMoves() {
         Set<Position> possibleMoves = new HashSet<>();
 
-        for (int row = 1; row <= 8; row++) {
+        for (int row = pPos.getRow(); row >= 1; row--) {
+            Position newPos = new Position(pPos.getColumn(), row);
+            Piece pieceAtNewPos = board.getPiece(newPos);
             if (row != pPos.getRow()) {
-                possibleMoves.add(new Position(pPos.getColumn(), row));
+                if (pieceAtNewPos != null) {
+                    if (pieceAtNewPos.getColor() == this.eColor) {
+                        break;
+                    } else {
+                        possibleMoves.add(newPos);
+                        break;
+                    }
+                }
+                possibleMoves.add(newPos);
             }
         }
 
-        for (char col = 'a'; col <= 'h'; col++) {
+        for (int row = pPos.getRow(); row <= 8; row++) {
+            Position newPos = new Position(pPos.getColumn(), row);
+            Piece pieceAtNewPos = board.getPiece(newPos);
+            if (row != pPos.getRow()) {
+                if (pieceAtNewPos != null) {
+                    if (pieceAtNewPos.getColor() == this.eColor) {
+                        break;
+                    } else {
+                        possibleMoves.add(newPos);
+                        break;
+                    }
+                }
+                possibleMoves.add(newPos);
+            }
+        }
+
+        for (char col = pPos.getColumn(); col >= 'a'; col--) {
+            Position newPos = new Position(col, pPos.getRow());
+            Piece pieceAtNewPos = board.getPiece(newPos);
             if (col != pPos.getColumn()) {
-                possibleMoves.add(new Position(col, pPos.getRow()));
+                if (pieceAtNewPos != null) {
+                    if (pieceAtNewPos.getColor() == this.eColor) {
+                        break;
+                    } else {
+                        possibleMoves.add(newPos);
+                        break;
+                    }
+                }
+                possibleMoves.add(newPos);
+            }
+        }
+
+        for (char col = pPos.getColumn(); col <= 'h'; col++) {
+            Position newPos = new Position(col, pPos.getRow());
+            Piece pieceAtNewPos = board.getPiece(newPos);
+            if (col != pPos.getColumn()) {
+                if (pieceAtNewPos != null) {
+                    if (pieceAtNewPos.getColor() == this.eColor) {
+                        break;
+                    } else {
+                        possibleMoves.add(newPos);
+                        break;
+                    }
+                }
+                possibleMoves.add(newPos);
             }
         }
 
