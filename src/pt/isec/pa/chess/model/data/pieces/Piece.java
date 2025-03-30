@@ -43,5 +43,4 @@ abstract public class Piece {
     protected boolean isPossibleMove(Position pos) {
         return pos.getColumn() >= 'a' && pos.getColumn() <= 'h' && pos.getRow() >= 1 && pos.getRow() <= 8;
     }
-
 }

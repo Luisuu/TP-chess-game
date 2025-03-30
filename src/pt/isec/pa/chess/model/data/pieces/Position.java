@@ -9,8 +9,6 @@ public class Position {
     public Position(char cColumn, int iRow) {
         if (cColumn < 'a' || cColumn > 'h' || iRow < 1 || iRow > 8) {
             throw new IllegalArgumentException("Invalid position: " + cColumn + iRow);
-            //return;
-            // VERIFICAR NO FUTURO
         }
         this.cColumn = cColumn;
         this.iRow = iRow;

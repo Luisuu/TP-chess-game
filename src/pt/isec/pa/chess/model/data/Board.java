@@ -6,6 +6,7 @@ import pt.isec.pa.chess.model.data.pieces.Color;
 import pt.isec.pa.chess.model.data.pieces.Position;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,6 +68,38 @@ public class Board {
 
     public Piece getPiece(Position position) {
         return mBoard.get(position);
+    }
+
+    public boolean bIsCheckmate(Color cColor) {
+        Set<Position> sPositions = new HashSet<>();
+        Position kingPos = null;
+        Piece kingPiece = null;
+
+        for (Piece piece : mBoard.values()) {
+            if (Character.toUpperCase(piece.getDefinition()) == 'K' && piece.getColor() == cColor) {
+                kingPos = piece.getPosition();
+                kingPiece = piece;
+            }
+            if (piece.getColor() != cColor) {
+                sPositions.addAll(piece.getPossibleMoves());
+            }
+        }
+
+        if (kingPos == null) {
+            return false;
+        }
+
+        if (!sPositions.contains(kingPos)) {
+            return false;
+        }
+
+        for (Position move : kingPiece.getPossibleMoves()) {
+            if (!sPositions.contains(move)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public String printPieces() {

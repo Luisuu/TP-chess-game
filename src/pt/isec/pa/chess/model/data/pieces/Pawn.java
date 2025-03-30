@@ -52,44 +52,6 @@ public class Pawn extends Piece {
             }
         }
 
-        /*
-        if (this.eColor == Color.BLACK) {
-            char cColDL = (char) (pPos.getColumn() - 1);
-            int iRowDL = pPos.getRow() - 1;
-            char cColDR = (char) (pPos.getColumn() + 1);
-            int iRowDR = pPos.getRow() - 1;
-
-            int iRow1 = pPos.getRow() - 1;
-            int iRow2 = pPos.getRow() - 2;
-
-            if (cColDL >= 'a' && cColDL <= 'h' && iRowDL >= 1 && iRowDL <= 8) {
-                Piece newPiece = board.getPiece(new Position(cColDL, iRowDL));
-                if (newPiece != null && newPiece.getColor() != this.eColor) {
-                    possibleMoves.add(new Position(cColDL, iRowDL));
-                }
-            }
-
-            if (cColDR >= 'a' && cColDR <= 'h' && iRowDR >= 1 && iRowDR <= 8) {
-                Piece newPiece = board.getPiece(new Position(cColDR, iRowDR));
-                if (newPiece != null && newPiece.getColor() != this.eColor) {
-                    possibleMoves.add(new Position(cColDR, iRowDR));
-                }
-            }
-
-            if (this.getPosition().getColumn() >= 'a' && this.getPosition().getColumn() <= 'h' && iRow1 >= 1 && iRow1 <= 8) {
-                Piece newPiece = board.getPiece(new Position(this.getPosition().getColumn(), iRow1));
-                if (newPiece == null) {
-                    possibleMoves.add(new Position(this.getPosition().getColumn(), iRow1));
-                    if (!bHasMoved) {
-                        Piece newPiece2 = board.getPiece(new Position(this.getPosition().getColumn(), iRow2));
-                        if (newPiece2 == null) {
-                            possibleMoves.add(new Position(this.getPosition().getColumn(), iRow2));
-                        }
-                    }
-                }
-            }
-        } */
-
         return possibleMoves;
     }
 }
