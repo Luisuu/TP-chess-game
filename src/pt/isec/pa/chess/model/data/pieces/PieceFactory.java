@@ -83,20 +83,19 @@ public enum PieceFactory {
             return null;
         }
 
-        // Determine piece color
+        //ve cor peça
         Color color = Character.isUpperCase(pieceType) ? Color.WHITE : Color.BLACK;
 
-        // Normalize piece type to uppercase for switch statement
         char normalizedType = Character.toUpperCase(pieceType);
 
         Piece piece;
 
-        // Create the piece based on the type
+        // Cria peça tendo em conta o tipo
         switch (normalizedType) {
             case 'K':
                 piece = KING.createPiece(color, board, column, row);
                 if (piece != null && !hasNotMoved) {
-                    ((King) piece).setHasMoved(true); // King starts with hasMoved=false by default
+                    ((King) piece).setHasMoved(true); //hasmoved=false por default
                 }
                 break;
             case 'Q':
@@ -105,7 +104,7 @@ public enum PieceFactory {
             case 'R':
                 piece = ROOK.createPiece(color, board, column, row);
                 if (piece != null && !hasNotMoved) {
-                    ((Rook) piece).setHasMoved(true); // Set hasMoved based on asterisk
+                    ((Rook) piece).setHasMoved(true); //hasmoved=false por default
                 }                break;
             case 'B':
                 piece = BISHOP.createPiece(color, board, column, row);
