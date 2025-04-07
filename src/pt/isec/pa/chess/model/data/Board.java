@@ -47,11 +47,8 @@ public class Board {
 
     }
 
-    public void movePiece(Position position, Position newPosition) {
-        Piece pMover = getPiece(position);
-        if (pMover.getPossibleMoves().contains(newPosition)) {
-            pMover.setPosition(newPosition);
-        }
+    public Set<Piece> getPieces() {
+        return new HashSet<>(mBoard.values());
     }
 
     public void addPiece(Position position, Piece piece) {
