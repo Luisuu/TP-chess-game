@@ -13,71 +13,8 @@ public class Queen extends Piece {
     public Set<Position> getPossibleMoves() {
         Set<Position> possibleMoves = new HashSet<>();
 
-        for (int row = pPos.getRow(); row >= 1; row--) {
-            Position newPos = new Position(pPos.getColumn(), row);
-            Piece pieceAtNewPos = board.getPiece(newPos);
-            if (row != pPos.getRow()) {
-                if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
-                        break;
-                    } else {
-                        possibleMoves.add(newPos);
-                        break;
-                    }
-                }
-                possibleMoves.add(newPos);
-            }
-        }
 
-        for (int row = pPos.getRow(); row <= 8; row++) {
-            Position newPos = new Position(pPos.getColumn(), row);
-            Piece pieceAtNewPos = board.getPiece(newPos);
-            if (row != pPos.getRow()) {
-                if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
-                        break;
-                    } else {
-                        possibleMoves.add(newPos);
-                        break;
-                    }
-                }
-                possibleMoves.add(newPos);
-            }
-        }
-
-        for (char col = pPos.getColumn(); col >= 'a'; col--) {
-            Position newPos = new Position(col, pPos.getRow());
-            Piece pieceAtNewPos = board.getPiece(newPos);
-            if (col != pPos.getColumn()) {
-                if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
-                        break;
-                    } else {
-                        possibleMoves.add(newPos);
-                        break;
-                    }
-                }
-                possibleMoves.add(newPos);
-            }
-        }
-
-        for (char col = pPos.getColumn(); col <= 'h'; col++) {
-            Position newPos = new Position(col, pPos.getRow());
-            Piece pieceAtNewPos = board.getPiece(newPos);
-            if (col != pPos.getColumn()) {
-                if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
-                        break;
-                    } else {
-                        possibleMoves.add(newPos);
-                        break;
-                    }
-                }
-                possibleMoves.add(newPos);
-            }
-        }
-
-        int[][] moves = {{1, 1}, {-1, 1}, {1, -1}, {-1, -1}};
+        int[][] moves = {{1, 1}, {-1, 1}, {1, -1}, {-1, -1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
 
         for (int[] move : moves) {
             for (int i = 1; i <= 8; i++) {
