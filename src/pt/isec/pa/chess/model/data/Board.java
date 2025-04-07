@@ -5,12 +5,17 @@ import pt.isec.pa.chess.model.data.pieces.PieceFactory;
 import pt.isec.pa.chess.model.data.pieces.Color;
 import pt.isec.pa.chess.model.data.pieces.Position;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Board {
+public class Board implements Serializable {
+    @Serial
+    static final long serialVersionUID = 1L;
+
     private Map<Position, Piece> mBoard;
 
     public Board() {

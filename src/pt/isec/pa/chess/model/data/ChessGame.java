@@ -4,9 +4,14 @@ import pt.isec.pa.chess.model.data.pieces.Color;
 import pt.isec.pa.chess.model.data.pieces.Piece;
 import pt.isec.pa.chess.model.data.pieces.Position;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Set;
 
-public class ChessGame {
+public class ChessGame implements Serializable {
+    @Serial
+    static final long serialVersionUID = 1L;
+
     Board board;
     Color cCurrentPlayer = Color.WHITE;
     Color cWinner = null;

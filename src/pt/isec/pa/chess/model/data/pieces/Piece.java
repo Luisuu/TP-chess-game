@@ -2,9 +2,11 @@ package pt.isec.pa.chess.model.data.pieces;
 
 import pt.isec.pa.chess.model.data.Board;
 
+import java.io.Serializable;
 import java.util.Set;
 
-abstract public class Piece {
+abstract public class Piece implements Serializable {
+    static final long serialVersionUID = 1L;
     protected char cDefinition;
     protected Color eColor;
     protected Position pPos;
