@@ -45,6 +45,11 @@ public class Board implements Serializable {
         mBoard.put(new Position('f', 8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'f', 8));
         mBoard.put(new Position('g', 8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'g', 8));
         mBoard.put(new Position('h', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
+
+
+        mBoard.put(new Position('d', 4), PieceFactory.PieceFactoryFromText("Bd4", this));
+        mBoard.put(new Position('e', 4), PieceFactory.PieceFactoryFromText("qe4", this));
+
     }
 
     public Set<Piece> getPieces() {
@@ -123,7 +128,7 @@ public class Board implements Serializable {
     public String debug() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\n----------------DEBUG INFO-------------------\n");
+        sb.append("\n----------------BOARD DEBUG INFO-------------------\n");
 
         for (Piece piece : mBoard.values()) {
             if (piece != null) {

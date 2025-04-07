@@ -16,6 +16,18 @@ public class ChessGame implements Serializable {
     Color cCurrentPlayer = Color.WHITE;
     Color cWinner = null;
 
+    public String debug(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n--------------GAME DEBUG INFO------------------\n");
+        sb.append("Current player: " + cCurrentPlayer);
+        sb.append("\n");
+        sb.append(board.debug());
+        sb.append("\n");
+        sb.append("Winner: " + cWinner);
+        sb.append("\n");
+        return sb.toString();
+    }
+
     public void start() {
         board = new Board();
         board.initializeBoard();

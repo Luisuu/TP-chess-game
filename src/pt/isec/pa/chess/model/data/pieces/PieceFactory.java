@@ -54,4 +54,71 @@ public enum PieceFactory {
     };
 
     public abstract Piece createPiece(Color color, Board board, char column, int row);
+
+
+
+    //segundo metodo
+
+
+    public static Piece PieceFactoryFromText(String textRepresentation, Board board) {
+        if (textRepresentation == null || textRepresentation.isEmpty()) {
+            return null;
+        }
+
+        boolean hasNotMoved = false;
+        String pieceData = textRepresentation;
+
+        if (textRepresentation.endsWith("*")) {
+            hasNotMoved = true;
+            pieceData = textRepresentation.substring(0, textRepresentation.length() - 1);
+        }
+
+        char pieceType = pieceData.charAt(0);
+        char column = pieceData.charAt(1);
+        int row;
+
+        try {
+            row = Integer.parseInt(pieceData.substring(2));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+
+        //ve cor peça
+        Color color = Character.isUpperCase(pieceType) ? Color.WHITE : Color.BLACK;
+
+        char normalizedType = Character.toUpperCase(pieceType);
+
+        Piece piece;
+
+        // Cria peça tendo em conta o tipo
+        switch (normalizedType) {
+            case 'K':
+                piece = KING.createPiece(color, board, column, row);
+                if (piece != null && !hasNotMoved) {
+                    ((King) piece).setHasMoved(true); //hasmoved=false por default
+                }
+                break;
+            case 'Q':
+                piece = QUEEN.createPiece(color, board, column, row);
+                break;
+            case 'R':
+                piece = ROOK.createPiece(color, board, column, row);
+                if (piece != null && !hasNotMoved) {
+                    ((Rook) piece).setHasMoved(true); //hasmoved=false por default
+                }                break;
+            case 'B':
+                piece = BISHOP.createPiece(color, board, column, row);
+                break;
+            case 'N':
+                piece = KNIGHT.createPiece(color, board, column, row);
+                break;
+            case 'P':
+                piece = PAWN.createPiece(color, board, column, row);
+                break;
+            default:
+                return null;
+        }
+
+        return piece;
+    }
 }
