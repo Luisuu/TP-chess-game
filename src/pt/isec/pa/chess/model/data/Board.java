@@ -42,11 +42,8 @@ public class Board {
         mBoard.put(new Position('h', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
     }
 
-    public void movePiece(Position position, Position newPosition) {
-        Piece pMover = getPiece(position);
-        if (pMover.getPossibleMoves().contains(newPosition)) {
-            pMover.setPosition(newPosition);
-        }
+    public Set<Piece> getPieces() {
+        return new HashSet<>(mBoard.values());
     }
 
     public void addPiece(Position position, Piece piece) {
