@@ -46,10 +46,6 @@ public class Board implements Serializable {
         mBoard.put(new Position('g', 8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'g', 8));
         mBoard.put(new Position('h', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
 
-
-        mBoard.put(new Position('d', 4), PieceFactory.PieceFactoryFromText("Bd4", this));
-        mBoard.put(new Position('e', 4), PieceFactory.PieceFactoryFromText("qe4", this));
-
     }
 
     public Set<Piece> getPieces() {
