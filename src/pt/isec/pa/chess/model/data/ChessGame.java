@@ -17,6 +17,7 @@ public class ChessGame implements Serializable {
     Color cWinner = null;
 
     public String debug(){
+        //ChessGameSerialization.save("chessGame.bin", this);
         StringBuilder sb = new StringBuilder();
         sb.append("\n--------------GAME DEBUG INFO------------------\n");
         sb.append("Current player: " + cCurrentPlayer);
@@ -30,7 +31,8 @@ public class ChessGame implements Serializable {
 
     public void start() {
         board = new Board();
-        board.initializeBoard();
+        ChessGameSerialization.load("chessGame.bin");
+        //board.initializeBoard();
     }
 
     public String printPieces() {
@@ -81,16 +83,5 @@ public class ChessGame implements Serializable {
             return true;
         }
         return false;
-    }
-
-    public String exportGame(){
-        StringBuilder sb = new StringBuilder();
-        sb.append(cCurrentPlayer.name()).append(",");
-        for (Piece p : board.getPieces()) {
-            sb.append(p.getDefinition());
-        }
-
-        if (sb.length() > 0) sb.setLength(sb.length() - 1);
-        return sb.toString();
     }
 }
