@@ -40,6 +40,11 @@ public class Board {
         mBoard.put(new Position('f', 8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'f', 8));
         mBoard.put(new Position('g', 8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'g', 8));
         mBoard.put(new Position('h', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
+
+
+        mBoard.put(new Position('d', 4), PieceFactory.PieceFactoryFromText("Bd4", this));
+
+
     }
 
     public void movePiece(Position position, Position newPosition) {
