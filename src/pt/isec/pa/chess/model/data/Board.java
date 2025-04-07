@@ -43,7 +43,7 @@ public class Board {
 
 
         mBoard.put(new Position('d', 4), PieceFactory.PieceFactoryFromText("Bd4", this));
-
+        mBoard.put(new Position('e', 4), PieceFactory.PieceFactoryFromText("qe4", this));
 
     }
 
