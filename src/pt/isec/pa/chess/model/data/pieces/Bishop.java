@@ -14,94 +14,30 @@ public class Bishop extends Piece {
     public Set<Position> getPossibleMoves() {
         Set<Position> possibleMoves = new HashSet<>();
 
-        for (int d = 0; d < 4; d++) {
+        int[][] moves = {{1, 1}, {-1, 1}, {1, -1}, {-1, -1}};
 
-            if (d == 0) {
-                for (int i = 1; i <= 8; i++) {
-                    char newCol = (char) (pPos.getColumn() + i);
-                    int newRow = pPos.getRow() + i;
+        for (int[] move : moves) {
+            for (int i = 1; i <= 8; i++) {
+                char cCol = (char) (pPos.getColumn() + move[0] * i);
+                int iRow = pPos.getRow() + move[1] * i;
 
-                    if (newCol >= 'a' && newCol <= 'h' && newRow >= 1 && newRow <= 8) {
-                        Position newPos = new Position(newCol, newRow);
-                        Piece pieceAtNewPos = board.getPiece(newPos);
+                if (cCol < 'a' || cCol > 'h' || iRow < 1 || iRow > 8) {
+                    break;
+                }
 
-                        if (pieceAtNewPos != null) {
-                            if (pieceAtNewPos.getColor() != this.getColor()) {
-                                possibleMoves.add(newPos);
-                            }
-                            break;
-                        }
-                        possibleMoves.add(newPos);
+                Position newPos = new Position(cCol, iRow);
+                Piece pieceAtNewPos = board.getPiece(newPos);
+
+                if (pieceAtNewPos != null) {
+                    if (pieceAtNewPos.getColor() == this.eColor) {
+                        break;
                     } else {
+                        possibleMoves.add(newPos);
                         break;
                     }
                 }
-            }
 
-            if (d == 1) {
-                for (int i = 1; i <= 8; i++) {
-                    char newCol = (char) (pPos.getColumn() - i);
-                    int newRow = pPos.getRow() + i;
-
-                    if (newCol >= 'a' && newCol <= 'h' && newRow >= 1 && newRow <= 8) {
-                        Position newPos = new Position(newCol, newRow);
-                        Piece pieceAtNewPos = board.getPiece(newPos);
-
-                        if (pieceAtNewPos != null) {
-                            if (pieceAtNewPos.getColor() != this.getColor()) {
-                                possibleMoves.add(newPos);
-                            }
-                            break;
-                        }
-                        possibleMoves.add(newPos);
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            if (d == 2) {
-                for (int i = 1; i <= 8; i++) {
-                    char newCol = (char) (pPos.getColumn() + i);
-                    int newRow = pPos.getRow() - i;
-
-                    if (newCol >= 'a' && newCol <= 'h' && newRow >= 1 && newRow <= 8) {
-                        Position newPos = new Position(newCol, newRow);
-                        Piece pieceAtNewPos = board.getPiece(newPos);
-
-                        if (pieceAtNewPos != null) {
-                            if (pieceAtNewPos.getColor() != this.getColor()) {
-                                possibleMoves.add(newPos);
-                            }
-                            break;
-                        }
-                        possibleMoves.add(newPos);
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            if (d == 3) {
-                for (int i = 1; i <= 8; i++) {
-                    char newCol = (char) (pPos.getColumn() - i);
-                    int newRow = pPos.getRow() - i;
-
-                    if (newCol >= 'a' && newCol <= 'h' && newRow >= 1 && newRow <= 8) {
-                        Position newPos = new Position(newCol, newRow);
-                        Piece pieceAtNewPos = board.getPiece(newPos);
-
-                        if (pieceAtNewPos != null) {
-                            if (pieceAtNewPos.getColor() != this.getColor()) {
-                                possibleMoves.add(newPos);
-                            }
-                            break;
-                        }
-                        possibleMoves.add(newPos);
-                    } else {
-                        break;
-                    }
-                }
+                possibleMoves.add(newPos);
             }
         }
 
