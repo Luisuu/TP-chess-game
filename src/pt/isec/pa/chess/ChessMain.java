@@ -10,6 +10,7 @@ public class ChessMain {
         game.start();
 
         System.out.println(game.printPieces());
+        System.out.println(game.debug());
 
         //ver se uma determinada casa esta em check
         //o chessgame depois pode saber onde esta o rei e ir pedir ao board para verificar se aquela casa esta em check

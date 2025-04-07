@@ -123,7 +123,7 @@ public class Board {
     public String debug() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\n----------------DEBUG INFO-------------------\n");
+        sb.append("\n----------------BOARD DEBUG INFO-------------------\n");
 
         for (Piece piece : mBoard.values()) {
             if (piece != null) {
