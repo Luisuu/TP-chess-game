@@ -24,6 +24,4 @@ public class ChessGameSerialization {
     }
         return null;
     }
-
-
 }
