@@ -10,7 +10,7 @@ public class ChessGameSerialization {
 
     public static void save(String filename, ChessGame o) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
-            oos.writeObject(o); // ici on écrit bien 'o'
+            oos.writeObject(o);
         } catch (Exception e) {
             System.err.println("Erro ao guardar o jogo");
         }
