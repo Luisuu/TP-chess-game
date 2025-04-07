@@ -1,13 +1,15 @@
 package pt.isec.pa.chess;
 
-import pt.isec.pa.chess.model.data.Board;
+import pt.isec.pa.chess.model.data.ChessGame;
 
 public class ChessMain {
     public static void main(String[] args) {
         System.out.println("PA Chess Game");
-        Board b = new Board();
-        b.initializeBoard();
-        System.out.println(b.printPieces());
+
+        ChessGame game = new ChessGame();
+        game.start();
+
+        System.out.println(game.printPieces());
 
         //ver se uma determinada casa esta em check
         //o chessgame depois pode saber onde esta o rei e ir pedir ao board para verificar se aquela casa esta em check
