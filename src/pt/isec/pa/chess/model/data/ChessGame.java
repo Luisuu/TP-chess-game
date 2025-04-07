@@ -82,4 +82,15 @@ public class ChessGame implements Serializable {
         }
         return false;
     }
+
+    public String exportGame(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(cCurrentPlayer.name()).append(",");
+        for (Piece p : board.getPieces()) {
+            sb.append(p.getDefinition());
+        }
+
+        if (sb.length() > 0) sb.setLength(sb.length() - 1);
+        return sb.toString();
+    }
 }
