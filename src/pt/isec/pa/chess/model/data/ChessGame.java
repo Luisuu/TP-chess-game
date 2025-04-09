@@ -4,8 +4,7 @@ import pt.isec.pa.chess.model.data.pieces.Color;
 import pt.isec.pa.chess.model.data.pieces.Piece;
 import pt.isec.pa.chess.model.data.pieces.Position;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Set;
 
 public class ChessGame implements Serializable {
@@ -16,8 +15,8 @@ public class ChessGame implements Serializable {
     Color cCurrentPlayer = Color.WHITE;
     Color cWinner = null;
 
-    public String debug(){
-        //ChessGameSerialization.save("chessGame.bin", this);
+    public String debug() {
+        //
         StringBuilder sb = new StringBuilder();
         sb.append("\n--------------GAME DEBUG INFO------------------\n");
         sb.append("Current player: " + cCurrentPlayer);
@@ -29,15 +28,34 @@ public class ChessGame implements Serializable {
         return sb.toString();
     }
 
-    /*public void start() {
-        board = new Board();
-        ChessGameSerialization.load("/Users/luisduarte/Documents/GitHub/TP_PA2425/partie_sauvegardee.dat");
-        //board.initializeBoard();
-    } */
-
     public void start() {
+        board = new Board();
+        board.initializeBoard();
+    }
+
+    public void save() {
+        ChessGameSerialization.save("chessGame.bin", this);
+    }
+
+    public void importa(String fileName) {
+        //todo
+    }
+
+    public void exporta() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(cCurrentPlayer).append(",");
+        sb.append(printPieces());
+
+        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("chessGame.txt")))) {
+            dos.write(sb.toString().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void open() {
         //FALTA GENERALIZAR O PATH
-        ChessGame loaded = ChessGameSerialization.load("/Users/luisduarte/Documents/GitHub/TP_PA2425/partie_sauvegardee.dat");
+        ChessGame loaded = ChessGameSerialization.load("chessGame.bin");
 
         if (loaded != null) {
             this.board = loaded.board;
