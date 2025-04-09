@@ -37,6 +37,8 @@ abstract public class Piece implements Serializable {
         return pPos;
     }
 
+    public void setBoard(Board board) { this.board = board; }
+
     @Override
     public String toString() {
         return this.getDefinition() + String.valueOf(pPos.getColumn()) + pPos.getRow();

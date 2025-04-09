@@ -29,11 +29,41 @@ public class ChessGame implements Serializable {
         return sb.toString();
     }
 
-    public void start() {
+    /*public void start() {
         board = new Board();
-        ChessGameSerialization.load("chessGame.bin");
+        ChessGameSerialization.load("/Users/luisduarte/Documents/GitHub/TP_PA2425/partie_sauvegardee.dat");
         //board.initializeBoard();
+    } */
+
+    public void start() {
+        //FALTA GENERALIZAR O PATH
+        ChessGame loaded = ChessGameSerialization.load("/Users/luisduarte/Documents/GitHub/TP_PA2425/partie_sauvegardee.dat");
+
+        if (loaded != null) {
+            this.board = loaded.board;
+            this.cCurrentPlayer = loaded.cCurrentPlayer;
+            this.cWinner = loaded.cWinner;
+
+            for (Piece piece : board.getPieces()) {
+                piece.setBoard(board);
+            }
+
+            System.out.println("Partie restaurer");
+        } else {
+            this.board = new Board();
+            board.initializeBoard();
+
+            for (Piece piece : board.getPieces()) {
+                piece.setBoard(board);
+            }
+
+            this.cCurrentPlayer = Color.WHITE;
+            this.cWinner = null;
+
+            System.out.println("STARTTTT");
+        }
     }
+
 
     public String printPieces() {
         return board.printPieces();

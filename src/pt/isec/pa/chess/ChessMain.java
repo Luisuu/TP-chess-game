@@ -1,9 +1,11 @@
 package pt.isec.pa.chess;
 
 import pt.isec.pa.chess.model.data.ChessGame;
+import pt.isec.pa.chess.model.data.ChessGameSerialization;
 
 public class ChessMain {
     public static void main(String[] args) {
+
         System.out.println("PA Chess Game");
 
         ChessGame game = new ChessGame();
