@@ -37,7 +37,9 @@ abstract public class Piece implements Serializable {
         return pPos;
     }
 
-    public void setBoard(Board board) { this.board = board; }
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 
     @Override
     public String toString() {

@@ -22,6 +22,10 @@ public class Board implements Serializable {
         mBoard = new HashMap<>();
     }
 
+    public void clearBoard() {
+        mBoard.clear();
+    }
+
     public void initializeBoard() {
         for (char cCol = 'a'; cCol <= 'h'; cCol++) {
             mBoard.put(new Position(cCol, 2), PieceFactory.PAWN.createPiece(Color.WHITE, this, cCol, 2));
@@ -45,7 +49,15 @@ public class Board implements Serializable {
         mBoard.put(new Position('f', 8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'f', 8));
         mBoard.put(new Position('g', 8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'g', 8));
         mBoard.put(new Position('h', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
+    }
 
+    public void initializeBoard(String[] sJogo) {
+        for (String p : sJogo) {
+            Piece piece = PieceFactory.PieceFactoryFromText(p, this);
+            if (piece != null) {
+                mBoard.put(piece.getPosition(), piece);
+            }
+        }
     }
 
     public Set<Piece> getPieces() {

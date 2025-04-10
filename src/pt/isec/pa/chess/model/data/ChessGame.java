@@ -1,10 +1,9 @@
 package pt.isec.pa.chess.model.data;
 
-import pt.isec.pa.chess.model.data.pieces.Color;
-import pt.isec.pa.chess.model.data.pieces.Piece;
-import pt.isec.pa.chess.model.data.pieces.Position;
+import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Set;
 
 public class ChessGame implements Serializable {
@@ -30,6 +29,7 @@ public class ChessGame implements Serializable {
 
     public void start() {
         board = new Board();
+        board.clearBoard();
         board.initializeBoard();
     }
 
@@ -37,8 +37,35 @@ public class ChessGame implements Serializable {
         ChessGameSerialization.save("chessGame.bin", this);
     }
 
-    public void importa(String fileName) {
-        //todo
+    public void importa(String sFileName) {
+        board.clearBoard();
+        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(sFileName)))) {
+            byte[] data = dis.readAllBytes();
+
+            String line = new String(data).trim();
+
+            if (line.isEmpty()) {
+                //ficheiro vazio
+                return;
+            }
+
+            String[] tokens = line.split(",");
+            if (tokens.length < 2) {
+                // formato inmvalido
+                return;
+            }
+
+            this.cCurrentPlayer = Color.valueOf(tokens[0].toUpperCase());
+
+            this.board = new Board();
+            board.initializeBoard(Arrays.copyOfRange(tokens, 1, tokens.length));
+
+            for (Piece piece : board.getPieces()) {
+                piece.setBoard(board);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void exporta() {
@@ -66,7 +93,7 @@ public class ChessGame implements Serializable {
                 piece.setBoard(board);
             }
 
-            System.out.println("Partie restaurer");
+            //System.out.println("Partie restaurer");
         } else {
             this.board = new Board();
             board.initializeBoard();
@@ -78,7 +105,7 @@ public class ChessGame implements Serializable {
             this.cCurrentPlayer = Color.WHITE;
             this.cWinner = null;
 
-            System.out.println("STARTTTT");
+            //System.out.println("STARTTTT");
         }
     }
 
@@ -100,6 +127,15 @@ public class ChessGame implements Serializable {
         Piece pMover = board.getPiece(position);
         if (pMover != null && pMover.getPossibleMoves().contains(newPosition) && pMover.getColor() == getcCurrentPlayer()) {
             pMover.setPosition(newPosition);
+
+            if (pMover instanceof Rook) {
+                ((Rook) pMover).setHasMoved(true);
+            } else if (pMover instanceof King) {
+                ((King) pMover).setHasMoved(true);
+            } else if (pMover instanceof Pawn) {
+                ((Pawn) pMover).setHasMoved(true);
+            }
+
             cCurrentPlayer = getcOpponent();
             isGameOver();
         }

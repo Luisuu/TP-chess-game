@@ -10,7 +10,7 @@ public class Rook extends Piece {
 
     public Rook(Color color, Board board, char cColumn, int iRow) {
         super('R', board, color, cColumn, iRow);
-        this.bHasMoved = false;
+        this.bHasMoved = (color == Color.WHITE && iRow == 1 && (cColumn == 'a' || cColumn == 'h')) || (color == Color.BLACK && iRow == 8 && (cColumn == 'a' || cColumn == 'h')) ? false : true;
     }
 
     public Set<Position> getPossibleMoves() {

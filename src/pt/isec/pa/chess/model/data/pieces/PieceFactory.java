@@ -56,7 +56,6 @@ public enum PieceFactory {
     public abstract Piece createPiece(Color color, Board board, char column, int row);
 
 
-
     //segundo metodo
 
 
@@ -105,7 +104,8 @@ public enum PieceFactory {
                 piece = ROOK.createPiece(color, board, column, row);
                 if (piece != null && !hasNotMoved) {
                     ((Rook) piece).setHasMoved(true); //hasmoved=false por default
-                }                break;
+                }
+                break;
             case 'B':
                 piece = BISHOP.createPiece(color, board, column, row);
                 break;
