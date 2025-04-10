@@ -10,7 +10,7 @@ public class King extends Piece {
 
     public King(Color color, Board board, char cColumn, int iRow) {
         super('K', board, color, cColumn, iRow);
-        this.bHasMoved = false;
+        this.bHasMoved = (color == Color.WHITE && iRow == 1 && cColumn == 'e') || (color == Color.BLACK && iRow == 8 && cColumn == 'e') ? false : true;
     }
 
     public Set<Position> getPossibleMoves() {

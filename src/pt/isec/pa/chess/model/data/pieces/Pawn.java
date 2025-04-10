@@ -10,7 +10,7 @@ public class Pawn extends Piece {
 
     public Pawn(Color color, Board board, char cColumn, int iRow) {
         super('P', board, color, cColumn, iRow);
-        this.bHasMoved = false;
+        this.bHasMoved = (color == Color.WHITE && iRow == 2) || (color == Color.BLACK && iRow == 7) ? false : true;
     }
 
     public Set<Position> getPossibleMoves() {
@@ -53,5 +53,13 @@ public class Pawn extends Piece {
         }
 
         return possibleMoves;
+    }
+
+    public boolean hasMoved() {
+        return bHasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.bHasMoved = hasMoved;
     }
 }

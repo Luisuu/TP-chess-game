@@ -5,16 +5,25 @@ import pt.isec.pa.chess.model.data.pieces.PieceFactory;
 import pt.isec.pa.chess.model.data.pieces.Color;
 import pt.isec.pa.chess.model.data.pieces.Position;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Board {
+public class Board implements Serializable {
+    @Serial
+    static final long serialVersionUID = 1L;
+
     private Map<Position, Piece> mBoard;
 
     public Board() {
         mBoard = new HashMap<>();
+    }
+
+    public void clearBoard() {
+        mBoard.clear();
     }
 
     public void initializeBoard() {
@@ -42,11 +51,17 @@ public class Board {
         mBoard.put(new Position('h', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
     }
 
-    public void movePiece(Position position, Position newPosition) {
-        Piece pMover = getPiece(position);
-        if (pMover.getPossibleMoves().contains(newPosition)) {
-            pMover.setPosition(newPosition);
+    public void initializeBoard(String[] sJogo) {
+        for (String p : sJogo) {
+            Piece piece = PieceFactory.PieceFactoryFromText(p, this);
+            if (piece != null) {
+                mBoard.put(piece.getPosition(), piece);
+            }
         }
+    }
+
+    public Set<Piece> getPieces() {
+        return new HashSet<>(mBoard.values());
     }
 
     public void addPiece(Position position, Piece piece) {
@@ -121,7 +136,7 @@ public class Board {
     public String debug() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\n----------------DEBUG INFO-------------------\n");
+        sb.append("\n----------------BOARD DEBUG INFO-------------------\n");
 
         for (Piece piece : mBoard.values()) {
             if (piece != null) {
