@@ -33,8 +33,8 @@ public class ChessGame implements Serializable {
         board.initializeBoard();
     }
 
-    public void save() {
-        ChessGameSerialization.save("chessGame.bin", this);
+    public void save(String sFileName) {
+        ChessGameSerialization.save(sFileName, this);
     }
 
     public void importa(String sFileName) {
@@ -83,21 +83,21 @@ public class ChessGame implements Serializable {
         }
     }
 
-    public void exporta() {
+    public void exporta(String sFileName) {
         StringBuilder sb = new StringBuilder();
         sb.append(cCurrentPlayer).append(",");
         sb.append(printPieces());
 
-        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("chessGame.txt")))) {
+        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(sFileName)))) {
             dos.write(sb.toString().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void open() {
+    public void open(String sFileName) {
         //FALTA GENERALIZAR O PATH
-        ChessGame loaded = ChessGameSerialization.load("chessGame.bin");
+        ChessGame loaded = ChessGameSerialization.load(sFileName);
 
         if (loaded != null) {
             this.board = loaded.board;
