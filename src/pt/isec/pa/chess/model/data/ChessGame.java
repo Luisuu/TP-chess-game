@@ -55,9 +55,24 @@ public class ChessGame implements Serializable {
                 return;
             }
 
-            this.cCurrentPlayer = Color.valueOf(tokens[0].toUpperCase());
+            Color color;
+            try {
+                color = Color.valueOf(tokens[0].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("cor " + tokens[0] + " invalida");
+            }
 
+            for (int i = 1; i < tokens.length; i++) {
+                String token = tokens[i].trim();
+
+                if (!token.matches("(?i)[kqrbnp][a-h][1-8]\\*?")) {
+                    throw new RuntimeException("peca " + token + " invalida");
+                }
+            }
+
+            this.cCurrentPlayer = color;
             this.board = new Board();
+
             board.initializeBoard(Arrays.copyOfRange(tokens, 1, tokens.length));
 
             for (Piece piece : board.getPieces()) {
