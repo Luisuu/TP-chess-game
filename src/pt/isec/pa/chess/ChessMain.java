@@ -15,6 +15,7 @@ public class ChessMain {
         System.out.println(game.printPieces());
         System.out.println(game.debug());
 
+        /*
         //TESTES, SETA PLAYER INICIAL PARA PRETO
         System.out.println("ESTADO INICIAL:");
 
@@ -24,7 +25,7 @@ public class ChessMain {
         System.out.println(game.debug());
 
         System.out.println("TENTA MOVER PECA BRANCA");
-        game.movePiece(new Position('c', 2), new Position('b', 1));
+        game.movePiece(new Position('c', 2), new Position('c', 3));
 
         System.out.println(game.printPieces());
         System.out.println(game.debug());
@@ -35,7 +36,7 @@ public class ChessMain {
         System.out.println("ESTADO FINAL:");
 
         System.out.println(game.printPieces());
-        System.out.println(game.debug());
+        System.out.println(game.debug());*/
 
         //game.exporta();
 
