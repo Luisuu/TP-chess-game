@@ -15,8 +15,12 @@ public class ChessMain {
         System.out.println(game.printPieces());
         System.out.println(game.debug());
 
-        /*
-        //TESTES, SETA PLAYER INICIAL PARA PRETO
+        /*game.exporta("Test.txt");
+
+        game.importa("test.txt");
+        System.out.println(game.debug());
+
+        /*TESTES, SETA PLAYER INICIAL PARA PRETO
         System.out.println("ESTADO INICIAL:");
 
         game.importa("chessGame.txt"); //BLACK,Pc2,pg7,Ra1*,Pa2,ng8,pe7,ke8*,pc7,bc8,pa7,ra8*,Rh1*,Ph2,Bf1,Pf2,Qd1,Pd2,ph7,Nb1,Pb2,rh8*,pf7,bf8,pd7,qd8,pb7,nb8,Ng1,Pg2,Ke1*,Pe2,Bc1
@@ -36,9 +40,9 @@ public class ChessMain {
         System.out.println("ESTADO FINAL:");
 
         System.out.println(game.printPieces());
-        System.out.println(game.debug());*/
+        System.out.println(game.debug());
 
-        //game.exporta();
+        game.exporta("Test.txt");
 
         //ver se uma determinada casa esta em check
         //o chessgame depois pode saber onde esta o rei e ir pedir ao board para verificar se aquela casa esta em check
