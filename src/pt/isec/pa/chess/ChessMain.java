@@ -12,6 +12,7 @@ public class ChessMain {
         ChessGame game = new ChessGame();
         game.start();
 
+
         System.out.println(game.printPieces());
         System.out.println(game.debug());
 
