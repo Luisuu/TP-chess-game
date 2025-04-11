@@ -1,17 +1,20 @@
 package pt.isec.pa.chess;
 
+import javafx.application.Application;
 import pt.isec.pa.chess.model.data.ChessGame;
 import pt.isec.pa.chess.model.data.ChessGameSerialization;
 import pt.isec.pa.chess.model.data.pieces.Position;
+import pt.isec.pa.chess.ui.MainJFX;
 
 public class ChessMain {
     public static void main(String[] args) {
+
+        Application.launch(MainJFX.class,args);
 
         System.out.println("PA Chess Game");
 
         ChessGame game = new ChessGame();
         game.start();
-
 
         System.out.println(game.printPieces());
         System.out.println(game.debug());
