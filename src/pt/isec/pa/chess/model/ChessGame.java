@@ -122,7 +122,6 @@ public class ChessGame implements Serializable {
                 return false;
             }
         }
-
         return true;
     }
 }
