@@ -1,10 +1,10 @@
-package pt.isec.pa.chess.model.data;
+package pt.isec.pa.chess.model;
 
+import pt.isec.pa.chess.model.data.Board;
 import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.Set;
 
 public class ChessGame implements Serializable {
     @Serial

@@ -1,9 +1,7 @@
 package pt.isec.pa.chess;
 
 import javafx.application.Application;
-import pt.isec.pa.chess.model.data.ChessGame;
-import pt.isec.pa.chess.model.data.ChessGameSerialization;
-import pt.isec.pa.chess.model.data.pieces.Position;
+import pt.isec.pa.chess.model.ChessGame;
 import pt.isec.pa.chess.ui.MainJFX;
 
 public class ChessMain {
@@ -13,13 +11,13 @@ public class ChessMain {
 
         System.out.println("PA Chess Game");
 
-        ChessGame game = new ChessGame();
+        /*ChessGame game = new ChessGame();
         game.start();
 
         System.out.println(game.printPieces());
         System.out.println(game.debug());
 
-        /*game.exporta("Test.txt");
+        game.exporta("Test.txt");
 
         game.importa("test.txt");
         System.out.println(game.debug());
