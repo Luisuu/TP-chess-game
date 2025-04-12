@@ -81,7 +81,8 @@ public class AskName extends Stage {
                 return;
             }
 
-            System.out.println("Creating new game with players: " + player1Name + " vs " + player2Name);
+            data.setPlayerName(1, player1Name);
+            data.setPlayerName(2, player2Name);
             this.close();
         });
     }
