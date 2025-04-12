@@ -8,9 +8,9 @@ import java.util.Set;
 public class King extends Piece {
     private boolean bHasMoved;
 
-    public King(Color color, Board board, char cColumn, int iRow) {
-        super('K', board, color, cColumn, iRow);
-        this.bHasMoved = (color == Color.WHITE && iRow == 1 && cColumn == 'e') || (color == Color.BLACK && iRow == 8 && cColumn == 'e') ? false : true;
+    public King(PieceColor PieceColor, Board board, char cColumn, int iRow) {
+        super('K', board, PieceColor, cColumn, iRow);
+        this.bHasMoved = (PieceColor == PieceColor.WHITE && iRow == 1 && cColumn == 'e') || (PieceColor == PieceColor.BLACK && iRow == 8 && cColumn == 'e') ? false : true;
     }
 
     public Set<Position> getPossibleMoves() {
@@ -27,7 +27,7 @@ public class King extends Piece {
                 Piece pieceAtNewPos = board.getPiece(newPos);
 
                 if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
+                    if (pieceAtNewPos.getColor() == this.PieceColor) {
                         break;
                     } else {
                         possibleMoves.add(newPos);

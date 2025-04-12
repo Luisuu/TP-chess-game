@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Queen extends Piece {
-    public Queen(Color color, Board board, char cColumn, int iRow) {
-        super('Q', board, color, cColumn, iRow);
+    public Queen(PieceColor PieceColor, Board board, char cColumn, int iRow) {
+        super('Q', board, PieceColor, cColumn, iRow);
     }
 
     public Set<Position> getPossibleMoves() {
@@ -29,7 +29,7 @@ public class Queen extends Piece {
                 Piece pieceAtNewPos = board.getPiece(newPos);
 
                 if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
+                    if (pieceAtNewPos.getColor() == this.PieceColor) {
                         break;
                     } else {
                         possibleMoves.add(newPos);

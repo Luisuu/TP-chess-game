@@ -8,13 +8,13 @@ import java.util.Set;
 abstract public class Piece implements Serializable {
     static final long serialVersionUID = 1L;
     protected char cDefinition;
-    protected Color eColor;
+    protected PieceColor PieceColor;
     protected Position pPos;
     protected Board board;
 
-    Piece(char cDefinition, Board board, Color eColor, char cColumn, int iRow) {
-        this.cDefinition = (eColor == Color.WHITE) ? Character.toUpperCase(cDefinition) : Character.toLowerCase(cDefinition);
-        this.eColor = eColor;
+    Piece(char cDefinition, Board board, PieceColor PieceColor, char cColumn, int iRow) {
+        this.cDefinition = (PieceColor == PieceColor.WHITE) ? Character.toUpperCase(cDefinition) : Character.toLowerCase(cDefinition);
+        this.PieceColor = PieceColor;
         this.pPos = new Position(cColumn, iRow);
         this.board = board;
     }
@@ -29,8 +29,8 @@ abstract public class Piece implements Serializable {
         return cDefinition;
     }
 
-    public Color getColor() {
-        return eColor;
+    public PieceColor getColor() {
+        return PieceColor;
     }
 
     public Position getPosition() {

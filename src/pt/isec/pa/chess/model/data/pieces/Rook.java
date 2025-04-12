@@ -8,9 +8,9 @@ import java.util.Set;
 public class Rook extends Piece {
     private boolean bHasMoved;
 
-    public Rook(Color color, Board board, char cColumn, int iRow) {
-        super('R', board, color, cColumn, iRow);
-        this.bHasMoved = (color == Color.WHITE && iRow == 1 && (cColumn == 'a' || cColumn == 'h')) || (color == Color.BLACK && iRow == 8 && (cColumn == 'a' || cColumn == 'h')) ? false : true;
+    public Rook(PieceColor PieceColor, Board board, char cColumn, int iRow) {
+        super('R', board, PieceColor, cColumn, iRow);
+        this.bHasMoved = (PieceColor == PieceColor.WHITE && iRow == 1 && (cColumn == 'a' || cColumn == 'h')) || (PieceColor == PieceColor.BLACK && iRow == 8 && (cColumn == 'a' || cColumn == 'h')) ? false : true;
     }
 
     public Set<Position> getPossibleMoves() {
@@ -31,7 +31,7 @@ public class Rook extends Piece {
                 Piece pieceAtNewPos = board.getPiece(newPos);
 
                 if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
+                    if (pieceAtNewPos.getColor() == this.PieceColor) {
                         break;
                     } else {
                         possibleMoves.add(newPos);

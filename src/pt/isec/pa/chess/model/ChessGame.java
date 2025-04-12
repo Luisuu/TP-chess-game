@@ -11,8 +11,8 @@ public class ChessGame implements Serializable {
     static final long serialVersionUID = 1L;
 
     Board board;
-    Color cCurrentPlayer = Color.WHITE;
-    Color cWinner = null;
+    PieceColor cCurrentPlayer = PieceColor.WHITE;
+    PieceColor cWinner = null;
 
     public String debug() {
         //
@@ -55,9 +55,9 @@ public class ChessGame implements Serializable {
                 return;
             }
 
-            Color color;
+            PieceColor Color;
             try {
-                color = Color.valueOf(tokens[0].toUpperCase());
+                Color = PieceColor.valueOf(tokens[0].toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("cor " + tokens[0] + " invalida");
             }
@@ -70,7 +70,7 @@ public class ChessGame implements Serializable {
                 }
             }
 
-            this.cCurrentPlayer = color;
+            this.cCurrentPlayer = Color;
             this.board = new Board();
 
             board.initializeBoard(Arrays.copyOfRange(tokens, 1, tokens.length));
@@ -117,7 +117,7 @@ public class ChessGame implements Serializable {
                 piece.setBoard(board);
             }
 
-            this.cCurrentPlayer = Color.WHITE;
+            this.cCurrentPlayer = PieceColor.WHITE;
             this.cWinner = null;
 
             //System.out.println("STARTTTT");
@@ -129,12 +129,12 @@ public class ChessGame implements Serializable {
         return board.printPieces();
     }
 
-    public Color getcCurrentPlayer() {
+    public PieceColor getcCurrentPlayer() {
         return cCurrentPlayer;
     }
 
-    public Color getcOpponent() {
-        return cCurrentPlayer == Color.WHITE ? Color.BLACK : Color.WHITE;
+    public PieceColor getcOpponent() {
+        return cCurrentPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
     }
 
     public void movePiece(Position position, Position newPosition) {
@@ -156,7 +156,7 @@ public class ChessGame implements Serializable {
         }
     }
 
-    public Color getWinner() {
+    public PieceColor getWinner() {
         return cWinner;
     }
 
@@ -166,19 +166,19 @@ public class ChessGame implements Serializable {
 
         for (Piece p : board.getPieces()) {
             if (Character.toUpperCase(p.getDefinition()) == 'K') {
-                if (p.getColor() == Color.WHITE) {
+                if (p.getColor() == PieceColor.WHITE) {
                     bWhiteKing = true;
-                } else if (p.getColor() == Color.BLACK) {
+                } else if (p.getColor() == PieceColor.BLACK) {
                     bBlackKing = true;
                 }
             }
         }
 
         if (!bWhiteKing) {
-            cWinner = Color.BLACK;
+            cWinner = PieceColor.BLACK;
             return true;
         } else if (!bBlackKing) {
-            cWinner = Color.WHITE;
+            cWinner = PieceColor.WHITE;
             return true;
         }
         return false;

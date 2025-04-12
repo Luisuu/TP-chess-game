@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Bishop extends Piece {
-    public Bishop(Color color, Board board, char cColumn, int iRow) {
-        super('B', board, color, cColumn, iRow);
+    public Bishop(PieceColor PieceColor, Board board, char cColumn, int iRow) {
+        super('B', board, PieceColor, cColumn, iRow);
     }
 
     public Set<Position> getPossibleMoves() {
@@ -29,7 +29,7 @@ public class Bishop extends Piece {
                 Piece pieceAtNewPos = board.getPiece(newPos);
 
                 if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
+                    if (pieceAtNewPos.getColor() == this.PieceColor) {
                         break;
                     } else {
                         possibleMoves.add(newPos);
