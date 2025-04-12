@@ -11,6 +11,10 @@ public class ChessGameManager {
     ChessGame cgGame;
     String sPlayer1, sPlayer2;
 
+    public ChessGame getChessGame() {
+        return cgGame;
+    }
+
     public ChessGameManager(){
         cgGame = new ChessGame();
         System.out.println("ChessGameManager");

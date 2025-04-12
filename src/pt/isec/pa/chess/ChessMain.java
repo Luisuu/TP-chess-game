@@ -7,11 +7,11 @@ import pt.isec.pa.chess.ui.MainJFX;
 public class ChessMain {
     public static void main(String[] args) {
 
-        //Application.launch(MainJFX.class,args);
+        Application.launch(MainJFX.class,args);
 
         //System.out.println("PA Chess Game");
 
-        ChessGame game = new ChessGame();
+        /*ChessGame game = new ChessGame();
         game.start();
 
         System.out.println(game.printPieces());
@@ -22,7 +22,7 @@ public class ChessMain {
         game.importa("test.txt");
         System.out.println(game.debug());
 
-        /*TESTES, SETA PLAYER INICIAL PARA PRETO
+        TESTES, SETA PLAYER INICIAL PARA PRETO
         System.out.println("ESTADO INICIAL:");
 
         game.importa("chessGame.txt"); //BLACK,Pc2,pg7,Ra1*,Pa2,ng8,pe7,ke8*,pc7,bc8,pa7,ra8*,Rh1*,Ph2,Bf1,Pf2,Qd1,Pd2,ph7,Nb1,Pb2,rh8*,pf7,bf8,pd7,qd8,pb7,nb8,Ng1,Pg2,Ke1*,Pe2,Bc1
