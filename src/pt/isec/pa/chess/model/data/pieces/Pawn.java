@@ -8,15 +8,15 @@ import java.util.Set;
 public class Pawn extends Piece {
     private boolean bHasMoved;
 
-    public Pawn(Color color, Board board, char cColumn, int iRow) {
-        super('P', board, color, cColumn, iRow);
-        this.bHasMoved = (color == Color.WHITE && iRow == 2) || (color == Color.BLACK && iRow == 7) ? false : true;
+    public Pawn(PieceColor PieceColor, Board board, char cColumn, int iRow) {
+        super('P', board, PieceColor, cColumn, iRow);
+        this.bHasMoved = (PieceColor == PieceColor.WHITE && iRow == 2) || (PieceColor == PieceColor.BLACK && iRow == 7) ? false : true;
     }
 
     public Set<Position> getPossibleMoves() {
         Set<Position> possibleMoves = new HashSet<>();
 
-        int direction = (eColor == Color.WHITE) ? 1 : -1;
+        int direction = (PieceColor == PieceColor.WHITE) ? 1 : -1;
         char col = pPos.getColumn();
         int row = pPos.getRow();
 
@@ -35,7 +35,7 @@ public class Pawn extends Piece {
             Position diagLeft = new Position(colLeft, row + direction);
             if (isPossibleMove(diagLeft)) {
                 Piece targetLeft = board.getPiece(diagLeft);
-                if (targetLeft != null && targetLeft.getColor() != this.eColor) {
+                if (targetLeft != null && targetLeft.getColor() != this.PieceColor) {
                     possibleMoves.add(diagLeft);
                 }
             }
@@ -46,7 +46,7 @@ public class Pawn extends Piece {
             Position diagRight = new Position(colRight, row + direction);
             if (isPossibleMove(diagRight)) {
                 Piece targetRight = board.getPiece(diagRight);
-                if (targetRight != null && targetRight.getColor() != this.eColor) {
+                if (targetRight != null && targetRight.getColor() != this.PieceColor) {
                     possibleMoves.add(diagRight);
                 }
             }

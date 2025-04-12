@@ -3,18 +3,19 @@ package pt.isec.pa.chess.model.data.pieces;
 import pt.isec.pa.chess.model.data.Board;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 abstract public class Piece implements Serializable {
     static final long serialVersionUID = 1L;
     protected char cDefinition;
-    protected Color eColor;
+    protected PieceColor PieceColor;
     protected Position pPos;
     protected Board board;
 
-    Piece(char cDefinition, Board board, Color eColor, char cColumn, int iRow) {
-        this.cDefinition = (eColor == Color.WHITE) ? Character.toUpperCase(cDefinition) : Character.toLowerCase(cDefinition);
-        this.eColor = eColor;
+    Piece(char cDefinition, Board board, PieceColor PieceColor, char cColumn, int iRow) {
+        this.cDefinition = (PieceColor == PieceColor.WHITE) ? Character.toUpperCase(cDefinition) : Character.toLowerCase(cDefinition);
+        this.PieceColor = PieceColor;
         this.pPos = new Position(cColumn, iRow);
         this.board = board;
     }
@@ -29,8 +30,8 @@ abstract public class Piece implements Serializable {
         return cDefinition;
     }
 
-    public Color getColor() {
-        return eColor;
+    public PieceColor getColor() {
+        return PieceColor;
     }
 
     public Position getPosition() {
@@ -48,5 +49,35 @@ abstract public class Piece implements Serializable {
 
     protected boolean isPossibleMove(Position pos) {
         return pos.getColumn() >= 'a' && pos.getColumn() <= 'h' && pos.getRow() >= 1 && pos.getRow() <= 8;
+    }
+
+    protected Set<Position> getLinearMoves(int [][]moves) {
+        Set<Position> possibleMoves = new HashSet<>();
+
+        for (int[] move : moves) {
+            for (int i = 1; i <= 8; i++) {
+                char cCol = (char) (pPos.getColumn() + move[0] * i);
+                int iRow = pPos.getRow() + move[1] * i;
+
+                if (cCol < 'a' || cCol > 'h' || iRow < 1 || iRow > 8) {
+                    break;
+                }
+
+                Position newPos = new Position(cCol, iRow);
+                Piece pieceAtNewPos = board.getPiece(newPos);
+
+                if (pieceAtNewPos != null) {
+                    if (pieceAtNewPos.getColor() == this.PieceColor) {
+                        break;
+                    } else {
+                        possibleMoves.add(newPos);
+                        break;
+                    }
+                }
+
+                possibleMoves.add(newPos);
+            }
+        }
+        return possibleMoves;
     }
 }

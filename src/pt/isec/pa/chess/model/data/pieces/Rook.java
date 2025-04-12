@@ -8,9 +8,9 @@ import java.util.Set;
 public class Rook extends Piece {
     private boolean bHasMoved;
 
-    public Rook(Color color, Board board, char cColumn, int iRow) {
-        super('R', board, color, cColumn, iRow);
-        this.bHasMoved = (color == Color.WHITE && iRow == 1 && (cColumn == 'a' || cColumn == 'h')) || (color == Color.BLACK && iRow == 8 && (cColumn == 'a' || cColumn == 'h')) ? false : true;
+    public Rook(PieceColor PieceColor, Board board, char cColumn, int iRow) {
+        super('R', board, PieceColor, cColumn, iRow);
+        this.bHasMoved = (PieceColor == PieceColor.WHITE && iRow == 1 && (cColumn == 'a' || cColumn == 'h')) || (PieceColor == PieceColor.BLACK && iRow == 8 && (cColumn == 'a' || cColumn == 'h')) ? false : true;
     }
 
     public Set<Position> getPossibleMoves() {
@@ -18,31 +18,7 @@ public class Rook extends Piece {
 
         int[][] moves = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-        for (int[] move : moves) {
-            for (int i = 1; i <= 8; i++) {
-                char cCol = (char) (pPos.getColumn() + move[0] * i);
-                int iRow = pPos.getRow() + move[1] * i;
-
-                if (cCol < 'a' || cCol > 'h' || iRow < 1 || iRow > 8) {
-                    break;
-                }
-
-                Position newPos = new Position(cCol, iRow);
-                Piece pieceAtNewPos = board.getPiece(newPos);
-
-                if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
-                        break;
-                    } else {
-                        possibleMoves.add(newPos);
-                        break;
-                    }
-                }
-
-                possibleMoves.add(newPos);
-            }
-        }
-        return possibleMoves;
+        return getLinearMoves(moves);
     }
 
     public boolean hasMoved() {

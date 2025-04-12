@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Knight extends Piece {
-    public Knight(Color color, Board board, char cColumn, int iRow) {
-        super('N', board, color, cColumn, iRow);
+    public Knight(PieceColor PieceColor, Board board, char cColumn, int iRow) {
+        super('N', board, PieceColor, cColumn, iRow);
     }
 
     public Set<Position> getPossibleMoves() {
@@ -23,7 +23,7 @@ public class Knight extends Piece {
                 Position newPos = new Position(cCol, iRow);
                 Piece pieceAtNewPos = board.getPiece(newPos);
                 if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.eColor) {
+                    if (pieceAtNewPos.getColor() == this.PieceColor) {
                         continue;
                     }
                 }

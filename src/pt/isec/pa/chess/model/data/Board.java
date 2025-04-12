@@ -2,15 +2,12 @@ package pt.isec.pa.chess.model.data;
 
 import pt.isec.pa.chess.model.data.pieces.Piece;
 import pt.isec.pa.chess.model.data.pieces.PieceFactory;
-import pt.isec.pa.chess.model.data.pieces.Color;
+import pt.isec.pa.chess.model.data.pieces.PieceColor;
 import pt.isec.pa.chess.model.data.pieces.Position;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Board implements Serializable {
     @Serial
@@ -28,27 +25,27 @@ public class Board implements Serializable {
 
     public void initializeBoard() {
         for (char cCol = 'a'; cCol <= 'h'; cCol++) {
-            mBoard.put(new Position(cCol, 2), PieceFactory.PAWN.createPiece(Color.WHITE, this, cCol, 2));
-            mBoard.put(new Position(cCol, 7), PieceFactory.PAWN.createPiece(Color.BLACK, this, cCol, 7));
+            mBoard.put(new Position(cCol, 2), PieceFactory.PAWN.createPiece(PieceColor.WHITE, this, cCol, 2));
+            mBoard.put(new Position(cCol, 7), PieceFactory.PAWN.createPiece(PieceColor.BLACK, this, cCol, 7));
         }
 
-        mBoard.put(new Position('a', 1), PieceFactory.ROOK.createPiece(Color.WHITE, this, 'a', 1));
-        mBoard.put(new Position('b', 1), PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'b', 1));
-        mBoard.put(new Position('c', 1), PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'c', 1));
-        mBoard.put(new Position('d', 1), PieceFactory.QUEEN.createPiece(Color.WHITE, this, 'd', 1));
-        mBoard.put(new Position('e', 1), PieceFactory.KING.createPiece(Color.WHITE, this, 'e', 1));
-        mBoard.put(new Position('f', 1), PieceFactory.BISHOP.createPiece(Color.WHITE, this, 'f', 1));
-        mBoard.put(new Position('g', 1), PieceFactory.KNIGHT.createPiece(Color.WHITE, this, 'g', 1));
-        mBoard.put(new Position('h', 1), PieceFactory.ROOK.createPiece(Color.WHITE, this, 'h', 1));
+        mBoard.put(new Position('a', 1), PieceFactory.ROOK.createPiece(PieceColor.WHITE, this, 'a', 1));
+        mBoard.put(new Position('b', 1), PieceFactory.KNIGHT.createPiece(PieceColor.WHITE, this, 'b', 1));
+        mBoard.put(new Position('c', 1), PieceFactory.BISHOP.createPiece(PieceColor.WHITE, this, 'c', 1));
+        mBoard.put(new Position('d', 1), PieceFactory.QUEEN.createPiece(PieceColor.WHITE, this, 'd', 1));
+        mBoard.put(new Position('e', 1), PieceFactory.KING.createPiece(PieceColor.WHITE, this, 'e', 1));
+        mBoard.put(new Position('f', 1), PieceFactory.BISHOP.createPiece(PieceColor.WHITE, this, 'f', 1));
+        mBoard.put(new Position('g', 1), PieceFactory.KNIGHT.createPiece(PieceColor.WHITE, this, 'g', 1));
+        mBoard.put(new Position('h', 1), PieceFactory.ROOK.createPiece(PieceColor.WHITE, this, 'h', 1));
 
-        mBoard.put(new Position('a', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'a', 8));
-        mBoard.put(new Position('b', 8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'b', 8));
-        mBoard.put(new Position('c', 8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'c', 8));
-        mBoard.put(new Position('d', 8), PieceFactory.QUEEN.createPiece(Color.BLACK, this, 'd', 8));
-        mBoard.put(new Position('e', 8), PieceFactory.KING.createPiece(Color.BLACK, this, 'e', 8));
-        mBoard.put(new Position('f', 8), PieceFactory.BISHOP.createPiece(Color.BLACK, this, 'f', 8));
-        mBoard.put(new Position('g', 8), PieceFactory.KNIGHT.createPiece(Color.BLACK, this, 'g', 8));
-        mBoard.put(new Position('h', 8), PieceFactory.ROOK.createPiece(Color.BLACK, this, 'h', 8));
+        mBoard.put(new Position('a', 8), PieceFactory.ROOK.createPiece(PieceColor.BLACK, this, 'a', 8));
+        mBoard.put(new Position('b', 8), PieceFactory.KNIGHT.createPiece(PieceColor.BLACK, this, 'b', 8));
+        mBoard.put(new Position('c', 8), PieceFactory.BISHOP.createPiece(PieceColor.BLACK, this, 'c', 8));
+        mBoard.put(new Position('d', 8), PieceFactory.QUEEN.createPiece(PieceColor.BLACK, this, 'd', 8));
+        mBoard.put(new Position('e', 8), PieceFactory.KING.createPiece(PieceColor.BLACK, this, 'e', 8));
+        mBoard.put(new Position('f', 8), PieceFactory.BISHOP.createPiece(PieceColor.BLACK, this, 'f', 8));
+        mBoard.put(new Position('g', 8), PieceFactory.KNIGHT.createPiece(PieceColor.BLACK, this, 'g', 8));
+        mBoard.put(new Position('h', 8), PieceFactory.ROOK.createPiece(PieceColor.BLACK, this, 'h', 8));
     }
 
     public void initializeBoard(String[] sJogo) {
@@ -85,37 +82,8 @@ public class Board implements Serializable {
         return mBoard.get(position);
     }
 
-    public boolean bIsCheckmate(Color cColor) {
-        Set<Position> sPositions = new HashSet<>();
-        Position kingPos = null;
-        Piece kingPiece = null;
+    public Collection<Piece> getAllPieces() { return mBoard.values();}
 
-        for (Piece piece : mBoard.values()) {
-            if (Character.toUpperCase(piece.getDefinition()) == 'K' && piece.getColor() == cColor) {
-                kingPos = piece.getPosition();
-                kingPiece = piece;
-            }
-            if (piece.getColor() != cColor) {
-                sPositions.addAll(piece.getPossibleMoves());
-            }
-        }
-
-        if (kingPos == null) {
-            return false;
-        }
-
-        if (!sPositions.contains(kingPos)) {
-            return false;
-        }
-
-        for (Position move : kingPiece.getPossibleMoves()) {
-            if (!sPositions.contains(move)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     public String printPieces() {
         StringBuilder sbStringBuilder = new StringBuilder();
