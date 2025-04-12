@@ -5,6 +5,8 @@ import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ChessGame implements Serializable {
     @Serial
@@ -182,5 +184,37 @@ public class ChessGame implements Serializable {
             return true;
         }
         return false;
+    }
+
+    public boolean bIsCheckmate(PieceColor cPieceColor) {
+        Set<Position> sPositions = new HashSet<>();
+        Position kingPos = null;
+        Piece kingPiece = null;
+
+        for (Piece piece : board.getAllPieces()) {
+            if (Character.toUpperCase(piece.getDefinition()) == 'K' && piece.getColor() == cPieceColor) {
+                kingPos = piece.getPosition();
+                kingPiece = piece;
+            }
+            if (piece.getColor() != cPieceColor) {
+                sPositions.addAll(piece.getPossibleMoves());
+            }
+        }
+
+        if (kingPos == null) {
+            return false;
+        }
+
+        if (!sPositions.contains(kingPos)) {
+            return false;
+        }
+
+        for (Position move : kingPiece.getPossibleMoves()) {
+            if (!sPositions.contains(move)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

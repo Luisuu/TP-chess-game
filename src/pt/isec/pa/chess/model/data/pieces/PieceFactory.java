@@ -3,62 +3,32 @@ package pt.isec.pa.chess.model.data.pieces;
 import pt.isec.pa.chess.model.data.Board;
 
 public enum PieceFactory {
-    KING {
-        @Override
-        public Piece createPiece(PieceColor PieceColor, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new King(PieceColor, board, column, row);
-        }
-    }, QUEEN {
-        @Override
-        public Piece createPiece(PieceColor PieceColor, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Queen(PieceColor, board, column, row);
-        }
-    }, BISHOP {
-        @Override
-        public Piece createPiece(PieceColor PieceColor, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Bishop(PieceColor, board, column, row);
-        }
-    }, KNIGHT {
-        @Override
-        public Piece createPiece(PieceColor PieceColor, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Knight(PieceColor, board, column, row);
-        }
-    }, ROOK {
-        @Override
-        public Piece createPiece(PieceColor PieceColor, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Rook(PieceColor, board, column, row);
-        }
-    }, PAWN {
-        @Override
-        public Piece createPiece(PieceColor PieceColor, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Pawn(PieceColor, board, column, row);
-        }
-    };
+    KING((color, board, column, row) -> new King(color, board, column, row)),
+    QUEEN((color, board, column, row) -> new Queen(color, board, column, row)),
+    BISHOP((color, board, column, row) -> new Bishop(color, board, column, row)),
+    KNIGHT((color, board, column, row) -> new Knight(color, board, column, row)),
+    ROOK((color, board, column, row) -> new Rook(color, board, column, row)),
+    PAWN((color, board, column, row) -> new Pawn(color, board, column, row));
 
-    public abstract Piece createPiece(PieceColor PieceColor, Board board, char column, int row);
+    private final PieceCreator creator;
+
+    PieceFactory(PieceCreator creator) {
+        this.creator = creator;
+    }
+
+    public Piece createPiece(PieceColor color, Board board, char column, int row) {
+        if (column < 'a' || column > 'h' || row < 1 || row > 8)
+            return null;
+        return creator.create(color, board, column, row);
+    }
+
+    @FunctionalInterface
+    private interface PieceCreator {
+        Piece create(PieceColor color, Board board, char column, int row);
+    }
 
 
     //segundo metodo
-
-
     public static Piece PieceFactoryFromText(String textRepresentation, Board board) {
         if (textRepresentation == null || textRepresentation.isEmpty()) {
             return null;

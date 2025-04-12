@@ -7,11 +7,11 @@ import pt.isec.pa.chess.ui.MainJFX;
 public class ChessMain {
     public static void main(String[] args) {
 
-        Application.launch(MainJFX.class,args);
+        //Application.launch(MainJFX.class,args);
 
-        System.out.println("PA Chess Game");
+        //System.out.println("PA Chess Game");
 
-        /*ChessGame game = new ChessGame();
+        ChessGame game = new ChessGame();
         game.start();
 
         System.out.println(game.printPieces());

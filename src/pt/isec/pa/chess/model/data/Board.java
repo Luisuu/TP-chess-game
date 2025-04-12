@@ -7,10 +7,7 @@ import pt.isec.pa.chess.model.data.pieces.Position;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Board implements Serializable {
     @Serial
@@ -85,37 +82,8 @@ public class Board implements Serializable {
         return mBoard.get(position);
     }
 
-    public boolean bIsCheckmate(PieceColor cPieceColor) {
-        Set<Position> sPositions = new HashSet<>();
-        Position kingPos = null;
-        Piece kingPiece = null;
+    public Collection<Piece> getAllPieces() { return mBoard.values();}
 
-        for (Piece piece : mBoard.values()) {
-            if (Character.toUpperCase(piece.getDefinition()) == 'K' && piece.getColor() == cPieceColor) {
-                kingPos = piece.getPosition();
-                kingPiece = piece;
-            }
-            if (piece.getColor() != cPieceColor) {
-                sPositions.addAll(piece.getPossibleMoves());
-            }
-        }
-
-        if (kingPos == null) {
-            return false;
-        }
-
-        if (!sPositions.contains(kingPos)) {
-            return false;
-        }
-
-        for (Position move : kingPiece.getPossibleMoves()) {
-            if (!sPositions.contains(move)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     public String printPieces() {
         StringBuilder sbStringBuilder = new StringBuilder();
