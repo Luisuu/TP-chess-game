@@ -91,7 +91,7 @@ public class RootPane extends BorderPane {
               fileChooser.setTitle("Open Game");
               fileChooser.setInitialDirectory(new File("."));
               fileChooser.getExtensionFilters().addAll(
-                     new FileChooser.ExtensionFilter("PA Files (*.paf)", "*.paf"),
+                     new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"),
                      new FileChooser.ExtensionFilter("All", "*.*")
               );
               File hFile = fileChooser.showOpenDialog(this.getScene().getWindow());
@@ -106,7 +106,7 @@ public class RootPane extends BorderPane {
             fileChooser.setTitle("Save Game");
             fileChooser.setInitialDirectory(new File("."));
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("PA Files (*.paf)", "*.paf"),
+                    new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"),
                     new FileChooser.ExtensionFilter("All", "*.*")
             );
             File hFile = fileChooser.showSaveDialog(this.getScene().getWindow());
