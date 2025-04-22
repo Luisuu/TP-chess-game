@@ -123,11 +123,7 @@ public class ChessGameManager {
         }
     }
 
-    public void hello(){
-        System.out.println("Hello");
-    }
-
-    public int return1(){
-        return 1;
+    public void restart(){
+        cgGame.resetGame();
     }
 }

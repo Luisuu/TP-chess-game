@@ -94,6 +94,11 @@ public class ChessGame implements Serializable {
         return false;
     }
 
+    public void resetGame(){
+        board.clearBoard();
+        board.initializeBoard();
+    }
+
     public boolean bIsCheckmate(PieceColor cPieceColor) {
         Set<Position> sPositions = new HashSet<>();
         Position kingPos = null;
