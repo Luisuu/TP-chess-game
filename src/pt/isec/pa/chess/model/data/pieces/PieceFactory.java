@@ -3,62 +3,32 @@ package pt.isec.pa.chess.model.data.pieces;
 import pt.isec.pa.chess.model.data.Board;
 
 public enum PieceFactory {
-    KING {
-        @Override
-        public Piece createPiece(Color color, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new King(color, board, column, row);
-        }
-    }, QUEEN {
-        @Override
-        public Piece createPiece(Color color, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Queen(color, board, column, row);
-        }
-    }, BISHOP {
-        @Override
-        public Piece createPiece(Color color, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Bishop(color, board, column, row);
-        }
-    }, KNIGHT {
-        @Override
-        public Piece createPiece(Color color, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Knight(color, board, column, row);
-        }
-    }, ROOK {
-        @Override
-        public Piece createPiece(Color color, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Rook(color, board, column, row);
-        }
-    }, PAWN {
-        @Override
-        public Piece createPiece(Color color, Board board, char column, int row) {
-            if (column < 'a' || column > 'h' || row < 1 || row > 8) {
-                return null;
-            }
-            return new Pawn(color, board, column, row);
-        }
-    };
+    KING((color, board, column, row) -> new King(color, board, column, row)),
+    QUEEN((color, board, column, row) -> new Queen(color, board, column, row)),
+    BISHOP((color, board, column, row) -> new Bishop(color, board, column, row)),
+    KNIGHT((color, board, column, row) -> new Knight(color, board, column, row)),
+    ROOK((color, board, column, row) -> new Rook(color, board, column, row)),
+    PAWN((color, board, column, row) -> new Pawn(color, board, column, row));
 
-    public abstract Piece createPiece(Color color, Board board, char column, int row);
+    private final PieceCreator creator;
+
+    PieceFactory(PieceCreator creator) {
+        this.creator = creator;
+    }
+
+    public Piece createPiece(PieceColor color, Board board, char column, int row) {
+        if (column < 'a' || column > 'h' || row < 1 || row > 8)
+            return null;
+        return creator.create(color, board, column, row);
+    }
+
+    @FunctionalInterface
+    private interface PieceCreator {
+        Piece create(PieceColor color, Board board, char column, int row);
+    }
 
 
     //segundo metodo
-
-
     public static Piece PieceFactoryFromText(String textRepresentation, Board board) {
         if (textRepresentation == null || textRepresentation.isEmpty()) {
             return null;
@@ -83,7 +53,7 @@ public enum PieceFactory {
         }
 
         //ve cor peça
-        Color color = Character.isUpperCase(pieceType) ? Color.WHITE : Color.BLACK;
+        PieceColor ePieceColor = Character.isUpperCase(pieceType) ? PieceColor.WHITE : PieceColor.BLACK;
 
         char normalizedType = Character.toUpperCase(pieceType);
 
@@ -92,28 +62,28 @@ public enum PieceFactory {
         // Cria peça tendo em conta o tipo
         switch (normalizedType) {
             case 'K':
-                piece = KING.createPiece(color, board, column, row);
+                piece = KING.createPiece(ePieceColor, board, column, row);
                 if (piece != null && !hasNotMoved) {
                     ((King) piece).setHasMoved(true); //hasmoved=false por default
                 }
                 break;
             case 'Q':
-                piece = QUEEN.createPiece(color, board, column, row);
+                piece = QUEEN.createPiece(ePieceColor, board, column, row);
                 break;
             case 'R':
-                piece = ROOK.createPiece(color, board, column, row);
+                piece = ROOK.createPiece(ePieceColor, board, column, row);
                 if (piece != null && !hasNotMoved) {
                     ((Rook) piece).setHasMoved(true); //hasmoved=false por default
                 }
                 break;
             case 'B':
-                piece = BISHOP.createPiece(color, board, column, row);
+                piece = BISHOP.createPiece(ePieceColor, board, column, row);
                 break;
             case 'N':
-                piece = KNIGHT.createPiece(color, board, column, row);
+                piece = KNIGHT.createPiece(ePieceColor, board, column, row);
                 break;
             case 'P':
-                piece = PAWN.createPiece(color, board, column, row);
+                piece = PAWN.createPiece(ePieceColor, board, column, row);
                 break;
             default:
                 return null;

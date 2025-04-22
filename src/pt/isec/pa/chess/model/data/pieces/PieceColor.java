@@ -1,5 +1,5 @@
 package pt.isec.pa.chess.model.data.pieces;
 
-public enum Color {
+public enum PieceColor {
     WHITE, BLACK;
 }
