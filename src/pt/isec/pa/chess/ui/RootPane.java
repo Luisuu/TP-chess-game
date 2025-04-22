@@ -96,7 +96,7 @@ public class RootPane extends BorderPane {
               File hFile = fileChooser.showOpenDialog(this.getScene().getWindow());
               if (hFile != null) {
                   System.out.println(hFile.getAbsolutePath());
-                  data.open(hFile);
+                  data.open(hFile.getName());
               }
         });
 
@@ -111,7 +111,7 @@ public class RootPane extends BorderPane {
             File hFile = fileChooser.showSaveDialog(this.getScene().getWindow());
             if (hFile != null) {
                  System.out.println(hFile.getAbsolutePath());
-                 data.save(hFile);
+                 data.save(hFile.getName());
             }
         });
 
@@ -127,7 +127,7 @@ public class RootPane extends BorderPane {
              File file = fileChooser.showOpenDialog(this.getScene().getWindow());
              if (file != null) {
                   System.out.println("Importing game from: " + file.getAbsolutePath());
-                  data.importa(file);
+                  data.importa(file.getName());
              }
         });
 
@@ -142,7 +142,7 @@ public class RootPane extends BorderPane {
              File file = fileChooser.showSaveDialog(this.getScene().getWindow());
              if (file != null) {
                 System.out.println("Exporting game to: " + file.getAbsolutePath());
-                 data.exporta(file);
+                 data.exporta(file.getName());
              }
         });
 
