@@ -126,4 +126,11 @@ public class ChessGameManager {
     public void restart(){
         cgGame.resetGame();
     }
+
+    public String debug(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(cgGame.cCurrentPlayer).append(",");
+        sb.append(cgGame.printPieces());
+        return sb.toString();
+    }
 }

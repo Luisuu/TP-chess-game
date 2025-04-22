@@ -16,6 +16,12 @@ public class ChessGame implements Serializable {
     PieceColor cCurrentPlayer = PieceColor.WHITE;
     PieceColor cWinner = null;
 
+    public ChessGame() {
+        board = new Board();
+        board.clearBoard();
+        board.initializeBoard();
+    }
+
     public String debug() {
         //
         StringBuilder sb = new StringBuilder();
@@ -30,7 +36,6 @@ public class ChessGame implements Serializable {
     }
 
     public void start() {
-        board = new Board();
         board.clearBoard();
         board.initializeBoard();
     }
@@ -95,7 +100,7 @@ public class ChessGame implements Serializable {
     }
 
     public void resetGame(){
-        board.clearBoard();
+        Board board = new Board();
         board.initializeBoard();
     }
 

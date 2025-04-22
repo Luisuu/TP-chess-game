@@ -19,7 +19,7 @@ public class RootPane extends BorderPane {
 
     //componentes menu
     Menu mnGame, mnMode;
-    MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit;
+    MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit, mnDebug;
     RadioMenuItem normalMode, learningMode;
     CheckMenuItem showMoves;
     MenuItem undoMove, redoMove;
@@ -54,7 +54,8 @@ public class RootPane extends BorderPane {
          mnImport = new MenuItem("_Import");
          mnExport = new MenuItem("_Export");
          mnExit = new MenuItem("E_xit");
-         mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit);
+         mnDebug = new MenuItem("_DEBUG");
+         mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit, mnDebug);
 
          // Menu "Mode"
          mnMode = new Menu("Mode");
@@ -148,6 +149,10 @@ public class RootPane extends BorderPane {
 
         mnExit.setOnAction(actionEvent -> {
              Platform.exit();
+        });
+
+        mnDebug.setOnAction(actionEvent -> {
+            System.out.println(data.debug());
         });
 
         //muadanças mode
