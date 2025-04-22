@@ -24,6 +24,7 @@ public class Board implements Serializable {
     }
 
     public void initializeBoard() {
+        clearBoard();
         for (char cCol = 'a'; cCol <= 'h'; cCol++) {
             mBoard.put(new Position(cCol, 2), PieceFactory.PAWN.createPiece(PieceColor.WHITE, this, cCol, 2));
             mBoard.put(new Position(cCol, 7), PieceFactory.PAWN.createPiece(PieceColor.BLACK, this, cCol, 7));
@@ -49,6 +50,7 @@ public class Board implements Serializable {
     }
 
     public void initializeBoard(String[] sJogo) {
+        clearBoard();
         for (String p : sJogo) {
             Piece piece = PieceFactory.PieceFactoryFromText(p, this);
             if (piece != null) {

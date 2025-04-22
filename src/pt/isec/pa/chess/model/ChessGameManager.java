@@ -77,6 +77,8 @@ public class ChessGameManager {
             for (Piece piece : cgGame.board.getPieces()) {
                 piece.setBoard(cgGame.board);
             }
+
+            System.out.println("dddddddddddddddddddd");
         } catch (IOException e) {
             e.printStackTrace();
         }
