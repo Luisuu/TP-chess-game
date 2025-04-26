@@ -16,16 +16,6 @@ public class ChessGame implements Serializable {
     PieceColor cCurrentPlayer = PieceColor.WHITE;
     PieceColor cWinner = null;
 
-    //listener pawnpromotion
-
-    public interface PromotionListener {
-        void onPromote(Position position);
-    }
-    private transient PromotionListener promotionListener;
-    public void setPromotionListener(PromotionListener listener) {
-        this.promotionListener = listener;
-    }
-
 
     public ChessGame() {
         board = new Board();

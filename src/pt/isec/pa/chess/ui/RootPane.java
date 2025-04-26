@@ -155,7 +155,6 @@ public class RootPane extends BorderPane {
             System.out.println(data.debug());
         });
 
-
         //mudanças modos de jogo
         normalMode.setOnAction(e -> {
              if (normalMode.isSelected()) {
@@ -165,6 +164,12 @@ public class RootPane extends BorderPane {
                  // data.setNormalMode();
                  System.out.println("Normal mode activated");
              }
+        });
+
+        data.setPromotionListener(position -> {
+            char chosenPiece = showPromotionDialog();
+            data.promotePawn(position, chosenPiece);
+            update();
         });
 
         learningMode.setOnAction(e -> {
@@ -183,11 +188,6 @@ public class RootPane extends BorderPane {
             System.out.println("Show possible moves: " + show);
         });
 
-        data.setPromotionListener(position -> {
-            char chosenPiece = showPromotionDialog();
-            data.promotePawn(position, chosenPiece);
-            update();
-        });
     }
 
     private char showPromotionDialog() {
