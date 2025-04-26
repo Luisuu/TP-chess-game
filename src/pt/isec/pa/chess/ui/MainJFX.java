@@ -9,12 +9,14 @@ import pt.isec.pa.chess.model.ChessGameManager;
 public class MainJFX extends Application {
     ChessGameManager chessGameManager;
 
-    public MainJFX() { chessGameManager = new ChessGameManager();}
+    public MainJFX() {
+        chessGameManager = new ChessGameManager();
+    }
 
     @Override
-    public void start(Stage stage) throws Exception{
+    public void start(Stage stage) throws Exception {
         RootPane root = new RootPane(chessGameManager);
-        Scene scene = new Scene(root, 600, 400, Color.ORANGE);
+        Scene scene = new Scene(root, 600, 600, Color.ORANGE);
         stage.setScene(scene);
         stage.setTitle("PA Chess Game");
         stage.setResizable(false);

@@ -65,33 +65,6 @@ public class ChessGame implements Serializable {
         return cCurrentPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
     }
 
-    public void movePiece(Position position, Position newPosition) {
-        if (isGameOver()) return;
-        Piece pMover = board.getPiece(position);
-        if (pMover != null && pMover.getPossibleMoves().contains(newPosition) && pMover.getColor() == getcCurrentPlayer()) {
-            pMover.setPosition(newPosition);
-
-            //verificacao pawnpromotion
-            if (pMover instanceof Pawn pawn && pawn.isPromotionPosition()) {
-                if (promotionListener != null) {
-                    promotionListener.onPromote(newPosition);
-                }
-            }
-
-
-            if (pMover instanceof Rook) {
-                ((Rook) pMover).setHasMoved(true);
-            } else if (pMover instanceof King) {
-                ((King) pMover).setHasMoved(true);
-            } else if (pMover instanceof Pawn) {
-                ((Pawn) pMover).setHasMoved(true);
-            }
-
-            cCurrentPlayer = getcOpponent();
-            isGameOver();
-        }
-    }
-
     public PieceColor getWinner() {
         return cWinner;
     }
