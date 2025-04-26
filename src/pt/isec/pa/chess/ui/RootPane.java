@@ -155,7 +155,7 @@ public class RootPane extends BorderPane {
             System.out.println(data.debug());
         });
 
-        //muadanças mode
+        //mudanças modos de jogo
         normalMode.setOnAction(e -> {
              if (normalMode.isSelected()) {
                  showMoves.setDisable(true);
@@ -164,6 +164,12 @@ public class RootPane extends BorderPane {
                  // data.setNormalMode();
                  System.out.println("Normal mode activated");
              }
+        });
+
+        data.setPromotionListener(position -> {
+            char chosenPiece = showPromotionDialog();
+            data.promotePawn(position, chosenPiece);
+            update();
         });
 
         learningMode.setOnAction(e -> {
@@ -181,7 +187,18 @@ public class RootPane extends BorderPane {
             // data.setShowPossibleMoves(show);
             System.out.println("Show possible moves: " + show);
         });
+
     }
+
+    private char showPromotionDialog() {
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Queen", "Queen", "Rook", "Bishop", "Knight");
+        dialog.setTitle("Promoção do Peão");
+        dialog.setHeaderText("Escolha uma peça para promoção:");
+        dialog.setContentText("Peça:");
+        String result = dialog.showAndWait().orElse("Queen");
+        return result.charAt(0);
+    }
+
 
     private void update() {
         //inicialmente desativado os learning modes

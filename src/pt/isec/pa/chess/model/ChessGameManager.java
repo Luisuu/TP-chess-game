@@ -1,15 +1,23 @@
 package pt.isec.pa.chess.model;
 
 import pt.isec.pa.chess.model.data.Board;
-import pt.isec.pa.chess.model.data.pieces.Piece;
-import pt.isec.pa.chess.model.data.pieces.PieceColor;
-
+import pt.isec.pa.chess.model.data.pieces.*;
 import java.io.*;
 import java.util.Arrays;
 
 public class ChessGameManager {
     ChessGame cgGame;
     String sPlayer1, sPlayer2;
+
+    //listener pawnpromotion
+    public interface PromotionListener {
+        void onPromote(Position position);
+    }
+    private transient PromotionListener promotionListener;
+    public void setPromotionListener(PromotionListener listener) {
+        this.promotionListener = listener;
+    }
+
 
     public ChessGame getChessGame() {
         return cgGame;
@@ -132,5 +140,38 @@ public class ChessGameManager {
         sb.append(cgGame.cCurrentPlayer).append(",");
         sb.append(cgGame.printPieces());
         return sb.toString();
+    }
+
+    public void movePiece(Position oldPos, Position newPos){
+        if(cgGame.isGameOver()) return;
+
+        Piece pMover = cgGame.board.getPiece(oldPos);
+        if (pMover != null && pMover.getPossibleMoves().contains(newPos) && pMover.getColor() == cgGame.getcCurrentPlayer()) {
+            pMover.setPosition(newPos);
+
+
+            //verificacao pawnpromotion
+            if (pMover instanceof Pawn pawn && pawn.isPromotionPosition()) {
+                if (promotionListener != null) {
+                    promotionListener.onPromote(newPos); // Notifica a UI
+                }
+            }
+
+            if (pMover instanceof Rook) {
+                ((Rook) pMover).setHasMoved(true);
+            } else if (pMover instanceof King) {
+                ((King) pMover).setHasMoved(true);
+            } else if (pMover instanceof Pawn) {
+                ((Pawn) pMover).setHasMoved(true);
+            }
+
+            cgGame.cCurrentPlayer = cgGame.getcOpponent();
+            cgGame.isGameOver();
+        }
+    }
+
+
+    public void promotePawn(Position position, char pieceType) {
+        cgGame.promotePawn(position, pieceType);
     }
 }

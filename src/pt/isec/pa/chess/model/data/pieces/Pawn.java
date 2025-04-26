@@ -1,6 +1,9 @@
 package pt.isec.pa.chess.model.data.pieces;
 
 import pt.isec.pa.chess.model.data.Board;
+import pt.isec.pa.chess.model.data.pieces.Piece;
+import pt.isec.pa.chess.model.data.pieces.PieceColor;
+import pt.isec.pa.chess.model.data.pieces.Position;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -61,5 +64,10 @@ public class Pawn extends Piece {
 
     public void setHasMoved(boolean hasMoved) {
         this.bHasMoved = hasMoved;
+    }
+
+    public boolean isPromotionPosition() {
+        return (PieceColor == PieceColor.WHITE && pPos.getRow() == 8) ||
+                (PieceColor == PieceColor.BLACK && pPos.getRow() == 1);
     }
 }
