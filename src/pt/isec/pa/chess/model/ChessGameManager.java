@@ -3,6 +3,7 @@ package pt.isec.pa.chess.model;
 import pt.isec.pa.chess.model.data.Board;
 import pt.isec.pa.chess.model.data.pieces.Piece;
 import pt.isec.pa.chess.model.data.pieces.PieceColor;
+import pt.isec.pa.chess.model.data.pieces.Position;
 
 import java.io.*;
 import java.util.Arrays;
@@ -95,7 +96,7 @@ public class ChessGameManager {
     }
 
     public void open(String sFileName) {
-        //FALTA GENERALIZAR O PATH
+
         ChessGame loaded = ChessGameSerialization.load(sFileName);
 
         if (loaded != null) {
@@ -132,5 +133,13 @@ public class ChessGameManager {
         sb.append(cgGame.cCurrentPlayer).append(",");
         sb.append(cgGame.printPieces());
         return sb.toString();
+    }
+
+    public void setPromotionListener(ChessGame.PromotionListener listener) {
+        cgGame.setPromotionListener(listener);
+    }
+
+    public void promotePawn(Position position, char pieceType) {
+        cgGame.promotePawn(position, pieceType);
     }
 }

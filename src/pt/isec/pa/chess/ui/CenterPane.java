@@ -28,7 +28,7 @@ public class CenterPane extends HBox {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(10);
 
-        Label infoLabel = new Label("Chess Game.\nStart a new game from the Game menu.");
+        Label infoLabel = new Label("Chess Game.");
         infoLabel.setStyle("-fx-font-size: 16px;");
 
         this.getChildren().add(infoLabel);

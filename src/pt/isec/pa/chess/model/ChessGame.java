@@ -16,6 +16,17 @@ public class ChessGame implements Serializable {
     PieceColor cCurrentPlayer = PieceColor.WHITE;
     PieceColor cWinner = null;
 
+    //listener pawnpromotion
+
+    public interface PromotionListener {
+        void onPromote(Position position);
+    }
+    private transient PromotionListener promotionListener;
+    public void setPromotionListener(PromotionListener listener) {
+        this.promotionListener = listener;
+    }
+
+
     public ChessGame() {
         board = new Board();
         board.clearBoard();
@@ -30,6 +41,8 @@ public class ChessGame implements Serializable {
         sb.append("\n");
         sb.append(board.debug());
         sb.append("\n");
+
+
         sb.append("Winner: " + cWinner);
         sb.append("\n");
         return sb.toString();
@@ -57,6 +70,14 @@ public class ChessGame implements Serializable {
         Piece pMover = board.getPiece(position);
         if (pMover != null && pMover.getPossibleMoves().contains(newPosition) && pMover.getColor() == getcCurrentPlayer()) {
             pMover.setPosition(newPosition);
+
+            //verificacao pawnpromotion
+            if (pMover instanceof Pawn pawn && pawn.isPromotionPosition()) {
+                if (promotionListener != null) {
+                    promotionListener.onPromote(newPosition);
+                }
+            }
+
 
             if (pMover instanceof Rook) {
                 ((Rook) pMover).setHasMoved(true);
@@ -135,4 +156,25 @@ public class ChessGame implements Serializable {
         }
         return true;
     }
+
+    //PAWN PROMOTION
+    public void promotePawn(Position position, char pieceType) {
+        Piece pawn = board.getPiece(position);
+        if (pawn == null || !(pawn instanceof Pawn)) return;
+
+        PieceColor color = pawn.getColor();
+        board.removePiece(position);
+
+        char normalizedType = Character.toUpperCase(pieceType);
+        Piece newPiece = switch (normalizedType) {
+            case 'Q' -> PieceFactory.QUEEN.createPiece(color, board, position.getColumn(), position.getRow());
+            case 'R' -> PieceFactory.ROOK.createPiece(color, board, position.getColumn(), position.getRow());
+            case 'B' -> PieceFactory.BISHOP.createPiece(color, board, position.getColumn(), position.getRow());
+            case 'N' -> PieceFactory.KNIGHT.createPiece(color, board, position.getColumn(), position.getRow());
+            default -> throw new IllegalArgumentException("Peça inválida: " + pieceType);
+        };
+
+        board.addPiece(position, newPiece);
+    }
+
 }
