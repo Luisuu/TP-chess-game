@@ -1,8 +1,7 @@
 package pt.isec.pa.chess.model;
 
 import pt.isec.pa.chess.model.data.Board;
-import pt.isec.pa.chess.model.data.pieces.Piece;
-import pt.isec.pa.chess.model.data.pieces.PieceColor;
+import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
 import java.util.Arrays;
@@ -132,5 +131,25 @@ public class ChessGameManager {
         sb.append(cgGame.cCurrentPlayer).append(",");
         sb.append(cgGame.printPieces());
         return sb.toString();
+    }
+
+    public void movePiece(Position oldPos, Position newPos){
+        if(cgGame.isGameOver()) return;
+
+        Piece pMover = cgGame.board.getPiece(oldPos);
+        if (pMover != null && pMover.getPossibleMoves().contains(newPos) && pMover.getColor() == cgGame.getcCurrentPlayer()) {
+            pMover.setPosition(newPos);
+
+            if (pMover instanceof Rook) {
+                ((Rook) pMover).setHasMoved(true);
+            } else if (pMover instanceof King) {
+                ((King) pMover).setHasMoved(true);
+            } else if (pMover instanceof Pawn) {
+                ((Pawn) pMover).setHasMoved(true);
+            }
+
+            cgGame.cCurrentPlayer = cgGame.getcOpponent();
+            cgGame.isGameOver();
+        }
     }
 }
