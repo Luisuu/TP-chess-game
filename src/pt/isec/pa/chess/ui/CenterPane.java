@@ -50,7 +50,7 @@ public class CenterPane extends BorderPane {
     }
 
     private void createBoardGrid() {
-        boardGrid.setGridLinesVisible(true);
+        boardGrid.setGridLinesVisible(false);
         boardGrid.setAlignment(Pos.CENTER);
 
         for (int i = 0; i < NUM_COLS + 2; i++) {
@@ -67,7 +67,24 @@ public class CenterPane extends BorderPane {
 
         for (int col = 0; col < NUM_COLS; col++) {
             Label labelTop = makeLabel(String.valueOf((char) ('a' + col)));
+            labelTop.setStyle("""
+                -fx-font-size: 14px;
+                -fx-font-weight: bold;
+                -fx-text-fill: brown;
+                -fx-background-color: #f0f0f0;
+                -fx-border-color: transparent transparent brown transparent;
+                -fx-border-width: 0 0 1 0;
+            """);
+
             Label labelBottom = makeLabel(String.valueOf((char) ('a' + col)));
+            labelBottom.setStyle("""
+                -fx-font-size: 14px;
+                -fx-font-weight: bold;
+                -fx-text-fill: brown;
+                -fx-background-color: #f0f0f0;
+                -fx-border-color: brown transparent transparent transparent;
+                -fx-border-width: 1 0 0 0;
+            """);
 
             boardGrid.add(labelTop, col + 1, 0);
             boardGrid.add(labelBottom, col + 1, NUM_ROWS + 1);
@@ -75,8 +92,26 @@ public class CenterPane extends BorderPane {
 
         for (int row = 0; row < NUM_ROWS; row++) {
             String text = String.valueOf(NUM_ROWS - row);
+
             Label labelLeft = makeLabel(text);
+            labelLeft.setStyle("""
+                -fx-font-size: 14px;
+                -fx-font-weight: bold;
+                -fx-text-fill: brown;
+                -fx-background-color: #f0f0f0;
+                -fx-border-color: transparent brown transparent transparent;
+                -fx-border-width: 0 1 0 0;
+            """);
+
             Label labelRight = makeLabel(text);
+            labelRight.setStyle("""
+                -fx-font-size: 14px;
+                -fx-font-weight: bold;
+                -fx-text-fill: brown;
+                -fx-background-color: #f0f0f0;
+                -fx-border-color: transparent transparent transparent brown;
+                -fx-border-width: 0 0 0 1;
+            """);
 
             boardGrid.add(labelLeft, 0, row + 1);
             boardGrid.add(labelRight, NUM_COLS + 1, row + 1);
@@ -85,9 +120,8 @@ public class CenterPane extends BorderPane {
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 StackPane cell = new StackPane();
-                String color = (row + col) % 2 == 0 ? "#ffffff" : "#888888";
+                String color = (row + col) % 2 == 0 ? "#fceee9" : "#944b45";
                 cell.setStyle("-fx-background-color: " + color + ";");
-                cell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 boardGrid.add(cell, col + 1, row + 1);
             }
         }
@@ -97,7 +131,6 @@ public class CenterPane extends BorderPane {
         Label label = new Label(text);
         label.setAlignment(Pos.CENTER);
         label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        label.setStyle("-fx-font-size: 14px;");
         return label;
     }
 }
