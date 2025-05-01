@@ -1,137 +1,103 @@
 package pt.isec.pa.chess.ui;
 
-import javafx.beans.binding.Bindings;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import pt.isec.pa.chess.model.ChessGameManager;
 
 public class CenterPane extends BorderPane {
-    ChessGameManager data;
-    Label topLabel;
-    GridPane board;
-    HBox top, bottom;
-    VBox left, right;
-    StackPane centerPane;
+    private static final int NUM_ROWS = 8;
+    private static final int NUM_COLS = 8;
 
-    public static final int NUM_ROWS = 8;
-    public static final int NUM_COLS = 8;
+    private final GridPane boardGrid = new GridPane();
+    private final ChessGameManager data;
+    private final Label topLabel = new Label("Player: White!");
 
     public CenterPane(ChessGameManager data) {
         this.data = data;
-        createViews();
-        registerHandlers();
-        update();
+
+        createTopLabel();
+        createBoardGrid();
+
+        StackPane centerStack = new StackPane(boardGrid) {
+            @Override
+            protected void layoutChildren() {
+                double size = Math.min(getWidth(), getHeight());
+                double x = (getWidth() - size) / 2;
+                double y = (getHeight() - size) / 2;
+                boardGrid.resizeRelocate(x, y, size, size);
+            }
+        };
+
+        centerStack.setStyle("-fx-background-color: #f0f0f0;");
+
+        setTop(topLabel);
+        setCenter(centerStack);
+
+        centerStack.widthProperty().addListener((obs, oldVal, newVal) -> resize(centerStack));
+        centerStack.heightProperty().addListener((obs, oldVal, newVal) -> resize(centerStack));
     }
 
-    private void createViews() {
-        top = new HBox();
-        top.setPrefHeight(50);
-        top.setAlignment(Pos.CENTER);
-        top.setStyle("-fx-background-color: #80c0ff;");
-
-        topLabel = new Label("Player: White !");
+    private void createTopLabel() {
         topLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        top.getChildren().add(topLabel);
-
-
-        bottom = new HBox();
-        bottom.setPrefHeight(50);
-        bottom.setAlignment(Pos.CENTER_LEFT);
-        bottom.setSpacing(5);
-        bottom.setStyle("-fx-background-color: #80c0ff;");
-
-
-        left = new VBox();
-        left.setPrefWidth(50);
-        left.setAlignment(Pos.CENTER);
-        left.setSpacing(5);
-        left.setStyle("-fx-background-color: #80ffc0;");
-
-
-        right = new VBox();
-        right.setPrefWidth(50);
-        right.setAlignment(Pos.CENTER);
-        right.setSpacing(5);
-        right.setStyle("-fx-background-color: #80ffc0;");
-
-
-        centerPane = new StackPane();
-        board = new GridPane();
-        board.setGridLinesVisible(true);
-        centerPane.getChildren().add(board);
-
-        setTop(top);
-        setBottom(bottom);
-        setLeft(left);
-        setRight(right);
-        setCenter(centerPane);
-
-        createBoard();
-        createLabels();
+        BorderPane.setAlignment(topLabel, Pos.CENTER);
+        setTop(topLabel);
     }
 
-    private void createBoard() {
+    private void resize(StackPane centerStack) {
+        double size = Math.min(centerStack.getWidth(), centerStack.getHeight());
+        boardGrid.setPrefSize(size, size);
+    }
+
+    private void createBoardGrid() {
+        boardGrid.setGridLinesVisible(true);
+        boardGrid.setAlignment(Pos.CENTER);
+
+        for (int i = 0; i < NUM_COLS + 2; i++) {
+            ColumnConstraints col = new ColumnConstraints();
+            col.setPercentWidth(100.0 / (NUM_COLS + 2));
+            boardGrid.getColumnConstraints().add(col);
+        }
+
+        for (int i = 0; i < NUM_ROWS + 2; i++) {
+            RowConstraints row = new RowConstraints();
+            row.setPercentHeight(100.0 / (NUM_ROWS + 2));
+            boardGrid.getRowConstraints().add(row);
+        }
+
+        for (int col = 0; col < NUM_COLS; col++) {
+            Label labelTop = makeLabel(String.valueOf((char) ('a' + col)));
+            Label labelBottom = makeLabel(String.valueOf((char) ('a' + col)));
+
+            boardGrid.add(labelTop, col + 1, 0);
+            boardGrid.add(labelBottom, col + 1, NUM_ROWS + 1);
+        }
+
+        for (int row = 0; row < NUM_ROWS; row++) {
+            String text = String.valueOf(NUM_ROWS - row);
+            Label labelLeft = makeLabel(text);
+            Label labelRight = makeLabel(text);
+
+            boardGrid.add(labelLeft, 0, row + 1);
+            boardGrid.add(labelRight, NUM_COLS + 1, row + 1);
+        }
+
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 StackPane cell = new StackPane();
-                String color = (row + col) % 2 == 0 ? "white" : "gray";
+                String color = (row + col) % 2 == 0 ? "#ffffff" : "#888888";
                 cell.setStyle("-fx-background-color: " + color + ";");
-
-                cell.prefWidthProperty().bind(centerPane.widthProperty().divide(NUM_COLS));
-                cell.prefHeightProperty().bind(centerPane.heightProperty().divide(NUM_ROWS));
-
-                board.add(cell, col, row);
+                cell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                boardGrid.add(cell, col + 1, row + 1);
             }
         }
     }
 
-    private void createLabels() {
-        for (char c = 'a'; c <= 'h'; c++) {
-            Label label = new Label(String.valueOf(c));
-            label.setStyle("-fx-font-size: 14px;");
-            label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-            label.setAlignment(Pos.CENTER);
-
-            label.prefWidthProperty().bind(centerPane.widthProperty().divide(NUM_COLS));
-            label.prefHeightProperty().bind(Bindings.createDoubleBinding(() -> 30.0, centerPane.heightProperty()));
-
-            bottom.getChildren().add(label);
-        }
-
-
-        for (int i = 8; i >= 1; i--) {
-            Label label = new Label(String.valueOf(i));
-            label.setStyle("-fx-font-size: 14px;");
-            label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-            label.setAlignment(Pos.CENTER);
-
-            label.prefHeightProperty().bind(centerPane.heightProperty().divide(NUM_ROWS));
-            label.prefWidthProperty().bind(Bindings.createDoubleBinding(() -> 30.0, centerPane.widthProperty()));
-
-            left.getChildren().add(label);
-        }
-
-        for (int i = 8; i >= 1; i--) {
-            Label label = new Label(String.valueOf(i));
-            label.setStyle("-fx-font-size: 14px;");
-            label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-            label.setAlignment(Pos.CENTER);
-
-            label.prefHeightProperty().bind(centerPane.heightProperty().divide(NUM_ROWS));
-            label.prefWidthProperty().bind(Bindings.createDoubleBinding(() -> 30.0, centerPane.widthProperty()));
-
-            right.getChildren().add(label);
-        }
-    }
-
-
-    private void registerHandlers() {
-    }
-
-    private void update() {
+    private Label makeLabel(String text) {
+        Label label = new Label(text);
+        label.setAlignment(Pos.CENTER);
+        label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        label.setStyle("-fx-font-size: 14px;");
+        return label;
     }
 }

@@ -30,17 +30,14 @@ public class AskName extends Stage {
     }
 
     private void createViews() {
-        // Player 1(White)
         Label lblPlayer1 = new Label("White Player:");
         tfPlayer1 = new TextField();
         tfPlayer1.setPrefWidth(200);
 
-        // Player 2(Black)
         Label lblPlayer2 = new Label("Black Player:");
         tfPlayer2 = new TextField();
         tfPlayer2.setPrefWidth(200);
 
-        // Cria grid
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -49,14 +46,12 @@ public class AskName extends Stage {
         grid.add(lblPlayer2, 0, 1);
         grid.add(tfPlayer2, 1, 1);
 
-        // Buttons
         btnConfirm = new Button("Start Game");
         btnCancel = new Button("Cancel");
 
         HBox btns = new HBox(10, btnCancel, btnConfirm);
         btns.setAlignment(Pos.CENTER_RIGHT);
 
-        // Main layout
         VBox root = new VBox(15, grid, btns);
         root.setPadding(new Insets(20));
 
@@ -86,6 +81,10 @@ public class AskName extends Stage {
             data.setPlayerName(2, player2Name);
             this.close();
         });
+
+        tfPlayer2.setOnAction(e -> btnConfirm.fire());
+
+        tfPlayer1.setOnAction(e -> tfPlayer2.requestFocus());
     }
 
     private void update() {

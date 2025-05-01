@@ -19,7 +19,7 @@ public class MainJFX extends Application {
         Scene scene = new Scene(root, 600, 600, Color.ORANGE);
         stage.setScene(scene);
         stage.setTitle("PA Chess Game");
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.show();
     }
 
