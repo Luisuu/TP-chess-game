@@ -119,10 +119,22 @@ public class CenterPane extends BorderPane {
 
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
+                int finalRow = row;
+                int finalCol = col;
+
                 StackPane cell = new StackPane();
-                String color = (row + col) % 2 == 0 ? "#fceee9" : "#944b45";
+                String color = (finalRow + finalCol) % 2 == 0 ? "#fceee9" : "#944b45";
                 cell.setStyle("-fx-background-color: " + color + ";");
-                boardGrid.add(cell, col + 1, row + 1);
+
+                //DEBUGGGG
+                cell.setOnMouseClicked(event -> {
+                    char columnLetter = (char) ('a' + finalCol);
+                    int chessRow = 8 - finalRow;
+                    System.out.println("Cell clicked: " + columnLetter + chessRow);
+                });
+
+                boardGrid.add(cell, finalCol + 1, finalRow + 1);
+
             }
         }
     }
