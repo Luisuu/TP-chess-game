@@ -2,6 +2,7 @@ package pt.isec.pa.chess.model;
 
 import pt.isec.pa.chess.model.data.Board;
 import pt.isec.pa.chess.model.data.pieces.*;
+
 import java.io.*;
 import java.util.Arrays;
 
@@ -13,9 +14,10 @@ public class ChessGameManager {
     public interface PromotionListener {
         void onPromote(Position position);
     }
+
     private transient PromotionListener promotionListener;
 
-    public ChessGameManager(){
+    public ChessGameManager() {
         cgGame = new ChessGame();
         System.out.println("ChessGameManager");
     }
@@ -28,14 +30,14 @@ public class ChessGameManager {
         return cgGame;
     }
 
-    public void setPlayerName(int player, String name){
-        if(player < 1 || player > 2){
+    public void setPlayerName(int player, String name) {
+        if (player < 1 || player > 2) {
             System.out.println("Invalid player number");
             return;
         }
-        if(player == 1){
+        if (player == 1) {
             sPlayer1 = name;
-        }else{
+        } else {
             sPlayer2 = name;
         }
     }
@@ -128,11 +130,11 @@ public class ChessGameManager {
         }
     }
 
-    public void restart(){
+    public void restart() {
         cgGame.resetGame();
     }
 
-    public String debug(){
+    public String debug() {
         StringBuilder sb = new StringBuilder();
         sb.append(cgGame.cCurrentPlayer).append(",");
         sb.append(cgGame.printPieces());
@@ -143,8 +145,8 @@ public class ChessGameManager {
         cgGame.board.removePiece(pos);
     }
 
-    public void movePiece(Position oldPos, Position newPos){
-        if(cgGame.isGameOver()) return;
+    public void movePiece(Position oldPos, Position newPos) {
+        if (cgGame.isGameOver()) return;
 
         Board board = cgGame.board;
         Piece pMover = cgGame.board.getPiece(oldPos);

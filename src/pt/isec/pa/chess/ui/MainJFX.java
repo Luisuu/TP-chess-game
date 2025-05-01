@@ -20,6 +20,7 @@ public class MainJFX extends Application {
         stage.setScene(scene);
         stage.setTitle("PA Chess Game");
         stage.setResizable(true);
+        stage.setFullScreen(true);
         stage.show();
     }
 

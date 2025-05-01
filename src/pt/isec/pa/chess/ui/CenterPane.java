@@ -124,8 +124,7 @@ public class CenterPane extends BorderPane {
 
         for (String token : tokens) {
             token = token.trim();
-            if (token.length() < 3)
-                continue;
+            if (token.length() < 3) continue;
 
             char type = token.charAt(0);
             boolean isWhite = Character.isUpperCase(type);
@@ -133,8 +132,7 @@ public class CenterPane extends BorderPane {
             int col = position.charAt(0) - 'a';
             int row = 8 - Character.getNumericValue(position.charAt(1));
 
-            if (row < 0 || row >= 8 || col < 0 || col >= 8)
-                continue;
+            if (row < 0 || row >= 8 || col < 0 || col >= 8) continue;
 
             String pieceName = switch (Character.toUpperCase(type)) {
                 case 'K' -> "king";
@@ -169,11 +167,11 @@ public class CenterPane extends BorderPane {
         label.setAlignment(Pos.CENTER);
         label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         label.setStyle("""
-            -fx-font-size: 14px;
-            -fx-font-weight: bold;
-            -fx-text-fill: brown;
-            -fx-background-color: #f0f0f0;
-        """ + borderStyle);
+                    -fx-font-size: 14px;
+                    -fx-font-weight: bold;
+                    -fx-text-fill: brown;
+                    -fx-background-color: #f0f0f0;
+                """ + borderStyle);
         return label;
     }
 }
