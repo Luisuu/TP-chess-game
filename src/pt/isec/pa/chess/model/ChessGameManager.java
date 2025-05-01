@@ -14,18 +14,18 @@ public class ChessGameManager {
         void onPromote(Position position);
     }
     private transient PromotionListener promotionListener;
-    public void setPromotionListener(PromotionListener listener) {
-        this.promotionListener = listener;
-    }
-
-
-    public ChessGame getChessGame() {
-        return cgGame;
-    }
 
     public ChessGameManager(){
         cgGame = new ChessGame();
         System.out.println("ChessGameManager");
+    }
+
+    public void setPromotionListener(PromotionListener listener) {
+        this.promotionListener = listener;
+    }
+
+    public ChessGame getChessGame() {
+        return cgGame;
     }
 
     public void setPlayerName(int player, String name){
@@ -51,14 +51,12 @@ public class ChessGameManager {
 
             String line = new String(data).trim();
 
-            if (line.isEmpty()) {
-                //ficheiro vazio
+            if (line.isEmpty()) { //fich vazio
                 return;
             }
 
             String[] tokens = line.split(",");
-            if (tokens.length < 2) {
-                // formato inmvalido
+            if (tokens.length < 2) {//invalido
                 return;
             }
 
@@ -103,7 +101,6 @@ public class ChessGameManager {
     }
 
     public void open(String sFileName) {
-        //FALTA GENERALIZAR O PATH
         ChessGame loaded = ChessGameSerialization.load(sFileName);
 
         if (loaded != null) {
@@ -142,13 +139,27 @@ public class ChessGameManager {
         return sb.toString();
     }
 
+    private void removePiece(Position pos) {
+        cgGame.board.removePiece(pos);
+    }
+
     public void movePiece(Position oldPos, Position newPos){
         if(cgGame.isGameOver()) return;
 
+        Board board = cgGame.board;
         Piece pMover = cgGame.board.getPiece(oldPos);
+
         if (pMover != null && pMover.getPossibleMoves().contains(newPos) && pMover.getColor() == cgGame.getcCurrentPlayer()) {
             pMover.setPosition(newPos);
 
+            Piece target = board.getPiece(newPos);
+            if (target != null && target.getColor() != pMover.getColor()) {
+                removePiece(newPos);
+            }
+
+            removePiece(oldPos);
+            pMover.setPosition(newPos);
+            board.addPiece(newPos, pMover);
 
             //verificacao pawnpromotion
             if (pMover instanceof Pawn pawn && pawn.isPromotionPosition()) {
