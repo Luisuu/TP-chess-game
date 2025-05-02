@@ -7,9 +7,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import pt.isec.pa.chess.model.ChessGameManager;
+import pt.isec.pa.chess.model.data.pieces.Position;
 import pt.isec.pa.chess.ui.res.ImageManager;
 
 public class CenterPane extends BorderPane {
+    private Position pPosition = null;
     private static final int NUM_ROWS = 8;
     private static final int NUM_COLS = 8;
 
@@ -61,6 +63,14 @@ public class CenterPane extends BorderPane {
                     char columnLetter = (char) ('a' + finalCol);
                     int chessRow = 8 - finalRow;
                     System.out.println("Cell clicked: " + columnLetter + chessRow);
+                    if(pPosition !=null) {
+                        Position newPos = new Position(columnLetter, chessRow);
+                        data.movePiece(pPosition, newPos);
+                        pPosition = null;
+                        update();
+                        return;
+                    }
+                    pPosition = new Position(columnLetter, chessRow);
                 });
             }
         }
