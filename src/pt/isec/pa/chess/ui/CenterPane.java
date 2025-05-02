@@ -174,4 +174,8 @@ public class CenterPane extends BorderPane {
                 """ + borderStyle);
         return label;
     }
+
+    public void update(){
+        renderPiecesFromModel();
+    }
 }

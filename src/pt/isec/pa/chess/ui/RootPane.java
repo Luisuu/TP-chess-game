@@ -35,6 +35,7 @@ public class RootPane extends BorderPane {
          setTop(createMenu());
          cPane = new CenterPane(data);
          setCenter(cPane);
+         cPane.setVisible(false);
 
          lbStatus = new Label("Game not started. Create or load a game from the menu.");
          lbStatus.setStyle("-fx-background-color: #d0d0d0;");
@@ -84,6 +85,8 @@ public class RootPane extends BorderPane {
         mnNew.setOnAction(actionEvent -> {
               AskName askName = new AskName(data);
               askName.showAndWait();
+              cPane.setVisible(true);
+              cPane.update();
         });
 
         mnOpen.setOnAction(e -> {
@@ -187,7 +190,6 @@ public class RootPane extends BorderPane {
             // data.setShowPossibleMoves(show);
             System.out.println("Show possible moves: " + show);
         });
-
     }
 
     private char showPromotionDialog() {
@@ -205,6 +207,7 @@ public class RootPane extends BorderPane {
         showMoves.setDisable(true);
         undoMove.setDisable(true);
         redoMove.setDisable(true);
+        cPane.update();
     }
 }
 
