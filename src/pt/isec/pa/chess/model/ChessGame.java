@@ -4,7 +4,6 @@ import pt.isec.pa.chess.model.data.Board;
 import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
