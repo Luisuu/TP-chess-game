@@ -26,6 +26,8 @@ public class ChessGameManager {
         this.promotionListener = listener;
     }
 
+    // TEMOS DE TIRAR ISTO, COMPLETAMENTE PROIBIDO
+    // IMPORTANTE
     public ChessGame getChessGame() {
         return cgGame;
     }
