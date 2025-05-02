@@ -97,6 +97,8 @@ public class RootPane extends BorderPane {
             if (hFile != null) {
                 System.out.println(hFile.getAbsolutePath());
                 data.open(hFile.getAbsolutePath());
+                AskName askName = new AskName(data);
+                askName.showAndWait();
                 cPane.setVisible(true);
                 cPane.update();
             }
@@ -123,6 +125,8 @@ public class RootPane extends BorderPane {
             if (file != null) {
                 System.out.println("Importing game from: " + file.getAbsolutePath());
                 data.importa(file.getAbsolutePath());
+                AskName askName = new AskName(data);
+                askName.showAndWait();
                 cPane.setVisible(true);
                 cPane.update();
             }

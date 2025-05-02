@@ -23,7 +23,7 @@ public class AskName extends Stage {
     public AskName(ChessGameManager data) {
         this.data = data;
         this.initModality(Modality.APPLICATION_MODAL);
-        this.setTitle("New Game");
+        this.setTitle("Player Names");
         createViews();
         registerHandlers();
         update();
@@ -76,7 +76,7 @@ public class AskName extends Stage {
                 return;
             }
 
-            data.restart();
+            //data.restart();
             if (player1Name.equals(player2Name)) {
                 player2Name = player2Name.concat("2");
             }

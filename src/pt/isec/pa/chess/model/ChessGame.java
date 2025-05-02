@@ -15,12 +15,25 @@ public class ChessGame implements Serializable {
     Board board;
     PieceColor cCurrentPlayer = PieceColor.WHITE;
     PieceColor cWinner = null;
-
+    String sPlayer1, sPlayer2;
 
     public ChessGame() {
         board = new Board();
         board.clearBoard();
         board.initializeBoard();
+    }
+
+    public void setPlayerName(int player, String name) {
+        if (player < 1 || player > 2) {
+            throw new RuntimeException("tried to set invalid player");
+            //System.out.println("Invalid player number");
+            //return;
+        }
+        if (player == 1) {
+            sPlayer1 = name;
+        } else {
+            sPlayer2 = name;
+        }
     }
 
     public String debug() {

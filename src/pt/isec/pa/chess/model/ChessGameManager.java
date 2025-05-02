@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class ChessGameManager {
     ChessGame cgGame;
-    String sPlayer1, sPlayer2;
+
 
     //listener pawnpromotion
     public interface PromotionListener {
@@ -28,19 +28,6 @@ public class ChessGameManager {
 
     public ChessGame getChessGame() {
         return cgGame;
-    }
-
-    public void setPlayerName(int player, String name) {
-        if (player < 1 || player > 2) {
-            throw new RuntimeException("tried to set invalid player");
-            //System.out.println("Invalid player number");
-            //return;
-        }
-        if (player == 1) {
-            sPlayer1 = name;
-        } else {
-            sPlayer2 = name;
-        }
     }
 
     public void save(String sFileName) {
@@ -137,11 +124,15 @@ public class ChessGameManager {
 
     public String debug() {
         StringBuilder sb = new StringBuilder();
-        sb.append(sPlayer1).append(",");
-        sb.append(sPlayer2).append(",");
+        sb.append(cgGame.sPlayer1).append(",");
+        sb.append(cgGame.sPlayer2).append(",");
         sb.append(cgGame.cCurrentPlayer).append(",");
         sb.append(cgGame.printPieces());
         return sb.toString();
+    }
+
+    public void setPlayerName(int player, String name) {
+        cgGame.setPlayerName(player, name);
     }
 
     private void removePiece(Position pos) {
@@ -165,6 +156,9 @@ public class ChessGameManager {
             removePiece(oldPos);
             pMover.setPosition(newPos);
             board.addPiece(newPos, pMover);
+
+            // TEMOS DE TIRAR INSTANCEOF URGENTE
+            // IMPORTANTE
 
             //verificacao pawnpromotion
             if (pMover instanceof Pawn pawn && pawn.isPromotionPosition()) {
