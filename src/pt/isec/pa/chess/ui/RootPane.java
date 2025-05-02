@@ -25,133 +25,123 @@ public class RootPane extends BorderPane {
     MenuItem undoMove, redoMove;
 
     public RootPane(ChessGameManager data) {
-         this.data = data;
-         createViews();
-         registerHandlers();
-         update();
-        }
+        this.data = data;
+        createViews();
+        registerHandlers();
+        update();
+    }
 
     private void createViews() {
-         setTop(createMenu());
-         cPane = new CenterPane(data);
-         setCenter(cPane);
-         cPane.setVisible(false);
+        setTop(createMenu());
+        cPane = new CenterPane(data);
+        setCenter(cPane);
+        cPane.setVisible(false);
 
-         lbStatus = new Label("Game not started. Create or load a game from the menu.");
-         lbStatus.setStyle("-fx-background-color: #d0d0d0;");
-         lbStatus.setPrefWidth(99999);
-         lbStatus.setPadding(new Insets(8));
-         setBottom(lbStatus);
-        }
+        lbStatus = new Label("Game not started. Create or load a game from the menu.");
+        lbStatus.setStyle("-fx-background-color: #d0d0d0;");
+        lbStatus.setPrefWidth(99999);
+        lbStatus.setPadding(new Insets(8));
+        setBottom(lbStatus);
+    }
 
     private MenuBar createMenu() {
-         MenuBar mb = new MenuBar();
+        MenuBar mb = new MenuBar();
 
-         // Menu "Game"
-         mnGame = new Menu("_Game");
-         mnNew = new MenuItem("_New");
-         mnOpen = new MenuItem("_Open");
-         mnSave = new MenuItem("_Save");
-         mnImport = new MenuItem("_Import");
-         mnExport = new MenuItem("_Export");
-         mnExit = new MenuItem("E_xit");
-         mnDebug = new MenuItem("_DEBUG");
-         mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit, mnDebug);
+        // Menu "Game"
+        mnGame = new Menu("_Game");
+        mnNew = new MenuItem("_New");
+        mnOpen = new MenuItem("_Open");
+        mnSave = new MenuItem("_Save");
+        mnImport = new MenuItem("_Import");
+        mnExport = new MenuItem("_Export");
+        mnExit = new MenuItem("E_xit");
+        mnDebug = new MenuItem("_DEBUG");
+        mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit, mnDebug);
 
-         // Menu "Mode"
-         mnMode = new Menu("Mode");
-         normalMode = new RadioMenuItem("Normal");
-         learningMode = new RadioMenuItem("Learning");
-         ToggleGroup modeGroup = new ToggleGroup();
-         normalMode.setToggleGroup(modeGroup);
-         learningMode.setToggleGroup(modeGroup);
-         normalMode.setSelected(true);
+        // Menu "Mode"
+        mnMode = new Menu("Mode");
+        normalMode = new RadioMenuItem("Normal");
+        learningMode = new RadioMenuItem("Learning");
+        ToggleGroup modeGroup = new ToggleGroup();
+        normalMode.setToggleGroup(modeGroup);
+        learningMode.setToggleGroup(modeGroup);
+        normalMode.setSelected(true);
 
 
-         showMoves = new CheckMenuItem("Show possible moves");
-         undoMove = new MenuItem("Undo");
-         redoMove = new MenuItem("Redo");
-         undoMove.setDisable(true);
-         redoMove.setDisable(true);
+        showMoves = new CheckMenuItem("Show possible moves");
+        undoMove = new MenuItem("Undo");
+        redoMove = new MenuItem("Redo");
+        undoMove.setDisable(true);
+        redoMove.setDisable(true);
 
-         mnMode.getItems().addAll(normalMode, learningMode, new SeparatorMenuItem(),
-               showMoves, undoMove, redoMove);
+        mnMode.getItems().addAll(normalMode, learningMode, new SeparatorMenuItem(), showMoves, undoMove, redoMove);
 
-              mb.getMenus().addAll(mnGame, mnMode);
-             return mb;
-        }
+        mb.getMenus().addAll(mnGame, mnMode);
+        return mb;
+    }
 
     private void registerHandlers() {
         mnNew.setOnAction(actionEvent -> {
-              AskName askName = new AskName(data);
-              askName.showAndWait();
-              cPane.setVisible(true);
-              cPane.update();
+            AskName askName = new AskName(data);
+            askName.showAndWait();
+            cPane.setVisible(true);
+            cPane.update();
         });
 
         mnOpen.setOnAction(e -> {
-              FileChooser fileChooser = new FileChooser();
-              fileChooser.setTitle("Open Game");
-              fileChooser.setInitialDirectory(new File("."));
-              fileChooser.getExtensionFilters().addAll(
-                     new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"),
-                     new FileChooser.ExtensionFilter("All", "*.*")
-              );
-              File hFile = fileChooser.showOpenDialog(this.getScene().getWindow());
-              if (hFile != null) {
-                  System.out.println(hFile.getAbsolutePath());
-                  data.open(hFile.getAbsolutePath());
-              }
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Game");
+            fileChooser.setInitialDirectory(new File("."));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"), new FileChooser.ExtensionFilter("All", "*.*"));
+            File hFile = fileChooser.showOpenDialog(this.getScene().getWindow());
+            if (hFile != null) {
+                System.out.println(hFile.getAbsolutePath());
+                data.open(hFile.getAbsolutePath());
+                cPane.setVisible(true);
+                cPane.update();
+            }
         });
 
         mnSave.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Save Game");
             fileChooser.setInitialDirectory(new File("."));
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"),
-                    new FileChooser.ExtensionFilter("All", "*.*")
-            );
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"), new FileChooser.ExtensionFilter("All", "*.*"));
             File hFile = fileChooser.showSaveDialog(this.getScene().getWindow());
             if (hFile != null) {
-                 System.out.println(hFile.getAbsolutePath());
-                 data.save(hFile.getAbsolutePath());
+                System.out.println(hFile.getAbsolutePath());
+                data.save(hFile.getAbsolutePath());
             }
         });
 
         mnImport.setOnAction(e -> {
-             FileChooser fileChooser = new FileChooser();
-             fileChooser.setTitle("Import Game");
-             fileChooser.setInitialDirectory(new File("."));
-             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"),
-                    new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"),
-                    new FileChooser.ExtensionFilter("All Files", "*.*")
-             );
-             File file = fileChooser.showOpenDialog(this.getScene().getWindow());
-             if (file != null) {
-                  System.out.println("Importing game from: " + file.getAbsolutePath());
-                  data.importa(file.getAbsolutePath());
-             }
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Import Game");
+            fileChooser.setInitialDirectory(new File("."));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"), new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"), new FileChooser.ExtensionFilter("All Files", "*.*"));
+            File file = fileChooser.showOpenDialog(this.getScene().getWindow());
+            if (file != null) {
+                System.out.println("Importing game from: " + file.getAbsolutePath());
+                data.importa(file.getAbsolutePath());
+                cPane.setVisible(true);
+                cPane.update();
+            }
         });
 
         mnExport.setOnAction(e -> {
-             FileChooser fileChooser = new FileChooser();
-             fileChooser.setTitle("Export Game");
-             fileChooser.setInitialDirectory(new File("."));
-             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"),
-                    new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv")
-             );
-             File file = fileChooser.showSaveDialog(this.getScene().getWindow());
-             if (file != null) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export Game");
+            fileChooser.setInitialDirectory(new File("."));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"), new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+            File file = fileChooser.showSaveDialog(this.getScene().getWindow());
+            if (file != null) {
                 System.out.println("Exporting game to: " + file.getAbsolutePath());
                 data.exporta(file.getAbsolutePath());
-             }
+            }
         });
 
         mnExit.setOnAction(actionEvent -> {
-             Platform.exit();
+            Platform.exit();
         });
 
         mnDebug.setOnAction(actionEvent -> {
@@ -160,13 +150,13 @@ public class RootPane extends BorderPane {
 
         //mudanças modos de jogo
         normalMode.setOnAction(e -> {
-             if (normalMode.isSelected()) {
-                 showMoves.setDisable(true);
-                 undoMove.setDisable(true);
-                 redoMove.setDisable(true);
-                 // data.setNormalMode();
-                 System.out.println("Normal mode activated");
-             }
+            if (normalMode.isSelected()) {
+                showMoves.setDisable(true);
+                undoMove.setDisable(true);
+                redoMove.setDisable(true);
+                // data.setNormalMode();
+                System.out.println("Normal mode activated");
+            }
         });
 
         data.setPromotionListener(position -> {
@@ -176,13 +166,13 @@ public class RootPane extends BorderPane {
         });
 
         learningMode.setOnAction(e -> {
-             if (learningMode.isSelected()) {
-                 showMoves.setDisable(false);
-                 undoMove.setDisable(true); //
-                 redoMove.setDisable(true);
-                 // data.setLearningMode();
-                 System.out.println("Learning mode activated");
-             }
+            if (learningMode.isSelected()) {
+                showMoves.setDisable(false);
+                undoMove.setDisable(true); //
+                redoMove.setDisable(true);
+                // data.setLearningMode();
+                System.out.println("Learning mode activated");
+            }
         });
 
         showMoves.setOnAction(e -> {
