@@ -63,15 +63,20 @@ public class CenterPane extends BorderPane {
                     char columnLetter = (char) ('a' + finalCol);
                     int chessRow = 8 - finalRow;
                     System.out.println("Cell clicked: " + columnLetter + chessRow);
-                    System.out.println(data.getPossibleMovesFromPieceAt(new Position(columnLetter, chessRow)));
+                    data.getPossibleMovesFromPieceAt(new Position(columnLetter, chessRow));
                     if(pPosition !=null) {
                         Position newPos = new Position(columnLetter, chessRow);
+                        System.out.println("Set newPos: " + columnLetter + chessRow);
                         data.movePiece(pPosition, newPos);
+                        System.out.println("Moved piece");
                         pPosition = null;
+                        System.out.println("Set pPosition to null");
                         update();
+                        System.out.println("update center pane");
                         return;
                     }
                     pPosition = new Position(columnLetter, chessRow);
+                    System.out.println("Set pPosition: " + columnLetter + chessRow);
                 });
             }
         }
