@@ -82,6 +82,7 @@ public class RootPane extends BorderPane {
         mnNew.setOnAction(actionEvent -> {
             AskName askName = new AskName(data);
             askName.showAndWait();
+            data.restart();
             cPane.setVisible(true);
             cPane.update();
         });
