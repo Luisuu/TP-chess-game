@@ -36,6 +36,14 @@ public class ChessGameManager {
         ChessGameSerialization.save(sFileName, cgGame);
     }
 
+    public String getPossibleMovesFromPieceAt(Position pos) {
+        Piece pPiece = cgGame.board.getPiece(pos);
+        if(pPiece != null) {
+            return pPiece.getPossibleMoves().toString();
+        }
+        return null;
+    }
+
     public String getBoardPiecesString() {
         return cgGame.printPieces();
     }

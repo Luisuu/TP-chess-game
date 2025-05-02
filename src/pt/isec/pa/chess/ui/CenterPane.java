@@ -63,6 +63,7 @@ public class CenterPane extends BorderPane {
                     char columnLetter = (char) ('a' + finalCol);
                     int chessRow = 8 - finalRow;
                     System.out.println("Cell clicked: " + columnLetter + chessRow);
+                    System.out.println(data.getPossibleMovesFromPieceAt(new Position(columnLetter, chessRow)));
                     if(pPosition !=null) {
                         Position newPos = new Position(columnLetter, chessRow);
                         data.movePiece(pPosition, newPos);
