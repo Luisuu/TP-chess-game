@@ -1,5 +1,6 @@
 package pt.isec.pa.chess.ui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -19,7 +20,12 @@ public class CenterPane extends BorderPane {
 
     public CenterPane(ChessGameManager data) {
         this.data = data;
+        createViews();
+        registerHandlers();
+        update();
+    }
 
+    private void createViews() {
         createTopLabel();
         createBoardGrid();
 
@@ -42,6 +48,14 @@ public class CenterPane extends BorderPane {
 
         centerStack.widthProperty().addListener((obs, oldVal, newVal) -> resize(centerStack));
         centerStack.heightProperty().addListener((obs, oldVal, newVal) -> resize(centerStack));
+    }
+
+    private void registerHandlers() {
+
+    }
+
+    public void update(){
+        renderPiecesFromModel();
     }
 
     private void createTopLabel() {
@@ -175,7 +189,5 @@ public class CenterPane extends BorderPane {
         return label;
     }
 
-    public void update(){
-        renderPiecesFromModel();
-    }
+
 }
