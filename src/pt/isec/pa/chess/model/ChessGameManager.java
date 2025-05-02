@@ -28,12 +28,16 @@ public class ChessGameManager {
 
     // TEMOS DE TIRAR ISTO, COMPLETAMENTE PROIBIDO
     // IMPORTANTE
-    public ChessGame getChessGame() {
-        return cgGame;
-    }
+    //public ChessGame getChessGame() {
+    //    return cgGame;
+    //}
 
     public void save(String sFileName) {
         ChessGameSerialization.save(sFileName, cgGame);
+    }
+
+    public String getBoardPiecesString(){
+        return cgGame.printPieces();
     }
 
     public void importa(String sFileName) {

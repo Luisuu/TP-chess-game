@@ -119,7 +119,7 @@ public class CenterPane extends BorderPane {
             for (StackPane cell : row)
                 cell.getChildren().clear();
 
-        String pieceData = data.getChessGame().printPieces();
+        String pieceData = data.getBoardPiecesString();
         String[] tokens = pieceData.split(",");
 
         for (String token : tokens) {
