@@ -77,6 +77,9 @@ public class AskName extends Stage {
             }
 
             data.restart();
+            if (player1Name.equals(player2Name)) {
+                player2Name = player2Name.concat("2");
+            }
             data.setPlayerName(1, player1Name);
             data.setPlayerName(2, player2Name);
             this.close();

@@ -19,7 +19,7 @@ public class ChessGameManager {
 
     public ChessGameManager() {
         cgGame = new ChessGame();
-        System.out.println("ChessGameManager");
+        //System.out.println("ChessGameManager");
     }
 
     public void setPromotionListener(PromotionListener listener) {
@@ -32,8 +32,9 @@ public class ChessGameManager {
 
     public void setPlayerName(int player, String name) {
         if (player < 1 || player > 2) {
-            System.out.println("Invalid player number");
-            return;
+            throw new RuntimeException("tried to set invalid player");
+            //System.out.println("Invalid player number");
+            //return;
         }
         if (player == 1) {
             sPlayer1 = name;
@@ -136,6 +137,8 @@ public class ChessGameManager {
 
     public String debug() {
         StringBuilder sb = new StringBuilder();
+        sb.append(sPlayer1).append(",");
+        sb.append(sPlayer2).append(",");
         sb.append(cgGame.cCurrentPlayer).append(",");
         sb.append(cgGame.printPieces());
         return sb.toString();
