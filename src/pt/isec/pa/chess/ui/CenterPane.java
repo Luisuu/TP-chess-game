@@ -64,6 +64,7 @@ public class CenterPane extends BorderPane {
                     int chessRow = 8 - finalRow;
                     System.out.println("Cell clicked: " + columnLetter + chessRow);
                     data.getPossibleMovesFromPieceAt(new Position(columnLetter, chessRow));
+                    highlightcell(cell);
                     if(pPosition !=null) {
                         Position newPos = new Position(columnLetter, chessRow);
                         System.out.println("Set newPos: " + columnLetter + chessRow);
@@ -80,6 +81,18 @@ public class CenterPane extends BorderPane {
                 });
             }
         }
+    }
+
+    public void highlightcell(StackPane cCell) {
+        for (int row = 0; row < NUM_ROWS; row++) {
+            for (int col = 0; col < NUM_COLS; col++) {
+                StackPane cell = cells[row][col];
+                String color = (row + col) % 2 == 0 ? "#fceee9" : "#944b45";
+                cell.setStyle("-fx-background-color: " + color + "; -fx-border-color: #000000");
+            }
+        }
+
+        cCell.setStyle("-fx-border-color: rgba(255,255,0)");
     }
 
     public void update() {
@@ -138,7 +151,7 @@ public class CenterPane extends BorderPane {
                 GridPane.setVgrow(cell, Priority.ALWAYS);
 
                 String color = (row + col) % 2 == 0 ? "#fceee9" : "#944b45";
-                cell.setStyle("-fx-background-color: " + color + ";");
+                cell.setStyle("-fx-background-color: " + color + "; -fx-border-color: #000000");
 
                 cells[row][col] = cell;
                 boardGrid.add(cell, col + 1, row + 1);
