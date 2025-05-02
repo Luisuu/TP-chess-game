@@ -17,6 +17,7 @@ public class CenterPane extends BorderPane {
     private final ChessGameManager data;
     private final Label topLabel = new Label("Player: White!");
     private final StackPane[][] cells = new StackPane[NUM_ROWS][NUM_COLS];
+    private StackPane centerStack;
 
     public CenterPane(ChessGameManager data) {
         this.data = data;
@@ -29,7 +30,7 @@ public class CenterPane extends BorderPane {
         createTopLabel();
         createBoardGrid();
 
-        StackPane centerStack = new StackPane(boardGrid) {
+        centerStack = new StackPane(boardGrid) {
             @Override
             protected void layoutChildren() {
                 double size = Math.min(getWidth(), getHeight());
@@ -45,16 +46,27 @@ public class CenterPane extends BorderPane {
 
         setTop(topLabel);
         setCenter(centerStack);
-
-        centerStack.widthProperty().addListener((obs, oldVal, newVal) -> resize(centerStack));
-        centerStack.heightProperty().addListener((obs, oldVal, newVal) -> resize(centerStack));
     }
 
     private void registerHandlers() {
+        centerStack.widthProperty().addListener((obs, oldVal, newVal) -> resize(centerStack));
+        centerStack.heightProperty().addListener((obs, oldVal, newVal) -> resize(centerStack));
 
+        for (int row = 0; row < NUM_ROWS; row++) {
+            for (int col = 0; col < NUM_COLS; col++) {
+                StackPane cell = cells[row][col];
+                int finalRow = row;
+                int finalCol = col;
+                cell.setOnMouseClicked(event -> {
+                    char columnLetter = (char) ('a' + finalCol);
+                    int chessRow = 8 - finalRow;
+                    System.out.println("Cell clicked: " + columnLetter + chessRow);
+                });
+            }
+        }
     }
 
-    public void update(){
+    public void update() {
         renderPiecesFromModel();
     }
 
@@ -111,14 +123,6 @@ public class CenterPane extends BorderPane {
 
                 String color = (row + col) % 2 == 0 ? "#fceee9" : "#944b45";
                 cell.setStyle("-fx-background-color: " + color + ";");
-
-                int finalRow = row;
-                int finalCol = col;
-                cell.setOnMouseClicked(event -> {
-                    char columnLetter = (char) ('a' + finalCol);
-                    int chessRow = 8 - finalRow;
-                    System.out.println("Cell clicked: " + columnLetter + chessRow);
-                });
 
                 cells[row][col] = cell;
                 boardGrid.add(cell, col + 1, row + 1);
@@ -188,6 +192,4 @@ public class CenterPane extends BorderPane {
                 """ + borderStyle);
         return label;
     }
-
-
 }
