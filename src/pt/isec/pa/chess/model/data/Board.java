@@ -84,7 +84,9 @@ public class Board implements Serializable {
         return mBoard.get(position);
     }
 
-    public Collection<Piece> getAllPieces() { return mBoard.values();}
+    public Collection<Piece> getAllPieces() {
+        return mBoard.values();
+    }
 
 
     public String printPieces() {

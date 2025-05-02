@@ -36,7 +36,7 @@ public class ChessGameManager {
         ChessGameSerialization.save(sFileName, cgGame);
     }
 
-    public String getBoardPiecesString(){
+    public String getBoardPiecesString() {
         return cgGame.printPieces();
     }
 

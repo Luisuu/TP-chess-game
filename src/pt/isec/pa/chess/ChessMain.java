@@ -8,7 +8,7 @@ import pt.isec.pa.chess.model.data.pieces.Position;
 public class ChessMain {
     public static void main(String[] args) {
 
-       Application.launch(MainJFX.class,args);
+        Application.launch(MainJFX.class, args);
 
         //System.out.println("PA Chess Game");
 

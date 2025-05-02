@@ -96,7 +96,7 @@ public class ChessGame implements Serializable {
         return false;
     }
 
-    public void resetGame(){
+    public void resetGame() {
         cCurrentPlayer = PieceColor.WHITE;
         board = new Board();
         board.initializeBoard();
