@@ -27,21 +27,12 @@ public class ChessGameManager {
     }
 
 
-
     public void save(String sFileName) {
-        ChessGameSerialization.save(sFileName, cgGame);
-    }
-
-    public String getPossibleMovesFromPieceAt(Position pos) {
-        Piece pPiece = cgGame.board.getPiece(pos);
-        if(pPiece != null) {
-            return pPiece.getPossibleMoves().toString();
+        try {
+            cgGame.save(sFileName);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return null;
-    }
-
-    public String getBoardPiecesString() {
-        return cgGame.printPieces();
     }
 
     public void importa(String sFileName) {
@@ -61,53 +52,15 @@ public class ChessGameManager {
     }
 
     public void open(String sFileName) {
-        ChessGame loaded = ChessGameSerialization.load(sFileName);
-
-        if (loaded != null) {
-            cgGame.board = loaded.board;
-            cgGame.cCurrentPlayer = loaded.cCurrentPlayer;
-            cgGame.cWinner = loaded.cWinner;
-
-            for (Piece piece : cgGame.board.getPieces()) {
-                piece.setBoard(cgGame.board);
-            }
-
-            //System.out.println("Partie restaurer");
-        } else {
-            cgGame.board = new Board();
-            cgGame.board.initializeBoard();
-
-            for (Piece piece : cgGame.board.getPieces()) {
-                piece.setBoard(cgGame.board);
-            }
-
-            cgGame.cCurrentPlayer = PieceColor.WHITE;
-            cgGame.cWinner = null;
-
-            //System.out.println("STARTTTT");
+        try {
+            cgGame.open(sFileName);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            cgGame.restart();
         }
     }
 
-    public void restart() {
-        cgGame.resetGame();
-    }
 
-    public String debug() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(cgGame.sPlayer1).append(",");
-        sb.append(cgGame.sPlayer2).append(",");
-        sb.append(cgGame.cCurrentPlayer).append(",");
-        sb.append(cgGame.printPieces());
-        return sb.toString();
-    }
-
-    public void setPlayerName(int player, String name) {
-        cgGame.setPlayerName(player, name);
-    }
-
-    private void removePiece(Position pos) {
-        cgGame.board.removePiece(pos);
-    }
 
     public void movePiece(Position oldPos, Position newPos) {
         if (cgGame.isGameOver()) return;
@@ -154,4 +107,43 @@ public class ChessGameManager {
     public void promotePawn(Position position, char pieceType) {
         cgGame.promotePawn(position, pieceType);
     }
+
+    public void restart() {
+        cgGame.restart();
+    }
+
+    public void setPlayerName(int player, String name) {
+        cgGame.setPlayerName(player, name);
+    }
+
+
+
+    public String getPossibleMovesFromPieceAt(Position pos) {
+        Piece pPiece = cgGame.board.getPiece(pos);
+        if(pPiece != null) {
+            return pPiece.getPossibleMoves().toString();
+        }
+        return null;
+    }
+
+    public String getBoardPiecesString() {
+        return cgGame.printPieces();
+    }
+
+    public String debug() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(cgGame.sPlayer1).append(",");
+        sb.append(cgGame.sPlayer2).append(",");
+        sb.append(cgGame.cCurrentPlayer).append(",");
+        sb.append(cgGame.printPieces());
+        return sb.toString();
+    }
+
+
+
+    private void removePiece(Position pos) {
+        cgGame.board.removePiece(pos);
+    }
+
+
 }

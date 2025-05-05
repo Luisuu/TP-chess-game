@@ -206,4 +206,42 @@ public class ChessGame implements Serializable {
         }
     }
 
+
+    public void open(String sFileName) throws IOException, ClassNotFoundException{
+
+        ChessGame loaded = ChessGameSerialization.load(sFileName);
+
+        if (loaded != null) {
+            this.board = loaded.board;
+            this.cCurrentPlayer = loaded.cCurrentPlayer;
+            this.cWinner = loaded.cWinner;
+
+            for (Piece piece : board.getPieces()) {
+                piece.setBoard(board);
+            }
+
+        } else {
+            board = new Board();
+            board.initializeBoard();
+
+            for (Piece piece : board.getPieces()) {
+                piece.setBoard(board);
+            }
+
+            cCurrentPlayer = PieceColor.WHITE;
+            cWinner = null;
+        }
+    }
+
+
+    public void save(String sFileName) throws IOException {
+        ChessGameSerialization.save(sFileName, this);
+    }
+
+    public void restart() {
+        cCurrentPlayer = PieceColor.WHITE;
+        board = new Board();
+        board.initializeBoard();
+    }
+
 }
