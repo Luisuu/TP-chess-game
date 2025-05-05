@@ -2,8 +2,11 @@ package pt.isec.pa.chess.ui;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
 
@@ -12,8 +15,9 @@ import java.io.File;
 public class RootPane extends BorderPane {
 
     ChessGameManager data;
-    CenterPane cPane;
+    //CenterPane cPane;
     Label lbStatus;
+    Canvas canvas;
 
     //componentes menu
     Menu mnGame, mnMode;
@@ -31,9 +35,12 @@ public class RootPane extends BorderPane {
 
     private void createViews() {
         setTop(createMenu());
-        cPane = new CenterPane(data);
-        setCenter(cPane);
-        cPane.setVisible(false);
+        //cPane = new CenterPane(data);
+        //setCenter(cPane);
+        //cPane.setVisible(false);
+        canvas = new Canvas(100.0f, 100.0f);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setFill(Color.RED);
 
         lbStatus = new Label("Game not started. Create or load a game from the menu.");
         lbStatus.setStyle("-fx-background-color: #d0d0d0;");
@@ -83,8 +90,8 @@ public class RootPane extends BorderPane {
             AskName askName = new AskName(data);
             askName.showAndWait();
             data.restart();
-            cPane.setVisible(true);
-            cPane.update();
+            //cPane.setVisible(true);
+            //cPane.update();
         });
 
         mnOpen.setOnAction(e -> {
@@ -98,8 +105,8 @@ public class RootPane extends BorderPane {
                 data.open(hFile.getAbsolutePath());
                 AskName askName = new AskName(data);
                 askName.showAndWait();
-                cPane.setVisible(true);
-                cPane.update();
+                //cPane.setVisible(true);
+                //cPane.update();
             }
         });
 
@@ -126,8 +133,8 @@ public class RootPane extends BorderPane {
                 data.importa(file.getAbsolutePath());
                 AskName askName = new AskName(data);
                 askName.showAndWait();
-                cPane.setVisible(true);
-                cPane.update();
+                //cPane.setVisible(true);
+                //cPane.update();
             }
         });
 
@@ -200,7 +207,7 @@ public class RootPane extends BorderPane {
         showMoves.setDisable(true);
         undoMove.setDisable(true);
         redoMove.setDisable(true);
-        cPane.update();
+        //cPane.update();
     }
 }
 
