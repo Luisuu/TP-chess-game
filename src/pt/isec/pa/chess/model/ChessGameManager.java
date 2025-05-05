@@ -26,11 +26,7 @@ public class ChessGameManager {
         this.promotionListener = listener;
     }
 
-    // TEMOS DE TIRAR ISTO, COMPLETAMENTE PROIBIDO
-    // IMPORTANTE
-    //public ChessGame getChessGame() {
-    //    return cgGame;
-    //}
+
 
     public void save(String sFileName) {
         ChessGameSerialization.save(sFileName, cgGame);
@@ -49,57 +45,17 @@ public class ChessGameManager {
     }
 
     public void importa(String sFileName) {
-        cgGame.board.clearBoard();
-        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(sFileName)))) {
-            byte[] data = dis.readAllBytes();
-
-            String line = new String(data).trim();
-
-            if (line.isEmpty()) { //fich vazio
-                return;
-            }
-
-            String[] tokens = line.split(",");
-            if (tokens.length < 2) {//invalido
-                return;
-            }
-
-            PieceColor Color;
-            try {
-                Color = PieceColor.valueOf(tokens[0].toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException("cor " + tokens[0] + " invalida");
-            }
-
-            for (int i = 1; i < tokens.length; i++) {
-                String token = tokens[i].trim();
-
-                if (!token.matches("(?i)[kqrbnp][a-h][1-8]\\*?")) {
-                    throw new RuntimeException("peca " + token + " invalida");
-                }
-            }
-
-            cgGame.cCurrentPlayer = Color;
-            cgGame.board = new Board();
-
-            cgGame.board.initializeBoard(Arrays.copyOfRange(tokens, 1, tokens.length));
-
-            for (Piece piece : cgGame.board.getPieces()) {
-                piece.setBoard(cgGame.board);
-            }
-        } catch (IOException e) {
+        try {
+            cgGame.importa(sFileName);
+        }catch (IOException | RuntimeException e){
             e.printStackTrace();
         }
     }
 
     public void exporta(String sFileName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(cgGame.cCurrentPlayer).append(",");
-        sb.append(cgGame.printPieces());
-
-        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(sFileName)))) {
-            dos.write(sb.toString().getBytes());
-        } catch (IOException e) {
+        try {
+            cgGame.exporta(sFileName);
+        }catch (IOException | RuntimeException e){
             e.printStackTrace();
         }
     }

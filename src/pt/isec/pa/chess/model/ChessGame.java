@@ -4,6 +4,7 @@ import pt.isec.pa.chess.model.data.Board;
 import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -150,6 +151,59 @@ public class ChessGame implements Serializable {
         };
 
         board.addPiece(position, newPiece);
+    }
+
+
+    public void importa(String sFileName) throws IOException {
+        board.clearBoard();
+        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(sFileName)))) {
+            byte[] data = dis.readAllBytes();
+
+            String line = new String(data).trim();
+
+            if (line.isEmpty()) { //fich vazio
+                return;
+            }
+
+            String[] tokens = line.split(",");
+            if (tokens.length < 2) {//invalido
+                return;
+            }
+
+            PieceColor Color;
+            try {
+                Color = PieceColor.valueOf(tokens[0].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("cor " + tokens[0] + " invalida");
+            }
+
+            for (int i = 1; i < tokens.length; i++) {
+                String token = tokens[i].trim();
+
+                if (!token.matches("(?i)[kqrbnp][a-h][1-8]\\*?")) {
+                    throw new RuntimeException("peca " + token + " invalida");
+                }
+            }
+
+            cCurrentPlayer = Color;
+            board = new Board();
+
+            board.initializeBoard(Arrays.copyOfRange(tokens, 1, tokens.length));
+
+            for (Piece piece : board.getPieces()) {
+                piece.setBoard(board);
+            }
+        }
+    }
+
+    public void exporta(String sFileName) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        sb.append(cCurrentPlayer).append(",");
+        sb.append(printPieces());
+
+        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(sFileName)))) {
+            dos.write(sb.toString().getBytes());
+        }
     }
 
 }
