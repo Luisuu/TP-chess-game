@@ -5,21 +5,28 @@ import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
+import pt.isec.pa.chess.model.data.pieces.Position;
+import pt.isec.pa.chess.ui.res.ImageManager;
 
 import java.io.File;
 
 public class RootPane extends BorderPane {
 
-    ChessGameManager data;
-    //CenterPane cPane;
-    Label lbStatus;
-    Canvas canvas;
+    private final ChessGameManager data;
+    private final int numRows;
+    private final int numCols;
+    private final double canvasSize = 600;
 
-    //componentes menu
+    private Canvas canvas;
+    private Label lbStatus;
+    private Position selectedPos = null;
+
     Menu mnGame, mnMode;
     MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit, mnDebug;
     RadioMenuItem normalMode, learningMode;
@@ -28,6 +35,8 @@ public class RootPane extends BorderPane {
 
     public RootPane(ChessGameManager data) {
         this.data = data;
+        this.numRows = data.getBoardRows();
+        this.numCols = data.getBoardCols();
         createViews();
         registerHandlers();
         update();
@@ -35,24 +44,25 @@ public class RootPane extends BorderPane {
 
     private void createViews() {
         setTop(createMenu());
-        //cPane = new CenterPane(data);
-        //setCenter(cPane);
-        //cPane.setVisible(false);
-        canvas = new Canvas(100.0f, 100.0f);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(Color.RED);
 
         lbStatus = new Label("Game not started. Create or load a game from the menu.");
         lbStatus.setStyle("-fx-background-color: #d0d0d0;");
-        lbStatus.setPrefWidth(99999);
+        lbStatus.setPrefWidth(Double.MAX_VALUE);
         lbStatus.setPadding(new Insets(8));
         setBottom(lbStatus);
+
+        canvas = new Canvas();
+        canvas.widthProperty().bind(widthProperty());
+        canvas.heightProperty().bind(heightProperty().subtract(lbStatus.heightProperty()).subtract(25));
+        setCenter(canvas);
+
+        canvas.widthProperty().addListener((obs, oldVal, newVal) -> update());
+        canvas.heightProperty().addListener((obs, oldVal, newVal) -> update());
     }
 
     private MenuBar createMenu() {
         MenuBar mb = new MenuBar();
 
-        // Menu "Game"
         mnGame = new Menu("_Game");
         mnNew = new MenuItem("_New");
         mnOpen = new MenuItem("_Open");
@@ -61,9 +71,9 @@ public class RootPane extends BorderPane {
         mnExport = new MenuItem("_Export");
         mnExit = new MenuItem("E_xit");
         mnDebug = new MenuItem("_DEBUG");
+
         mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit, mnDebug);
 
-        // Menu "Mode"
         mnMode = new Menu("Mode");
         normalMode = new RadioMenuItem("Normal");
         learningMode = new RadioMenuItem("Learning");
@@ -71,7 +81,6 @@ public class RootPane extends BorderPane {
         normalMode.setToggleGroup(modeGroup);
         learningMode.setToggleGroup(modeGroup);
         normalMode.setSelected(true);
-
 
         showMoves = new CheckMenuItem("Show possible moves");
         undoMove = new MenuItem("Undo");
@@ -85,13 +94,109 @@ public class RootPane extends BorderPane {
         return mb;
     }
 
+    private void drawBoard(GraphicsContext gc) {
+        double width = canvas.getWidth();
+        double height = canvas.getHeight();
+        double marginX = width * 0.08;
+        double marginY = height * 0.08;
+        double boardWidth = width - 2 * marginX;
+        double boardHeight = height - 2 * marginY;
+        double cellWidth = boardWidth / numCols;
+        double cellHeight = boardHeight / numRows;
+
+        gc.clearRect(0, 0, width, height);
+
+        Color lightColor = Color.web("#fceee9");
+        Color darkColor = Color.web("#944b45");
+
+        gc.setFont(javafx.scene.text.Font.font(cellHeight * 0.4));
+
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+                boolean light = (row + col) % 2 == 0;
+                gc.setFill(light ? lightColor : darkColor);
+                double x = marginX + col * cellWidth;
+                double y = marginY + row * cellHeight;
+                gc.fillRect(x, y, cellWidth, cellHeight);
+            }
+        }
+
+        for (int col = 0; col < numCols; col++) {
+            char colLabel = (char) ('a' + col);
+            double x = marginX + col * cellWidth + cellWidth / 2 - 5;
+            double y = marginY + boardHeight + cellHeight * 0.7;
+            gc.setFill(Color.BLACK);
+            gc.fillText(String.valueOf(colLabel), x, y);
+        }
+
+        for (int row = 0; row < numRows; row++) {
+            String rowLabel = String.valueOf(numRows - row);
+            double y = marginY + row * cellHeight + cellHeight / 2 + 5;
+
+            gc.fillText(rowLabel, marginX - cellWidth * 0.4, y);
+            gc.fillText(rowLabel, marginX + boardWidth + cellWidth * 0.1, y);
+        }
+    }
+
+
+    private void drawPieces(GraphicsContext gc) {
+        double width = canvas.getWidth();
+        double height = canvas.getHeight();
+
+        double marginX = width * 0.08;
+        double marginY = height * 0.08;
+
+        double boardWidth = width - 2 * marginX;
+        double boardHeight = height - 2 * marginY;
+
+        double cellWidth = boardWidth / numCols;
+        double cellHeight = boardHeight / numRows;
+
+        String pieceData = data.getBoardPiecesString();
+        String[] tokens = pieceData.split(",");
+
+        for (String token : tokens) {
+            token = token.trim();
+            if (token.length() < 3) continue;
+
+            char type = token.charAt(0);
+            boolean isWhite = Character.isUpperCase(type);
+            String position = token.substring(1, 3).toLowerCase();
+            int col = position.charAt(0) - 'a';
+            int row = numRows - Character.getNumericValue(position.charAt(1));
+
+            String pieceName = switch (Character.toUpperCase(type)) {
+                case 'K' -> "king";
+                case 'Q' -> "queen";
+                case 'R' -> "rook";
+                case 'B' -> "bishop";
+                case 'N' -> "knight";
+                case 'P' -> "pawn";
+                default -> null;
+            };
+
+            if (pieceName != null) {
+                String filename = "pieces/" + pieceName + (isWhite ? "W" : "B") + ".png";
+                Image img = ImageManager.getImage(filename);
+                if (img != null) {
+                    double x = marginX + col * cellWidth + cellWidth * 0.1;
+                    double y = marginY + row * cellHeight + cellHeight * 0.1;
+                    double w = cellWidth * 0.8;
+                    double h = cellHeight * 0.8;
+                    gc.drawImage(img, x, y, w, h);
+                }
+            }
+        }
+    }
+
     private void registerHandlers() {
+        canvas.setOnMouseClicked(this::handleClick);
+
         mnNew.setOnAction(actionEvent -> {
             AskName askName = new AskName(data);
             askName.showAndWait();
             data.restart();
-            //cPane.setVisible(true);
-            //cPane.update();
+            update();
         });
 
         mnOpen.setOnAction(e -> {
@@ -105,8 +210,7 @@ public class RootPane extends BorderPane {
                 data.open(hFile.getAbsolutePath());
                 AskName askName = new AskName(data);
                 askName.showAndWait();
-                //cPane.setVisible(true);
-                //cPane.update();
+                update();
             }
         });
 
@@ -129,12 +233,10 @@ public class RootPane extends BorderPane {
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"), new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"), new FileChooser.ExtensionFilter("All Files", "*.*"));
             File file = fileChooser.showOpenDialog(this.getScene().getWindow());
             if (file != null) {
-                System.out.println("Importing game from: " + file.getAbsolutePath());
                 data.importa(file.getAbsolutePath());
                 AskName askName = new AskName(data);
                 askName.showAndWait();
-                //cPane.setVisible(true);
-                //cPane.update();
+                update();
             }
         });
 
@@ -145,52 +247,77 @@ public class RootPane extends BorderPane {
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"), new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
             File file = fileChooser.showSaveDialog(this.getScene().getWindow());
             if (file != null) {
-                System.out.println("Exporting game to: " + file.getAbsolutePath());
                 data.exporta(file.getAbsolutePath());
             }
         });
 
-        mnExit.setOnAction(actionEvent -> {
-            Platform.exit();
-        });
+        mnExit.setOnAction(actionEvent -> { Platform.exit(); });
+        mnDebug.setOnAction(actionEvent -> { System.out.println(data.debug()); });
 
-        mnDebug.setOnAction(actionEvent -> {
-            System.out.println(data.debug());
-        });
-
-        //mudanças modos de jogo
         normalMode.setOnAction(e -> {
             if (normalMode.isSelected()) {
                 showMoves.setDisable(true);
                 undoMove.setDisable(true);
                 redoMove.setDisable(true);
-                // data.setNormalMode();
                 System.out.println("Normal mode activated");
             }
-        });
-
-        data.setPromotionListener(position -> {
-            char chosenPiece = showPromotionDialog();
-            data.promotePawn(position, chosenPiece);
-            update();
         });
 
         learningMode.setOnAction(e -> {
             if (learningMode.isSelected()) {
                 showMoves.setDisable(false);
-                undoMove.setDisable(true); //
+                undoMove.setDisable(true);
                 redoMove.setDisable(true);
-                // data.setLearningMode();
                 System.out.println("Learning mode activated");
             }
         });
 
         showMoves.setOnAction(e -> {
             boolean show = showMoves.isSelected();
-            // data.setShowPossibleMoves(show);
             System.out.println("Show possible moves: " + show);
         });
+
+        data.setPromotionListener(position -> {
+            char chosen = showPromotionDialog();
+            data.promotePawn(position, chosen);
+            update();
+        });
     }
+
+    private void handleClick(MouseEvent e) {
+        double width = canvas.getWidth();
+        double height = canvas.getHeight();
+        double marginX = width * 0.08;
+        double marginY = height * 0.08;
+        double boardWidth = width - 2 * marginX;
+        double boardHeight = height - 2 * marginY;
+        double cellWidth = boardWidth / numCols;
+        double cellHeight = boardHeight / numRows;
+        double mouseX = e.getX();
+        double mouseY = e.getY();
+
+        if (mouseX < marginX || mouseX > marginX + boardWidth ||
+                mouseY < marginY || mouseY > marginY + boardHeight) {
+            return;
+        }
+
+        int col = (int) ((mouseX - marginX) / cellWidth);
+        int row = (int) ((mouseY - marginY) / cellHeight);
+
+        char colLetter = (char) ('a' + col);
+        int boardRow = numRows - row;
+
+        Position clicked = new Position(colLetter, boardRow);
+
+        if (selectedPos == null) {
+            selectedPos = clicked;
+        } else {
+            data.movePiece(selectedPos, clicked);
+            selectedPos = null;
+            update();
+        }
+    }
+
 
     private char showPromotionDialog() {
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Queen", "Queen", "Rook", "Bishop", "Knight");
@@ -201,13 +328,14 @@ public class RootPane extends BorderPane {
         return result.charAt(0);
     }
 
-
     private void update() {
-        //inicialmente desativado os learning modes
         showMoves.setDisable(true);
         undoMove.setDisable(true);
         redoMove.setDisable(true);
-        //cPane.update();
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawBoard(gc);
+        drawPieces(gc);
     }
 }
-

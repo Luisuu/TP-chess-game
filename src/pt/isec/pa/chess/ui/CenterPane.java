@@ -1,4 +1,4 @@
-package pt.isec.pa.chess.ui;
+/*package pt.isec.pa.chess.ui;
 
 
 import javafx.geometry.Pos;
@@ -222,3 +222,4 @@ public class CenterPane extends BorderPane {
         return label;
     }
 }
+ */

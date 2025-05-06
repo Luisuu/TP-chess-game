@@ -139,6 +139,9 @@ public class ChessGameManager {
         return sb.toString();
     }
 
+    public int getBoardCols() { return 8; }
+
+    public int getBoardRows() { return 8; }
 
 
     private void removePiece(Position pos) {
