@@ -5,6 +5,7 @@ import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Set;
 
 public class ChessGameManager {
     ChessGame cgGame;
@@ -62,70 +63,58 @@ public class ChessGameManager {
 
 
     public void movePiece(Position oldPos, Position newPos) {
-        if (cgGame.isGameOver()) return;
-
-        Board board = cgGame.board;
-        Piece pMover = cgGame.board.getPiece(oldPos);
-
-        if (pMover != null && pMover.getPossibleMoves().contains(newPos) && pMover.getColor() == cgGame.getcCurrentPlayer()) {
-            pMover.setPosition(newPos);
-
-            Piece target = board.getPiece(newPos);
-            if (target != null && target.getColor() != pMover.getColor()) {
-                removePiece(newPos);
-            }
-
-            removePiece(oldPos);
-            pMover.setPosition(newPos);
-            board.addPiece(newPos, pMover);
-
-            // TEMOS DE TIRAR INSTANCEOF URGENTE
-            // IMPORTANTE
-
-            //verificacao pawnpromotion
-            if (pMover instanceof Pawn pawn && pawn.isPromotionPosition()) {
-                if (promotionListener != null) {
-                    promotionListener.onPromote(newPos); // Notifica a UI
-                }
-            }
-
-            if (pMover instanceof Rook) {
-                ((Rook) pMover).setHasMoved(true);
-            } else if (pMover instanceof King) {
-                ((King) pMover).setHasMoved(true);
-            } else if (pMover instanceof Pawn) {
-                ((Pawn) pMover).setHasMoved(true);
-            }
-
-            cgGame.cCurrentPlayer = cgGame.getcOpponent();
-            cgGame.isGameOver();
+        try {
+            boolean needsPromotion = cgGame.movePiece(oldPos, newPos);
+            if (needsPromotion && promotionListener != null)
+                promotionListener.onPromote(newPos);
+        } catch (Exception e) {
+            System.err.println("Error moving a piece: " + e.getMessage());
         }
     }
 
 
     public void promotePawn(Position position, char pieceType) {
-        cgGame.promotePawn(position, pieceType);
+        try {
+            cgGame.promotePawn(position, pieceType);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error on promotion: " + e.getMessage());
+        }
     }
 
     public void restart() {
-        cgGame.restart();
+        try {
+            cgGame.restart();
+        } catch (Exception e) {
+            System.err.println("Error restarting the game: " + e.getMessage());
+        }
     }
 
     public void setPlayerName(int player, String name) {
-        cgGame.setPlayerName(player, name);
+        try {
+            cgGame.setPlayerName(player, name);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error setting a name: " + e.getMessage());
+        }
     }
 
 
     public String getPossibleMovesFromPieceAt(Position pos) {
-        Piece pPiece = cgGame.board.getPiece(pos);
-        if (pPiece != null) {
-            return pPiece.getPossibleMoves().toString();
+        try {
+            Set<Position> moves = cgGame.getPossibleMovesFromPieceAt(pos);
+            return moves.toString(); // Converte Set<Position> para String
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error getting movements: " + e.getMessage());
+            return "[]";
         }
-        return null;
     }
 
     public String getBoardPiecesString() {
-        return cgGame.printPieces();
+        try {
+            return cgGame.getBoardPiecesString();
+        } catch (Exception e) {
+            System.err.println("Error getting pieces: " + e.getMessage());
+            return "";
+        }
     }
 
     public String debug() {
@@ -133,7 +122,7 @@ public class ChessGameManager {
         sb.append(cgGame.sPlayer1).append(",");
         sb.append(cgGame.sPlayer2).append(",");
         sb.append(cgGame.cCurrentPlayer).append(",");
-        sb.append(cgGame.printPieces());
+        sb.append(cgGame.getBoardPiecesString());
         return sb.toString();
     }
 
@@ -157,7 +146,11 @@ public class ChessGameManager {
 
 
     private void removePiece(Position pos) {
-        cgGame.board.removePiece(pos);
+        try {
+            cgGame.removePiece(pos);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error removing pieces: " + e.getMessage());
+        }
     }
 
 
