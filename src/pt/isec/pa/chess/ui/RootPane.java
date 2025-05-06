@@ -55,6 +55,7 @@ public class RootPane extends BorderPane {
         canvas.widthProperty().bind(widthProperty());
         canvas.heightProperty().bind(heightProperty().subtract(lbStatus.heightProperty()).subtract(25));
         setCenter(canvas);
+        canvas.setVisible(false);
 
         canvas.widthProperty().addListener((obs, oldVal, newVal) -> update());
         canvas.heightProperty().addListener((obs, oldVal, newVal) -> update());
@@ -196,6 +197,7 @@ public class RootPane extends BorderPane {
             AskName askName = new AskName(data);
             askName.showAndWait();
             data.restart();
+            canvas.setVisible(true);
             update();
         });
 
@@ -210,6 +212,7 @@ public class RootPane extends BorderPane {
                 data.open(hFile.getAbsolutePath());
                 AskName askName = new AskName(data);
                 askName.showAndWait();
+                canvas.setVisible(true);
                 update();
             }
         });
@@ -236,6 +239,7 @@ public class RootPane extends BorderPane {
                 data.importa(file.getAbsolutePath());
                 AskName askName = new AskName(data);
                 askName.showAndWait();
+                canvas.setVisible(true);
                 update();
             }
         });
@@ -308,6 +312,8 @@ public class RootPane extends BorderPane {
         int boardRow = numRows - row;
 
         Position clicked = new Position(colLetter, boardRow);
+
+        //System.out.println("Clicked: " + clicked);
 
         if (selectedPos == null) {
             selectedPos = clicked;
