@@ -38,7 +38,7 @@ public class ChessGameManager {
     public void importa(String sFileName) {
         try {
             cgGame.importa(sFileName);
-        }catch (IOException | RuntimeException e){
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
     }
@@ -46,7 +46,7 @@ public class ChessGameManager {
     public void exporta(String sFileName) {
         try {
             cgGame.exporta(sFileName);
-        }catch (IOException | RuntimeException e){
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
     }
@@ -59,7 +59,6 @@ public class ChessGameManager {
             cgGame.restart();
         }
     }
-
 
 
     public void movePiece(Position oldPos, Position newPos) {
@@ -117,10 +116,9 @@ public class ChessGameManager {
     }
 
 
-
     public String getPossibleMovesFromPieceAt(Position pos) {
         Piece pPiece = cgGame.board.getPiece(pos);
-        if(pPiece != null) {
+        if (pPiece != null) {
             return pPiece.getPossibleMoves().toString();
         }
         return null;
@@ -139,9 +137,23 @@ public class ChessGameManager {
         return sb.toString();
     }
 
-    public int getBoardCols() { return 8; }
+    public int getBoardCols() {
+        try {
+            return cgGame.getBoardSize();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 
-    public int getBoardRows() { return 8; }
+    public int getBoardRows() {
+        try {
+            return cgGame.getBoardSize();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 
 
     private void removePiece(Position pos) {

@@ -23,6 +23,10 @@ public class ChessGame implements Serializable {
         board.initializeBoard();
     }
 
+    public int getBoardSize() {
+        return board.getBoardSize();
+    }
+
     public void setPlayerName(int player, String name) {
         if (player < 1 || player > 2) {
             throw new RuntimeException("tried to set invalid player");
@@ -207,7 +211,7 @@ public class ChessGame implements Serializable {
     }
 
 
-    public void open(String sFileName) throws IOException, ClassNotFoundException{
+    public void open(String sFileName) throws IOException, ClassNotFoundException {
 
         ChessGame loaded = ChessGameSerialization.load(sFileName);
 
