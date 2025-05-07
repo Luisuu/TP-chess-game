@@ -200,7 +200,7 @@ public class RootPane extends BorderPane {
 
         mnNew.setOnAction(actionEvent -> {
             canvas.setVisible(false);
-            lbStatus = new Label("Game not started. Create or load a game from the menu.");
+            //lbStatus = new Label("Game not started. Create or load a game from the menu.");
             data.setPlayerName(1, null);
             data.setPlayerName(2, null);
             AskName askName = new AskName(data);
@@ -222,8 +222,8 @@ public class RootPane extends BorderPane {
             if (hFile != null) {
                 System.out.println(hFile.getAbsolutePath());
                 data.open(hFile.getAbsolutePath());
-                AskName askName = new AskName(data);
-                askName.showAndWait();
+                //AskName askName = new AskName(data);
+                //askName.showAndWait();
                 canvas.setVisible(true);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
                 update();

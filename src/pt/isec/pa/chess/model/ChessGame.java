@@ -273,6 +273,8 @@ public class ChessGame implements Serializable {
             this.board = loaded.board;
             this.cCurrentPlayer = loaded.cCurrentPlayer;
             this.cWinner = loaded.cWinner;
+            this.sPlayer1 = loaded.sPlayer1;
+            this.sPlayer2 = loaded.sPlayer2;
 
             for (Piece piece : board.getPieces()) {
                 piece.setBoard(board);
