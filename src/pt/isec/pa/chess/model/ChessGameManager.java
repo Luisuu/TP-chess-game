@@ -65,8 +65,7 @@ public class ChessGameManager {
     public void movePiece(Position oldPos, Position newPos) {
         try {
             boolean needsPromotion = cgGame.movePiece(oldPos, newPos);
-            if (needsPromotion && promotionListener != null)
-                promotionListener.onPromote(newPos);
+            if (needsPromotion && promotionListener != null) promotionListener.onPromote(newPos);
         } catch (Exception e) {
             System.err.println("Error moving a piece: " + e.getMessage());
         }
@@ -97,6 +96,14 @@ public class ChessGameManager {
         }
     }
 
+    public String getPlayerName(PieceColor eColor) {
+        try {
+            return cgGame.getPlayerName(eColor);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error getting a name: " + e.getMessage());
+        }
+        return null;
+    }
 
     public String getPossibleMovesFromPieceAt(Position pos) {
         try {
@@ -117,8 +124,8 @@ public class ChessGameManager {
         }
     }
 
-    public String getCurrentPlayerName() {
-        return cgGame.getcCurrentPlayer().toString();
+    public PieceColor getCurrentPlayerName() {
+        return cgGame.getcCurrentPlayer();
     }
 
     public String debug() {

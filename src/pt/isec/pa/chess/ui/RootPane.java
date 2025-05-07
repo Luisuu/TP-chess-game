@@ -203,7 +203,7 @@ public class RootPane extends BorderPane {
             askName.showAndWait();
             data.restart();
             canvas.setVisible(true);
-            lbStatus.setText("Current Player: " + data.getCurrentPlayerName());
+            lbStatus.setText("Current Player: " + data.getPlayerName(data.getCurrentPlayerName()) + " Color: " + data.getCurrentPlayerName().toString());
             update();
         });
 
@@ -219,7 +219,7 @@ public class RootPane extends BorderPane {
                 AskName askName = new AskName(data);
                 askName.showAndWait();
                 canvas.setVisible(true);
-                lbStatus.setText("Current Player: " + data.getCurrentPlayerName());
+                lbStatus.setText("Current Player: " + data.getPlayerName(data.getCurrentPlayerName()) + " Color: " + data.getCurrentPlayerName().toString());
                 update();
             }
         });
@@ -247,7 +247,7 @@ public class RootPane extends BorderPane {
                 AskName askName = new AskName(data);
                 askName.showAndWait();
                 canvas.setVisible(true);
-                lbStatus.setText("Current Player: " + data.getCurrentPlayerName());
+                lbStatus.setText("Current Player: " + data.getPlayerName(data.getCurrentPlayerName()) + " Color: " + data.getCurrentPlayerName().toString());
                 update();
             }
         });
@@ -263,8 +263,12 @@ public class RootPane extends BorderPane {
             }
         });
 
-        mnExit.setOnAction(actionEvent -> { Platform.exit(); });
-        mnDebug.setOnAction(actionEvent -> { System.out.println(data.debug()); });
+        mnExit.setOnAction(actionEvent -> {
+            Platform.exit();
+        });
+        mnDebug.setOnAction(actionEvent -> {
+            System.out.println(data.debug());
+        });
 
         normalMode.setOnAction(e -> {
             if (normalMode.isSelected()) {
@@ -310,8 +314,7 @@ public class RootPane extends BorderPane {
         double mouseX = e.getX();
         double mouseY = e.getY();
 
-        if (mouseX < marginX || mouseX > marginX + boardWidth ||
-                mouseY < marginY || mouseY > marginY + boardHeight) {
+        if (mouseX < marginX || mouseX > marginX + boardWidth || mouseY < marginY || mouseY > marginY + boardHeight) {
             return;
         }
 
@@ -323,16 +326,16 @@ public class RootPane extends BorderPane {
 
         Position clicked = new Position(colLetter, boardRow);
 
-        System.out.println("Clicked: " + clicked);
+        //System.out.println("Clicked: " + clicked);
 
         if (selectedPos == null) {
             selectedPos = clicked;
         } else {
-            System.out.println("selectedPos: " + selectedPos);
-            System.out.println("clicked: " + clicked);
+            //System.out.println("selectedPos: " + selectedPos);
+            //System.out.println("clicked: " + clicked);
             data.movePiece(selectedPos, clicked);
             selectedPos = null;
-            lbStatus.setText("Current Player: " + data.getCurrentPlayerName());
+            lbStatus.setText("Current Player: " + data.getPlayerName(data.getCurrentPlayerName()) + " Color: " + data.getCurrentPlayerName().toString());
             update();
         }
     }

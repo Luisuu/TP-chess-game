@@ -40,6 +40,14 @@ public class ChessGame implements Serializable {
         }
     }
 
+    public String getPlayerName(PieceColor eColor) {
+        if (eColor == PieceColor.WHITE) {
+            return sPlayer1;
+        } else {
+            return sPlayer2;
+        }
+    }
+
     public String debug() {
         //
         StringBuilder sb = new StringBuilder();
@@ -78,12 +86,10 @@ public class ChessGame implements Serializable {
 
 
     public Set<Position> getPossibleMovesFromPieceAt(Position pos) {
-        if (pos == null)
-            throw new IllegalArgumentException("Position can't be null");
+        if (pos == null) throw new IllegalArgumentException("Position can't be null");
 
         Piece piece = board.getPiece(pos);
-        if (piece == null)
-            return new HashSet<>();
+        if (piece == null) return new HashSet<>();
 
         return piece.getPossibleMoves();
     }
@@ -177,8 +183,7 @@ public class ChessGame implements Serializable {
 
 
     public boolean movePiece(Position oldPos, Position newPos) {
-        if (isGameOver())
-            return false;
+        if (isGameOver()) return false;
 
         Piece pMover = board.getPiece(oldPos);
         if (pMover == null || !pMover.getPossibleMoves().contains(newPos) || pMover.getColor() != cCurrentPlayer)
@@ -186,8 +191,7 @@ public class ChessGame implements Serializable {
 
         // Remove peça capturada
         Piece target = board.getPiece(newPos);
-        if (target != null && target.getColor() != pMover.getColor())
-            board.removePiece(newPos);
+        if (target != null && target.getColor() != pMover.getColor()) board.removePiece(newPos);
 
 
         board.removePiece(oldPos);
@@ -207,11 +211,9 @@ public class ChessGame implements Serializable {
 
 
     public void removePiece(Position pos) {
-        if (pos == null)
-            throw new IllegalArgumentException("Position can't be null");
+        if (pos == null) throw new IllegalArgumentException("Position can't be null");
         board.removePiece(pos);
     }
-
 
 
     public void importa(String sFileName) throws IOException {
