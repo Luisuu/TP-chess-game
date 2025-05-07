@@ -25,7 +25,6 @@ public class ChessGameManager {
         this.promotionListener = listener;
     }
 
-
     public void save(String sFileName) {
         try {
             cgGame.save(sFileName);
@@ -59,7 +58,6 @@ public class ChessGameManager {
         }
     }
 
-
     public void movePiece(Position oldPos, Position newPos) {
         try {
             boolean needsPromotion = cgGame.movePiece(oldPos, newPos);
@@ -68,7 +66,6 @@ public class ChessGameManager {
             System.err.println("Error moving a piece: " + e.getMessage());
         }
     }
-
 
     public void promotePawn(Position position, char pieceType) {
         try {
@@ -158,7 +155,6 @@ public class ChessGameManager {
         return -1;
     }
 
-
     private void removePiece(Position pos) {
         try {
             cgGame.removePiece(pos);
@@ -166,6 +162,4 @@ public class ChessGameManager {
             System.err.println("Error removing pieces: " + e.getMessage());
         }
     }
-
-
 }

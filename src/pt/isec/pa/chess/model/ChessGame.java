@@ -15,7 +15,7 @@ public class ChessGame implements Serializable {
     Board board;
     PieceColor cCurrentPlayer = PieceColor.WHITE;
     PieceColor cWinner = null;
-    String sPlayer1, sPlayer2;
+    String sPlayer1 = null, sPlayer2 = null;
 
     public ChessGame() {
         board = new Board();
@@ -66,10 +66,6 @@ public class ChessGame implements Serializable {
     public void start() {
         board.clearBoard();
         board.initializeBoard();
-    }
-
-    public String printPieces() {
-        return board.printPieces();
     }
 
     public String getBoardPiecesString() {
@@ -262,13 +258,12 @@ public class ChessGame implements Serializable {
     public void exporta(String sFileName) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append(cCurrentPlayer).append(",");
-        sb.append(printPieces());
+        sb.append(getBoardPiecesString());
 
         try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(sFileName)))) {
             dos.write(sb.toString().getBytes());
         }
     }
-
 
     public void open(String sFileName) throws IOException, ClassNotFoundException {
 

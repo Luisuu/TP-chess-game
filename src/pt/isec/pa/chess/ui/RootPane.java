@@ -199,11 +199,17 @@ public class RootPane extends BorderPane {
         canvas.setOnMouseClicked(this::handleClick);
 
         mnNew.setOnAction(actionEvent -> {
+            canvas.setVisible(false);
+            lbStatus = new Label("Game not started. Create or load a game from the menu.");
+            data.setPlayerName(1, null);
+            data.setPlayerName(2, null);
             AskName askName = new AskName(data);
             askName.showAndWait();
-            data.restart();
-            canvas.setVisible(true);
-            lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
+            if (data.getPlayerName(data.getcCurrentPlayer()) != null) {
+                data.restart();
+                canvas.setVisible(true);
+                lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
+            }
             update();
         });
 
