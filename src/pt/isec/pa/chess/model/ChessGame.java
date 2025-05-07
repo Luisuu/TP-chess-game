@@ -64,6 +64,10 @@ public class ChessGame implements Serializable {
         return board.printPieces();
     }
 
+    public String getBoardPiecesString() {
+        return board.printPieces();
+    }
+
     public PieceColor getcCurrentPlayer() {
         return cCurrentPlayer;
     }
@@ -71,6 +75,19 @@ public class ChessGame implements Serializable {
     public PieceColor getcOpponent() {
         return cCurrentPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
     }
+
+
+    public Set<Position> getPossibleMovesFromPieceAt(Position pos) {
+        if (pos == null)
+            throw new IllegalArgumentException("Position can't be null");
+
+        Piece piece = board.getPiece(pos);
+        if (piece == null)
+            return new HashSet<>();
+
+        return piece.getPossibleMoves();
+    }
+
 
     public PieceColor getWinner() {
         return cWinner;
@@ -99,6 +116,7 @@ public class ChessGame implements Serializable {
         }
         return false;
     }
+
 
     public void resetGame() {
         cCurrentPlayer = PieceColor.WHITE;
@@ -151,11 +169,49 @@ public class ChessGame implements Serializable {
             case 'R' -> PieceFactory.ROOK.createPiece(color, board, position.getColumn(), position.getRow());
             case 'B' -> PieceFactory.BISHOP.createPiece(color, board, position.getColumn(), position.getRow());
             case 'N' -> PieceFactory.KNIGHT.createPiece(color, board, position.getColumn(), position.getRow());
-            default -> throw new IllegalArgumentException("Peça inválida: " + pieceType);
+            default -> throw new IllegalArgumentException("Invalid piece: " + pieceType);
         };
 
         board.addPiece(position, newPiece);
     }
+
+
+    public boolean movePiece(Position oldPos, Position newPos) {
+        if (isGameOver())
+            return false;
+
+        Piece pMover = board.getPiece(oldPos);
+        if (pMover == null || !pMover.getPossibleMoves().contains(newPos) || pMover.getColor() != cCurrentPlayer)
+            return false;
+
+        // Remove peça capturada
+        Piece target = board.getPiece(newPos);
+        if (target != null && target.getColor() != pMover.getColor())
+            board.removePiece(newPos);
+
+
+        board.removePiece(oldPos);
+        pMover.setPosition(newPos);
+        board.addPiece(newPos, pMover);
+
+        pMover.setHasMoved(true);
+
+        // Verifica se pawnpromotion
+        boolean needsPromotion = (pMover instanceof Pawn pawn && pawn.isPromotionPosition());
+
+        cCurrentPlayer = getcOpponent();
+        isGameOver();
+
+        return needsPromotion;
+    }
+
+
+    public void removePiece(Position pos) {
+        if (pos == null)
+            throw new IllegalArgumentException("Position can't be null");
+        board.removePiece(pos);
+    }
+
 
 
     public void importa(String sFileName) throws IOException {
@@ -178,14 +234,14 @@ public class ChessGame implements Serializable {
             try {
                 Color = PieceColor.valueOf(tokens[0].toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new RuntimeException("cor " + tokens[0] + " invalida");
+                throw new RuntimeException("color " + tokens[0] + " invalid");
             }
 
             for (int i = 1; i < tokens.length; i++) {
                 String token = tokens[i].trim();
 
                 if (!token.matches("(?i)[kqrbnp][a-h][1-8]\\*?")) {
-                    throw new RuntimeException("peca " + token + " invalida");
+                    throw new RuntimeException("piece " + token + " invalid");
                 }
             }
 

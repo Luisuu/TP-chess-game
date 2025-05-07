@@ -80,4 +80,9 @@ abstract public class Piece implements Serializable {
         }
         return possibleMoves;
     }
+
+    public void setHasMoved(boolean hasMoved) {
+
+    }
+
 }
