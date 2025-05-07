@@ -203,7 +203,7 @@ public class RootPane extends BorderPane {
             askName.showAndWait();
             data.restart();
             canvas.setVisible(true);
-            lbStatus.setText("Current Player: " + data.getPlayerName(data.getCurrentPlayerName()) + " Color: " + data.getCurrentPlayerName().toString());
+            lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
             update();
         });
 
@@ -219,7 +219,7 @@ public class RootPane extends BorderPane {
                 AskName askName = new AskName(data);
                 askName.showAndWait();
                 canvas.setVisible(true);
-                lbStatus.setText("Current Player: " + data.getPlayerName(data.getCurrentPlayerName()) + " Color: " + data.getCurrentPlayerName().toString());
+                lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
                 update();
             }
         });
@@ -247,7 +247,7 @@ public class RootPane extends BorderPane {
                 AskName askName = new AskName(data);
                 askName.showAndWait();
                 canvas.setVisible(true);
-                lbStatus.setText("Current Player: " + data.getPlayerName(data.getCurrentPlayerName()) + " Color: " + data.getCurrentPlayerName().toString());
+                lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
                 update();
             }
         });
@@ -335,7 +335,7 @@ public class RootPane extends BorderPane {
             //System.out.println("clicked: " + clicked);
             data.movePiece(selectedPos, clicked);
             selectedPos = null;
-            lbStatus.setText("Current Player: " + data.getPlayerName(data.getCurrentPlayerName()) + " Color: " + data.getCurrentPlayerName().toString());
+            lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
             update();
         }
     }

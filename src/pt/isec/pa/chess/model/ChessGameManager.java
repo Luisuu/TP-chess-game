@@ -1,10 +1,8 @@
 package pt.isec.pa.chess.model;
 
-import pt.isec.pa.chess.model.data.Board;
 import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.Set;
 
 public class ChessGameManager {
@@ -108,7 +106,7 @@ public class ChessGameManager {
     public String getPossibleMovesFromPieceAt(Position pos) {
         try {
             Set<Position> moves = cgGame.getPossibleMovesFromPieceAt(pos);
-            return moves.toString(); // Converte Set<Position> para String
+            return moves.toString();
         } catch (IllegalArgumentException e) {
             System.err.println("Error getting movements: " + e.getMessage());
             return "[]";
@@ -124,8 +122,13 @@ public class ChessGameManager {
         }
     }
 
-    public PieceColor getCurrentPlayerName() {
-        return cgGame.getcCurrentPlayer();
+    public PieceColor getcCurrentPlayer() {
+        try {
+            return cgGame.getcCurrentPlayer();
+        } catch (Exception e) {
+            System.err.println("Error getting current player: " + e.getMessage());
+            return null;
+        }
     }
 
     public String debug() {

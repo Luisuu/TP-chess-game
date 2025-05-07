@@ -80,6 +80,7 @@ public class ChessGame implements Serializable {
         return cCurrentPlayer;
     }
 
+
     public PieceColor getcOpponent() {
         return cCurrentPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
     }
