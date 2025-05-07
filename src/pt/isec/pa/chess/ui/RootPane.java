@@ -16,6 +16,8 @@ import pt.isec.pa.chess.ui.res.ImageManager;
 
 import java.io.File;
 
+import static java.lang.Double.min;
+
 public class RootPane extends BorderPane {
 
     private final ChessGameManager data;
@@ -96,8 +98,9 @@ public class RootPane extends BorderPane {
     }
 
     private void drawBoard(GraphicsContext gc) {
-        double width = canvas.getWidth();
-        double height = canvas.getHeight();
+        double sizeUser = min(canvas.getWidth(), canvas.getHeight());
+        double width = sizeUser;
+        double height = sizeUser;
         double marginX = width * 0.08;
         double marginY = height * 0.08;
         double boardWidth = width - 2 * marginX;
@@ -141,8 +144,10 @@ public class RootPane extends BorderPane {
 
 
     private void drawPieces(GraphicsContext gc) {
-        double width = canvas.getWidth();
-        double height = canvas.getHeight();
+        double sizeUser = min(canvas.getWidth(), canvas.getHeight());
+
+        double width = sizeUser;
+        double height = sizeUser;
 
         double marginX = width * 0.08;
         double marginY = height * 0.08;
@@ -198,6 +203,7 @@ public class RootPane extends BorderPane {
             askName.showAndWait();
             data.restart();
             canvas.setVisible(true);
+            lbStatus.setText("Current Player: " + data.getCurrentPlayerName());
             update();
         });
 
@@ -213,6 +219,7 @@ public class RootPane extends BorderPane {
                 AskName askName = new AskName(data);
                 askName.showAndWait();
                 canvas.setVisible(true);
+                lbStatus.setText("Current Player: " + data.getCurrentPlayerName());
                 update();
             }
         });
@@ -240,6 +247,7 @@ public class RootPane extends BorderPane {
                 AskName askName = new AskName(data);
                 askName.showAndWait();
                 canvas.setVisible(true);
+                lbStatus.setText("Current Player: " + data.getCurrentPlayerName());
                 update();
             }
         });
@@ -289,8 +297,10 @@ public class RootPane extends BorderPane {
     }
 
     private void handleClick(MouseEvent e) {
-        double width = canvas.getWidth();
-        double height = canvas.getHeight();
+        double sizeUser = min(canvas.getWidth(), canvas.getHeight());
+
+        double width = sizeUser;
+        double height = sizeUser;
         double marginX = width * 0.08;
         double marginY = height * 0.08;
         double boardWidth = width - 2 * marginX;
@@ -313,13 +323,16 @@ public class RootPane extends BorderPane {
 
         Position clicked = new Position(colLetter, boardRow);
 
-        //System.out.println("Clicked: " + clicked);
+        System.out.println("Clicked: " + clicked);
 
         if (selectedPos == null) {
             selectedPos = clicked;
         } else {
+            System.out.println("selectedPos: " + selectedPos);
+            System.out.println("clicked: " + clicked);
             data.movePiece(selectedPos, clicked);
             selectedPos = null;
+            lbStatus.setText("Current Player: " + data.getCurrentPlayerName());
             update();
         }
     }

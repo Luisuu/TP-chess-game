@@ -128,6 +128,10 @@ public class ChessGameManager {
         return cgGame.printPieces();
     }
 
+    public String getCurrentPlayerName() {
+        return cgGame.getcCurrentPlayer().toString();
+    }
+
     public String debug() {
         StringBuilder sb = new StringBuilder();
         sb.append(cgGame.sPlayer1).append(",");

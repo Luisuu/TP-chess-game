@@ -27,10 +27,13 @@ public class Pawn extends Piece {
         if (isPossibleMove(oneStep) && board.getPiece(oneStep) == null) {
             possibleMoves.add(oneStep);
 
-            Position twoSteps = new Position(col, row + 2 * direction);
-            if (!bHasMoved && isPossibleMove(twoSteps) && board.getPiece(twoSteps) == null) {
-                possibleMoves.add(twoSteps);
+            if((row + 2 * direction) <= 8 || (row + 2 * direction) >= 1){
+                Position twoSteps = new Position(col, row + 2 * direction);
+                if (!bHasMoved && isPossibleMove(twoSteps) && board.getPiece(twoSteps) == null) {
+                    possibleMoves.add(twoSteps);
+                }
             }
+
         }
 
         char colLeft = (char) (col - 1);
