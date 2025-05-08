@@ -1,136 +1,194 @@
 package pt.isec.pa.chess.model;
 
-import pt.isec.pa.chess.model.data.Board;
-import pt.isec.pa.chess.model.data.pieces.Piece;
-import pt.isec.pa.chess.model.data.pieces.PieceColor;
+import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
-import java.util.Arrays;
+import java.util.Set;
 
 public class ChessGameManager {
     ChessGame cgGame;
-    String sPlayer1, sPlayer2;
 
-    public ChessGame getChessGame() {
-        return cgGame;
+
+    //listener pawnpromotion
+    public interface PromotionListener {
+        void onPromote(Position position);
     }
 
-    public ChessGameManager(){
+    private transient PromotionListener promotionListener;
+
+    public ChessGameManager() {
         cgGame = new ChessGame();
-        System.out.println("ChessGameManager");
+        //System.out.println("ChessGameManager");
     }
 
-    public void setPlayerName(int player, String name){
-        if(player < 1 || player > 2){
-            System.out.println("Invalid player number");
-            return;
-        }
-        if(player == 1){
-            sPlayer1 = name;
-        }else{
-            sPlayer2 = name;
-        }
+    public void setPromotionListener(PromotionListener listener) {
+        this.promotionListener = listener;
     }
 
     public void save(String sFileName) {
-        ChessGameSerialization.save(sFileName, cgGame);
+        try {
+            cgGame.save(sFileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void importa(String sFileName) {
-        cgGame.board.clearBoard();
-        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(sFileName)))) {
-            byte[] data = dis.readAllBytes();
-
-            String line = new String(data).trim();
-
-            if (line.isEmpty()) {
-                //ficheiro vazio
-                return;
-            }
-
-            String[] tokens = line.split(",");
-            if (tokens.length < 2) {
-                // formato inmvalido
-                return;
-            }
-
-            PieceColor Color;
-            try {
-                Color = PieceColor.valueOf(tokens[0].toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException("cor " + tokens[0] + " invalida");
-            }
-
-            for (int i = 1; i < tokens.length; i++) {
-                String token = tokens[i].trim();
-
-                if (!token.matches("(?i)[kqrbnp][a-h][1-8]\\*?")) {
-                    throw new RuntimeException("peca " + token + " invalida");
-                }
-            }
-
-            cgGame.cCurrentPlayer = Color;
-            cgGame.board = new Board();
-
-            cgGame.board.initializeBoard(Arrays.copyOfRange(tokens, 1, tokens.length));
-
-            for (Piece piece : cgGame.board.getPieces()) {
-                piece.setBoard(cgGame.board);
-            }
-        } catch (IOException e) {
+        try {
+            cgGame.importa(sFileName);
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
     }
 
     public void exporta(String sFileName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(cgGame.cCurrentPlayer).append(",");
-        sb.append(cgGame.printPieces());
-
-        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(sFileName)))) {
-            dos.write(sb.toString().getBytes());
-        } catch (IOException e) {
+        try {
+            cgGame.exporta(sFileName);
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
     }
 
     public void open(String sFileName) {
-        //FALTA GENERALIZAR O PATH
-        ChessGame loaded = ChessGameSerialization.load(sFileName);
-
-        if (loaded != null) {
-            cgGame.board = loaded.board;
-            cgGame.cCurrentPlayer = loaded.cCurrentPlayer;
-            cgGame.cWinner = loaded.cWinner;
-
-            for (Piece piece : cgGame.board.getPieces()) {
-                piece.setBoard(cgGame.board);
-            }
-
-            //System.out.println("Partie restaurer");
-        } else {
-            cgGame.board = new Board();
-            cgGame.board.initializeBoard();
-
-            for (Piece piece : cgGame.board.getPieces()) {
-                piece.setBoard(cgGame.board);
-            }
-
-            cgGame.cCurrentPlayer = PieceColor.WHITE;
-            cgGame.cWinner = null;
-
-            //System.out.println("STARTTTT");
+        try {
+            cgGame.open(sFileName);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            cgGame.restart();
         }
     }
 
-    public void restart(){
-        cgGame.resetGame();
+    public void movePiece(Position oldPos, Position newPos) {
+        try {
+            boolean needsPromotion = cgGame.movePiece(oldPos, newPos);
+            if (needsPromotion && promotionListener != null) promotionListener.onPromote(newPos);
+        } catch (Exception e) {
+            System.err.println("Error moving a piece: " + e.getMessage());
+        }
     }
 
-    public String debug(){
+    public void promotePawn(Position position, char pieceType) {
+        try {
+            cgGame.promotePawn(position, pieceType);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error on promotion: " + e.getMessage());
+        }
+    }
+
+    public void restart() {
+        try {
+            cgGame.restart();
+        } catch (Exception e) {
+            System.err.println("Error restarting the game: " + e.getMessage());
+        }
+    }
+
+    public void setPlayerName(int player, String name) {
+        try {
+            cgGame.setPlayerName(player, name);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error setting a name: " + e.getMessage());
+        }
+    }
+
+    public String getPlayerName(PieceColor eColor) {
+        try {
+            return cgGame.getPlayerName(eColor);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error getting a name: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public String getPossibleMovesFromPieceAt(Position pos) {
+        try {
+            Set<Position> moves = cgGame.getPossibleMovesFromPieceAt(pos);
+            return moves.toString();
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error getting movements: " + e.getMessage());
+            return "[]";
+        }
+    }
+
+    public String getBoardPiecesString() {
+        try {
+            return cgGame.getBoardPiecesString();
+        } catch (Exception e) {
+            System.err.println("Error getting pieces: " + e.getMessage());
+            return "";
+        }
+    }
+
+    public PieceColor getcCurrentPlayer() {
+        try {
+            return cgGame.getcCurrentPlayer();
+        } catch (Exception e) {
+            System.err.println("Error getting current player: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+    public boolean bIsCheckmate(PieceColor color) {
+        try {
+            return cgGame.bIsCheckmate(color);
+        } catch (Exception e) {
+            System.err.println("Error checking checkmate: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public PieceColor getWinner() {
+        try {
+            return cgGame.getWinner();
+        } catch (Exception e) {
+            System.err.println("Error getting winner: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean isGameOver() {
+        try {
+            return cgGame.isGameOver();
+        } catch (Exception e) {
+            System.err.println("Error checking game over status: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    public String debug() {
         StringBuilder sb = new StringBuilder();
+        sb.append(cgGame.sPlayer1).append(",");
+        sb.append(cgGame.sPlayer2).append(",");
         sb.append(cgGame.cCurrentPlayer).append(",");
-        sb.append(cgGame.printPieces());
+        sb.append(cgGame.getBoardPiecesString());
         return sb.toString();
+    }
+
+    public int getBoardCols() {
+        try {
+            return cgGame.getBoardSize();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int getBoardRows() {
+        try {
+            return cgGame.getBoardSize();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    private void removePiece(Position pos) {
+        try {
+            cgGame.removePiece(pos);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error removing pieces: " + e.getMessage());
+        }
     }
 }

@@ -1,6 +1,9 @@
 package pt.isec.pa.chess.model.data.pieces;
 
 import pt.isec.pa.chess.model.data.Board;
+import pt.isec.pa.chess.model.data.pieces.Piece;
+import pt.isec.pa.chess.model.data.pieces.PieceColor;
+import pt.isec.pa.chess.model.data.pieces.Position;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,10 +27,13 @@ public class Pawn extends Piece {
         if (isPossibleMove(oneStep) && board.getPiece(oneStep) == null) {
             possibleMoves.add(oneStep);
 
-            Position twoSteps = new Position(col, row + 2 * direction);
-            if (!bHasMoved && isPossibleMove(twoSteps) && board.getPiece(twoSteps) == null) {
-                possibleMoves.add(twoSteps);
+            if((row + 2 * direction) <= 8 && (row + 2 * direction) >= 1){
+                Position twoSteps = new Position(col, row + 2 * direction);
+                if (!bHasMoved && isPossibleMove(twoSteps) && board.getPiece(twoSteps) == null) {
+                    possibleMoves.add(twoSteps);
+                }
             }
+
         }
 
         char colLeft = (char) (col - 1);
@@ -61,5 +67,10 @@ public class Pawn extends Piece {
 
     public void setHasMoved(boolean hasMoved) {
         this.bHasMoved = hasMoved;
+    }
+
+    public boolean isPromotionPosition() {
+        return (PieceColor == PieceColor.WHITE && pPos.getRow() == 8) ||
+                (PieceColor == PieceColor.BLACK && pPos.getRow() == 1);
     }
 }

@@ -13,6 +13,12 @@ public class Board implements Serializable {
     @Serial
     static final long serialVersionUID = 1L;
 
+    static final int XDDDDDD = 8;
+
+    public int getBoardSize() {
+        return XDDDDDD;
+    }
+
     private Map<Position, Piece> mBoard;
 
     public Board() {
@@ -84,7 +90,9 @@ public class Board implements Serializable {
         return mBoard.get(position);
     }
 
-    public Collection<Piece> getAllPieces() { return mBoard.values();}
+    public Collection<Piece> getAllPieces() {
+        return mBoard.values();
+    }
 
 
     public String printPieces() {
