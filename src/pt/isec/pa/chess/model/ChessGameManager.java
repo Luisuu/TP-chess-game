@@ -128,24 +128,6 @@ public class ChessGameManager {
         }
     }
 
-    public boolean bIsKingInCheck(PieceColor color) {
-        try {
-            return cgGame.bIsKingInCheck(color);
-        } catch (Exception e) {
-            System.err.println("Error checking king status: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public boolean bIsCheckmate(PieceColor color) {
-        try {
-            return cgGame.bIsCheckmate(color);
-        } catch (Exception e) {
-            System.err.println("Error checking checkmate: " + e.getMessage());
-            return false;
-        }
-    }
-
 
     public PieceColor getWinner() {
         try {

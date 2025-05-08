@@ -348,17 +348,11 @@ public class RootPane extends BorderPane {
             selectedPos = null;
             lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
 
-           /* if (data.isGameOver()) {
-                showCheckmateDialog(data.getWinner());
-            }*/
 
             update();
         }
     }
 
-    private void showCheckmateDialog(PieceColor winner) {
-
-    }
 
     private char showPromotionDialog() {
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Queen", "Queen", "Rook", "Bishop", "Knight");
