@@ -109,7 +109,6 @@ public class ChessGame implements Serializable {
                 }
             }
         }
-
         if (!bWhiteKing) {
             cWinner = PieceColor.BLACK;
             return true;
@@ -117,6 +116,16 @@ public class ChessGame implements Serializable {
             cWinner = PieceColor.WHITE;
             return true;
         }
+
+        // checkmate
+        if (bIsCheckmate(PieceColor.WHITE)) {
+            cWinner = PieceColor.BLACK;
+            return true;
+        } else if (bIsCheckmate(PieceColor.BLACK)) {
+            cWinner = PieceColor.WHITE;
+            return true;
+        }
+
         return false;
     }
 
@@ -127,36 +136,73 @@ public class ChessGame implements Serializable {
         board.initializeBoard();
     }
 
-    public boolean bIsCheckmate(PieceColor cPieceColor) {
-        Set<Position> sPositions = new HashSet<>();
-        Position kingPos = null;
-        Piece kingPiece = null;
 
+
+    public boolean bIsCheckmate(PieceColor cPieceColor) {
+
+        if (!bIsKingInCheck(cPieceColor)) {
+            return false;
+        }
+
+        //  mov que tire rei do check
         for (Piece piece : board.getAllPieces()) {
-            if (Character.toUpperCase(piece.getDefinition()) == 'K' && piece.getColor() == cPieceColor) {
-                kingPos = piece.getPosition();
-                kingPiece = piece;
-            }
-            if (piece.getColor() != cPieceColor) {
-                sPositions.addAll(piece.getPossibleMoves());
+            if (piece.getColor() == cPieceColor) {
+                Set<Position> possibleMoves = piece.getPossibleMoves();
+                for (Position move : possibleMoves) {
+                    Position originalPos = piece.getPosition();
+                    Piece capturedPiece = board.getPiece(move);
+
+                    board.removePiece(originalPos);
+                    piece.setPosition(move);
+                    board.addPiece(move, piece);
+
+                    // ve se ainda esta check apos mov
+                    boolean stillInCheck = bIsKingInCheck(cPieceColor);
+
+                    board.removePiece(move);
+                    piece.setPosition(originalPos);
+                    board.addPiece(originalPos, piece);
+                    if (capturedPiece != null) {
+                        board.addPiece(move, capturedPiece);
+                    }
+
+                    //mov que tira do check
+                    if (!stillInCheck) {
+                        return false;
+                    }
+                }
             }
         }
 
+        //checkmate
+        return true;
+    }
+
+
+    public boolean bIsKingInCheck(PieceColor kingColor) {
+        Position kingPos = null;
+
+        for (Piece piece : board.getAllPieces()) {
+            if (Character.toUpperCase(piece.getDefinition()) == 'K' && piece.getColor() == kingColor) {
+                kingPos = piece.getPosition();
+                break;
+            }
+        }
         if (kingPos == null) {
             return false;
         }
 
-        if (!sPositions.contains(kingPos)) {
-            return false;
-        }
-
-        for (Position move : kingPiece.getPossibleMoves()) {
-            if (!sPositions.contains(move)) {
-                return false;
+        for (Piece piece : board.getAllPieces()) {
+            if (piece.getColor() != kingColor) {
+                if (piece.getPossibleMoves().contains(kingPos)) {
+                    return true; //rei em check
+                }
             }
         }
-        return true;
+
+        return false; //rei seguro
     }
+
 
     //PAWN PROMOTION
     public void promotePawn(Position position, char pieceType) {

@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
+import pt.isec.pa.chess.model.data.pieces.PieceColor;
 import pt.isec.pa.chess.model.data.pieces.Position;
 import pt.isec.pa.chess.ui.res.ImageManager;
 
@@ -346,10 +347,18 @@ public class RootPane extends BorderPane {
             data.movePiece(selectedPos, clicked);
             selectedPos = null;
             lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
+
+           /* if (data.isGameOver()) {
+                showCheckmateDialog(data.getWinner());
+            }*/
+
             update();
         }
     }
 
+    private void showCheckmateDialog(PieceColor winner) {
+
+    }
 
     private char showPromotionDialog() {
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Queen", "Queen", "Rook", "Bishop", "Knight");

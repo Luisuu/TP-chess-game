@@ -128,6 +128,44 @@ public class ChessGameManager {
         }
     }
 
+    public boolean bIsKingInCheck(PieceColor color) {
+        try {
+            return cgGame.bIsKingInCheck(color);
+        } catch (Exception e) {
+            System.err.println("Error checking king status: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean bIsCheckmate(PieceColor color) {
+        try {
+            return cgGame.bIsCheckmate(color);
+        } catch (Exception e) {
+            System.err.println("Error checking checkmate: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    public PieceColor getWinner() {
+        try {
+            return cgGame.getWinner();
+        } catch (Exception e) {
+            System.err.println("Error getting winner: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean isGameOver() {
+        try {
+            return cgGame.isGameOver();
+        } catch (Exception e) {
+            System.err.println("Error checking game over status: " + e.getMessage());
+            return false;
+        }
+    }
+
+
     public String debug() {
         StringBuilder sb = new StringBuilder();
         sb.append(cgGame.sPlayer1).append(",");
