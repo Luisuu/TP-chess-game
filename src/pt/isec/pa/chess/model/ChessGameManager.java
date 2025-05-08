@@ -129,6 +129,15 @@ public class ChessGameManager {
     }
 
 
+    public boolean bIsCheckmate(PieceColor color) {
+        try {
+            return cgGame.bIsCheckmate(color);
+        } catch (Exception e) {
+            System.err.println("Error checking checkmate: " + e.getMessage());
+            return false;
+        }
+    }
+
     public PieceColor getWinner() {
         try {
             return cgGame.getWinner();
