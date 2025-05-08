@@ -101,6 +101,8 @@ public class RootPane extends BorderPane {
         double sizeUser = min(canvas.getWidth(), canvas.getHeight());
         double width = sizeUser;
         double height = sizeUser;
+        double offsetX = (canvas.getWidth() - width) / 2;
+        double offsetY = (canvas.getHeight() - height) / 2;
         double marginX = width * 0.08;
         double marginY = height * 0.08;
         double boardWidth = width - 2 * marginX;
@@ -119,26 +121,26 @@ public class RootPane extends BorderPane {
             for (int col = 0; col < numCols; col++) {
                 boolean light = (row + col) % 2 == 0;
                 gc.setFill(light ? lightColor : darkColor);
-                double x = marginX + col * cellWidth;
-                double y = marginY + row * cellHeight;
+                double x = offsetX + marginX + col * cellWidth;
+                double y = offsetY + marginY + row * cellHeight;
                 gc.fillRect(x, y, cellWidth, cellHeight);
             }
         }
 
         for (int col = 0; col < numCols; col++) {
             char colLabel = (char) ('a' + col);
-            double x = marginX + col * cellWidth + cellWidth / 2 - 5;
-            double y = marginY + boardHeight + cellHeight * 0.7;
+            double x = offsetX + marginX + col * cellWidth + cellWidth / 2 - 5;
+            double y = offsetY + marginY + boardHeight + cellHeight * 0.6;
             gc.setFill(Color.BLACK);
             gc.fillText(String.valueOf(colLabel), x, y);
         }
 
         for (int row = 0; row < numRows; row++) {
             String rowLabel = String.valueOf(numRows - row);
-            double y = marginY + row * cellHeight + cellHeight / 2 + 5;
-
-            gc.fillText(rowLabel, marginX - cellWidth * 0.4, y);
-            gc.fillText(rowLabel, marginX + boardWidth + cellWidth * 0.1, y);
+            double y = offsetY + marginY + row * cellHeight + cellHeight / 2 + 5;
+            gc.setFill(Color.BLACK);
+            gc.fillText(rowLabel, offsetX + marginX - cellWidth * 0.4, y);
+            gc.fillText(rowLabel, offsetX + marginX + boardWidth + cellWidth * 0.1, y);
         }
     }
 
@@ -148,7 +150,8 @@ public class RootPane extends BorderPane {
 
         double width = sizeUser;
         double height = sizeUser;
-
+        double offsetX = (canvas.getWidth() - width) / 2;
+        double offsetY = (canvas.getHeight() - height) / 2;
         double marginX = width * 0.08;
         double marginY = height * 0.08;
 
@@ -185,8 +188,8 @@ public class RootPane extends BorderPane {
                 String filename = "pieces/" + pieceName + (isWhite ? "W" : "B") + ".png";
                 Image img = ImageManager.getImage(filename);
                 if (img != null) {
-                    double x = marginX + col * cellWidth + cellWidth * 0.1;
-                    double y = marginY + row * cellHeight + cellHeight * 0.1;
+                    double x = offsetX + marginX + col * cellWidth + cellWidth * 0.1;
+                    double y = offsetY + marginY + row * cellHeight + cellHeight * 0.1;
                     double w = cellWidth * 0.8;
                     double h = cellHeight * 0.8;
                     gc.drawImage(img, x, y, w, h);
@@ -307,10 +310,11 @@ public class RootPane extends BorderPane {
     }
 
     private void handleClick(MouseEvent e) {
-        double sizeUser = min(canvas.getWidth(), canvas.getHeight());
-
+        double sizeUser = Math.min(canvas.getWidth(), canvas.getHeight());
         double width = sizeUser;
         double height = sizeUser;
+        double offsetX = (canvas.getWidth() - width) / 2;
+        double offsetY = (canvas.getHeight() - height) / 2;
         double marginX = width * 0.08;
         double marginY = height * 0.08;
         double boardWidth = width - 2 * marginX;
@@ -320,12 +324,12 @@ public class RootPane extends BorderPane {
         double mouseX = e.getX();
         double mouseY = e.getY();
 
-        if (mouseX < marginX || mouseX > marginX + boardWidth || mouseY < marginY || mouseY > marginY + boardHeight) {
+        if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth || mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight) {
             return;
         }
 
-        int col = (int) ((mouseX - marginX) / cellWidth);
-        int row = (int) ((mouseY - marginY) / cellHeight);
+        int col = (int) ((mouseX - offsetX - marginX) / cellWidth);
+        int row = (int) ((mouseY - offsetY - marginY) / cellHeight);
 
         char colLetter = (char) ('a' + col);
         int boardRow = numRows - row;
