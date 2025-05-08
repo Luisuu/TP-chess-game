@@ -200,7 +200,7 @@ public class RootPane extends BorderPane {
 
         mnNew.setOnAction(actionEvent -> {
             canvas.setVisible(false);
-            //lbStatus = new Label("Game not started. Create or load a game from the menu.");
+            lbStatus.setText("Game not started. Create or load a game from the menu.");
             data.setPlayerName(1, null);
             data.setPlayerName(2, null);
             AskName askName = new AskName(data);

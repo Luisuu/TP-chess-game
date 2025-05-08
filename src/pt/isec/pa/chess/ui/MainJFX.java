@@ -16,7 +16,7 @@ public class MainJFX extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         RootPane root = new RootPane(chessGameManager);
-        Scene scene = new Scene(root, 600, 600, Color.ORANGE);
+        Scene scene = new Scene(root, 600, 700, Color.ORANGE);
         stage.setScene(scene);
         stage.setTitle("PA Chess Game");
         stage.setResizable(true);
