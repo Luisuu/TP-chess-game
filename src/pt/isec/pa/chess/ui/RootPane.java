@@ -348,7 +348,9 @@ public class RootPane extends BorderPane {
             selectedPos = null;
             lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
 
-
+            if (data.getWinner() != null) {
+                lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
+            }
             update();
         }
     }
