@@ -11,7 +11,6 @@ public class ChessGameManager {
     ChessGame cgGame;
     private PropertyChangeSupport pcs;
 
-
     //listener pawnpromotion
     public interface PromotionListener {
         void onPromote(Position position);
