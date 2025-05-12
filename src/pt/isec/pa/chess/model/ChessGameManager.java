@@ -2,11 +2,14 @@ package pt.isec.pa.chess.model;
 
 import pt.isec.pa.chess.model.data.pieces.*;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.*;
 import java.util.Set;
 
 public class ChessGameManager {
     ChessGame cgGame;
+    private PropertyChangeSupport pcs;
 
 
     //listener pawnpromotion
@@ -18,7 +21,16 @@ public class ChessGameManager {
 
     public ChessGameManager() {
         cgGame = new ChessGame();
+        pcs = new PropertyChangeSupport(this);
         //System.out.println("ChessGameManager");
+    }
+
+    public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(property, listener);
+    }
+
+    public void addProperyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
     }
 
     public void setPromotionListener(PromotionListener listener) {
