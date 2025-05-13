@@ -2,31 +2,21 @@ package pt.isec.pa.chess.ui;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
-import pt.isec.pa.chess.model.data.pieces.PieceColor;
 import pt.isec.pa.chess.model.data.pieces.Position;
-import pt.isec.pa.chess.ui.res.ImageManager;
 
 import java.io.File;
-
-import static java.lang.Double.min;
 
 public class RootPane extends BorderPane {
 
     private final ChessGameManager data;
     private final int numRows;
     private final int numCols;
-    private final double canvasSize = 600;
 
-    private Canvas canvas;
+    private CanvasBoard canvasBoard;
     private Label lbStatus;
     private Position selectedPos = null;
 
@@ -54,14 +44,11 @@ public class RootPane extends BorderPane {
         lbStatus.setPadding(new Insets(8));
         setBottom(lbStatus);
 
-        canvas = new Canvas();
-        canvas.widthProperty().bind(widthProperty());
-        canvas.heightProperty().bind(heightProperty().subtract(lbStatus.heightProperty()).subtract(25));
-        setCenter(canvas);
-        canvas.setVisible(false);
-
-        canvas.widthProperty().addListener((obs, oldVal, newVal) -> update());
-        canvas.heightProperty().addListener((obs, oldVal, newVal) -> update());
+        canvasBoard = new CanvasBoard(data, this);
+        canvasBoard.widthProperty().bind(widthProperty());
+        canvasBoard.heightProperty().bind(heightProperty().subtract(lbStatus.heightProperty()).subtract(25));
+        setCenter(canvasBoard);
+        canvasBoard.setVisible(false);
     }
 
     private MenuBar createMenu() {
@@ -98,112 +85,9 @@ public class RootPane extends BorderPane {
         return mb;
     }
 
-    private void drawBoard(GraphicsContext gc) {
-        double sizeUser = min(canvas.getWidth(), canvas.getHeight());
-        double width = sizeUser;
-        double height = sizeUser;
-        double offsetX = (canvas.getWidth() - width) / 2;
-        double offsetY = (canvas.getHeight() - height) / 2;
-        double marginX = width * 0.08;
-        double marginY = height * 0.08;
-        double boardWidth = width - 2 * marginX;
-        double boardHeight = height - 2 * marginY;
-        double cellWidth = boardWidth / numCols;
-        double cellHeight = boardHeight / numRows;
-
-        gc.clearRect(0, 0, width, height);
-
-        Color lightColor = Color.web("#fceee9");
-        Color darkColor = Color.web("#944b45");
-
-        gc.setFont(javafx.scene.text.Font.font(cellHeight * 0.4));
-
-        for (int row = 0; row < numRows; row++) {
-            for (int col = 0; col < numCols; col++) {
-                boolean light = (row + col) % 2 == 0;
-                gc.setFill(light ? lightColor : darkColor);
-                double x = offsetX + marginX + col * cellWidth;
-                double y = offsetY + marginY + row * cellHeight;
-                gc.fillRect(x, y, cellWidth, cellHeight);
-            }
-        }
-
-        for (int col = 0; col < numCols; col++) {
-            char colLabel = (char) ('a' + col);
-            double x = offsetX + marginX + col * cellWidth + cellWidth / 2 - 5;
-            double y = offsetY + marginY + boardHeight + cellHeight * 0.6;
-            gc.setFill(Color.BLACK);
-            gc.fillText(String.valueOf(colLabel), x, y);
-        }
-
-        for (int row = 0; row < numRows; row++) {
-            String rowLabel = String.valueOf(numRows - row);
-            double y = offsetY + marginY + row * cellHeight + cellHeight / 2 + 5;
-            gc.setFill(Color.BLACK);
-            gc.fillText(rowLabel, offsetX + marginX - cellWidth * 0.4, y);
-            gc.fillText(rowLabel, offsetX + marginX + boardWidth + cellWidth * 0.1, y);
-        }
-    }
-
-
-    private void drawPieces(GraphicsContext gc) {
-        double sizeUser = min(canvas.getWidth(), canvas.getHeight());
-
-        double width = sizeUser;
-        double height = sizeUser;
-        double offsetX = (canvas.getWidth() - width) / 2;
-        double offsetY = (canvas.getHeight() - height) / 2;
-        double marginX = width * 0.08;
-        double marginY = height * 0.08;
-
-        double boardWidth = width - 2 * marginX;
-        double boardHeight = height - 2 * marginY;
-
-        double cellWidth = boardWidth / numCols;
-        double cellHeight = boardHeight / numRows;
-
-        String pieceData = data.getBoardPiecesString();
-        String[] tokens = pieceData.split(",");
-
-        for (String token : tokens) {
-            token = token.trim();
-            if (token.length() < 3) continue;
-
-            char type = token.charAt(0);
-            boolean isWhite = Character.isUpperCase(type);
-            String position = token.substring(1, 3).toLowerCase();
-            int col = position.charAt(0) - 'a';
-            int row = numRows - Character.getNumericValue(position.charAt(1));
-
-            String pieceName = switch (Character.toUpperCase(type)) {
-                case 'K' -> "king";
-                case 'Q' -> "queen";
-                case 'R' -> "rook";
-                case 'B' -> "bishop";
-                case 'N' -> "knight";
-                case 'P' -> "pawn";
-                default -> null;
-            };
-
-            if (pieceName != null) {
-                String filename = "pieces/" + pieceName + (isWhite ? "W" : "B") + ".png";
-                Image img = ImageManager.getImage(filename);
-                if (img != null) {
-                    double x = offsetX + marginX + col * cellWidth + cellWidth * 0.1;
-                    double y = offsetY + marginY + row * cellHeight + cellHeight * 0.1;
-                    double w = cellWidth * 0.8;
-                    double h = cellHeight * 0.8;
-                    gc.drawImage(img, x, y, w, h);
-                }
-            }
-        }
-    }
-
     private void registerHandlers() {
-        canvas.setOnMouseClicked(this::handleClick);
-
         mnNew.setOnAction(actionEvent -> {
-            canvas.setVisible(false);
+            canvasBoard.setVisible(false);
             lbStatus.setText("Game not started. Create or load a game from the menu.");
             data.setPlayerName(1, null);
             data.setPlayerName(2, null);
@@ -211,8 +95,8 @@ public class RootPane extends BorderPane {
             askName.showAndWait();
             if (data.getPlayerName(data.getcCurrentPlayer()) != null) {
                 data.restart();
-                canvas.setVisible(true);
-                lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
+                canvasBoard.setVisible(true);
+
             }
             update();
         });
@@ -228,7 +112,7 @@ public class RootPane extends BorderPane {
                 data.open(hFile.getAbsolutePath());
                 //AskName askName = new AskName(data);
                 //askName.showAndWait();
-                canvas.setVisible(true);
+                canvasBoard.setVisible(true);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
                 update();
             }
@@ -256,7 +140,7 @@ public class RootPane extends BorderPane {
                 data.importa(file.getAbsolutePath());
                 AskName askName = new AskName(data);
                 askName.showAndWait();
-                canvas.setVisible(true);
+                canvasBoard.setVisible(true);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
                 update();
             }
@@ -266,8 +150,10 @@ public class RootPane extends BorderPane {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Export Game");
             fileChooser.setInitialDirectory(new File("."));
-            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"), new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
-            File file = fileChooser.showSaveDialog(this.getScene().getWindow());
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"),
+                    new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+            File file = fileChooser.showSaveDialog(getScene().getWindow());
             if (file != null) {
                 data.exporta(file.getAbsolutePath());
             }
@@ -310,51 +196,16 @@ public class RootPane extends BorderPane {
         });
     }
 
-    private void handleClick(MouseEvent e) {
-        double sizeUser = Math.min(canvas.getWidth(), canvas.getHeight());
-        double width = sizeUser;
-        double height = sizeUser;
-        double offsetX = (canvas.getWidth() - width) / 2;
-        double offsetY = (canvas.getHeight() - height) / 2;
-        double marginX = width * 0.08;
-        double marginY = height * 0.08;
-        double boardWidth = width - 2 * marginX;
-        double boardHeight = height - 2 * marginY;
-        double cellWidth = boardWidth / numCols;
-        double cellHeight = boardHeight / numRows;
-        double mouseX = e.getX();
-        double mouseY = e.getY();
+    public void update() {
+        lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) +
+                " Color: " + data.getcCurrentPlayer().toString());
 
-        if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth || mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight) {
-            return;
+        if (data.getWinner() != null) {
+            lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
         }
 
-        int col = (int) ((mouseX - offsetX - marginX) / cellWidth);
-        int row = (int) ((mouseY - offsetY - marginY) / cellHeight);
-
-        char colLetter = (char) ('a' + col);
-        int boardRow = numRows - row;
-
-        Position clicked = new Position(colLetter, boardRow);
-
-        //System.out.println("Clicked: " + clicked);
-
-        if (selectedPos == null) {
-            selectedPos = clicked;
-        } else {
-            //System.out.println("selectedPos: " + selectedPos);
-            //System.out.println("clicked: " + clicked);
-            data.movePiece(selectedPos, clicked);
-            selectedPos = null;
-            lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
-
-            if (data.getWinner() != null) {
-                lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
-            }
-            update();
-        }
+        canvasBoard.update();
     }
-
 
     private char showPromotionDialog() {
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Queen", "Queen", "Rook", "Bishop", "Knight");
@@ -363,16 +214,5 @@ public class RootPane extends BorderPane {
         dialog.setContentText("Peça:");
         String result = dialog.showAndWait().orElse("Queen");
         return result.charAt(0);
-    }
-
-    private void update() {
-        showMoves.setDisable(true);
-        undoMove.setDisable(true);
-        redoMove.setDisable(true);
-
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawBoard(gc);
-        drawPieces(gc);
     }
 }

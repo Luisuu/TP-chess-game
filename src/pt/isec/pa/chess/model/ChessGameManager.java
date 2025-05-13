@@ -138,8 +138,7 @@ public class ChessGameManager {
             return null;
         }
     }
-
-
+    
     public boolean bIsCheckmate(PieceColor color) {
         try {
             return cgGame.bIsCheckmate(color);
