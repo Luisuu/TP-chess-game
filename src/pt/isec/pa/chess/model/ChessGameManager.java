@@ -1,6 +1,6 @@
 package pt.isec.pa.chess.model;
 
-import pt.isec.pa.chess.model.data.pieces.*;
+import pt.isec.pa.chess.model.data.pieces.PieceColor;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -11,11 +11,9 @@ public class ChessGameManager {
     ChessGame cgGame;
     private PropertyChangeSupport pcs;
 
-    //listener pawnpromotion
     public interface PromotionListener {
-        void onPromote(Position position);
+        void onPromote(String position);
     }
-
     private transient PromotionListener promotionListener;
 
     public ChessGameManager() {
@@ -69,23 +67,25 @@ public class ChessGameManager {
         }
     }
 
-    public void movePiece(Position oldPos, Position newPos) {
+    public void movePiece(String SoldPos, String SnewPos) {
         try {
-            boolean needsPromotion = cgGame.movePiece(oldPos, newPos);
-            if (needsPromotion && promotionListener != null) promotionListener.onPromote(newPos);
+            boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
+            if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
         } catch (Exception e) {
             System.err.println("Error moving a piece: " + e.getMessage());
         }
     }
 
-    public void promotePawn(Position position, char pieceType) {
+
+
+  /*  public void promotePawn(String position, char pieceType) {
         try {
             cgGame.promotePawn(position, pieceType);
         } catch (IllegalArgumentException e) {
             System.err.println("Error on promotion: " + e.getMessage());
         }
     }
-
+*/
     public void restart() {
         try {
             cgGame.restart();
@@ -111,9 +111,9 @@ public class ChessGameManager {
         return null;
     }
 
-    public String getPossibleMovesFromPieceAt(Position pos) {
+    public String getPossibleMovesFromPieceAt(String pos) {
         try {
-            Set<Position> moves = cgGame.getPossibleMovesFromPieceAt(pos);
+            Set<String> moves = cgGame.getPossibleMovesFromPieceAt(pos);
             return moves.toString();
         } catch (IllegalArgumentException e) {
             System.err.println("Error getting movements: " + e.getMessage());
@@ -194,7 +194,7 @@ public class ChessGameManager {
         return -1;
     }
 
-    private void removePiece(Position pos) {
+    private void removePiece(String pos) {
         try {
             cgGame.removePiece(pos);
         } catch (IllegalArgumentException e) {

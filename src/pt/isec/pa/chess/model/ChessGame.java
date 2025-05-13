@@ -82,13 +82,30 @@ public class ChessGame implements Serializable {
     }
 
 
-    public Set<Position> getPossibleMovesFromPieceAt(Position pos) {
+    public Set<String> getPossibleMovesFromPieceAt(String pos) {
         if (pos == null) throw new IllegalArgumentException("Position can't be null");
 
-        Piece piece = board.getPiece(pos);
+        char[] split = pos.toCharArray();
+
+        if (split[0] < 'a' || split[0] > 'h' || (int) split[1] < 1 || (int) split[1] > 8) {
+            throw new IllegalArgumentException("Invalid position: " + split[0] + (int) split[1]);
+        }
+
+        Position p = new Position(pos);
+
+        Piece piece = board.getPiece(p);
         if (piece == null) return new HashSet<>();
 
-        return piece.getPossibleMoves();
+        Set<Position> possibleMoves = piece.getPossibleMoves();
+        Set<String> sb = new HashSet<>();
+        for(Position move : possibleMoves) {
+            if (move.getColumn() < 'a' || move.getColumn() > 'h' || move.getRow() < 1 || move.getRow() > 8) {
+                String moveStr = String.valueOf(move.getColumn()) + move.getRow();
+                sb.add(moveStr);
+            }
+        }
+
+        return sb;
     }
 
 
@@ -170,8 +187,8 @@ public class ChessGame implements Serializable {
 
 
 
-    //PAWN PROMOTION
-    public void promotePawn(Position position, char pieceType) {
+   /* //PAWN PROMOTION
+    public void promotePawn(String position, char pieceType) {
         Piece pawn = board.getPiece(position);
         if (pawn == null || !(pawn instanceof Pawn)) return;
 
@@ -189,10 +206,14 @@ public class ChessGame implements Serializable {
 
         board.addPiece(position, newPiece);
     }
+*/
 
-
-    public boolean movePiece(Position oldPos, Position newPos) {
+    public boolean movePiece(String SoldPos, String SnewPos) {
         if (isGameOver()) return false;
+
+        Position newPos = new Position (SnewPos);
+        Position oldPos = new Position (SoldPos);
+        //dar return das string e passar para position
 
         Piece pMover = board.getPiece(oldPos);
         if (pMover == null || !pMover.getPossibleMoves().contains(newPos) || pMover.getColor() != cCurrentPlayer)
@@ -219,9 +240,19 @@ public class ChessGame implements Serializable {
     }
 
 
-    public void removePiece(Position pos) {
+    public void removePiece(String pos) {
         if (pos == null) throw new IllegalArgumentException("Position can't be null");
-        board.removePiece(pos);
+
+        char[] split = pos.toCharArray();
+
+
+        if (split[0] < 'a' || split[0] > 'h' || (int) split[1] < 1 || (int) split[1] > 8) {
+            throw new IllegalArgumentException("Invalid position: " + split[0] + (int) split[1]);
+        }
+
+        Position p = new Position(pos);
+
+        board.removePiece(p);
     }
 
 

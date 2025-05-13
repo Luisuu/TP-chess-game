@@ -1,5 +1,7 @@
 package pt.isec.pa.chess.model;
 
+import pt.isec.pa.chess.model.data.pieces.Position;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class ModelLog {
     public List<String> getLog() {
         return new ArrayList<>(log);
     }
+
 
     //...
 }

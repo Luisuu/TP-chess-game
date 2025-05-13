@@ -191,7 +191,7 @@ public class RootPane extends BorderPane {
 
         data.setPromotionListener(position -> {
             char chosen = showPromotionDialog();
-            data.promotePawn(position, chosen);
+            //data.promotePawn(position, chosen);
             update();
         });
     }
@@ -209,9 +209,9 @@ public class RootPane extends BorderPane {
 
     private char showPromotionDialog() {
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Queen", "Queen", "Rook", "Bishop", "Knight");
-        dialog.setTitle("Promoção do Peão");
-        dialog.setHeaderText("Escolha uma peça para promoção:");
-        dialog.setContentText("Peça:");
+        dialog.setTitle("Pawn Promotion");
+        dialog.setHeaderText("Chose a piece for promotion:");
+        dialog.setContentText("Piece:");
         String result = dialog.showAndWait().orElse("Queen");
         return result.charAt(0);
     }

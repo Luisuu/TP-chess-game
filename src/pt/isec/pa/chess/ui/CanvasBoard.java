@@ -6,7 +6,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import pt.isec.pa.chess.model.ChessGameManager;
-import pt.isec.pa.chess.model.data.pieces.Position;
 import pt.isec.pa.chess.ui.res.ImageManager;
 import javafx.scene.image.Image;
 
@@ -16,7 +15,7 @@ public class CanvasBoard extends Canvas {
     private final ChessGameManager data;
     private final int numRows;
     private final int numCols;
-    private Position selectedPos = null;
+    private String selectedPos = null;
     private final RootPane parent;
 
     public CanvasBoard(ChessGameManager data, RootPane parent) {
@@ -66,12 +65,14 @@ public class CanvasBoard extends Canvas {
         char colLetter = (char) ('a' + col);
         int boardRow = numRows - row;
 
-        Position clicked = new Position(colLetter, boardRow);
+        StringBuilder clicked = new StringBuilder();
+                clicked.append(colLetter);
+                clicked.append( (char) boardRow);
 
         if (selectedPos == null) {
-            selectedPos = clicked;
+            selectedPos = String.valueOf(clicked);
         } else {
-            data.movePiece(selectedPos, clicked);
+            data.movePiece(selectedPos, String.valueOf(clicked));
             selectedPos = null;
 
             if (parent != null)
