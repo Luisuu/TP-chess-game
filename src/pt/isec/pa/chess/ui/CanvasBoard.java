@@ -6,6 +6,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import pt.isec.pa.chess.model.ChessGameManager;
+import pt.isec.pa.chess.model.ModelLog;
 import pt.isec.pa.chess.ui.res.ImageManager;
 import javafx.scene.image.Image;
 
@@ -57,8 +58,9 @@ public class CanvasBoard extends Canvas {
         double mouseY = e.getY();
 
         if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth || mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight) {
-            updateLogWindow();
+            ModelLog.getInstance().log("Click outside the board area.");
             return;
+            //updateLogWindow();
         }
 
         int col = (int) ((mouseX - offsetX - marginX) / cellWidth);
@@ -71,25 +73,30 @@ public class CanvasBoard extends Canvas {
         clicked.append(colLetter);
         clicked.append((char) boardRow);
 
+        ModelLog.getInstance().log("Board position clicked: " + clicked);
 
         if (selectedPos == null) {
             selectedPos = String.valueOf(clicked);
+
+            ModelLog.getInstance().log("Selected position: " + selectedPos);
         } else {
+            ModelLog.getInstance().log("Attempting move from " + selectedPos + " to " + clicked);
+
             data.movePiece(selectedPos, String.valueOf(clicked));
             selectedPos = null;
         }
 
-        updateLogWindow();
+        //updateLogWindow();
     }
 
-    private void updateLogWindow() {
+    /*private void updateLogWindow() {
         if (parent.getLogWindow() != null) {
             parent.getLogWindow().clearLogs();
             for (String log : pt.isec.pa.chess.model.ModelLog.getInstance().getLog()) {
                 parent.getLogWindow().log(log);
             }
         }
-    }
+    }*/
 
     private void drawBoard(GraphicsContext gc) {
         double sizeUser = min(getWidth(), getHeight());

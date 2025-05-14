@@ -7,8 +7,9 @@ public class Position implements Serializable {
     private char cColumn;
     private int iRow;
 
-    public Position(String position){
-        char[] split = position.toCharArray();
+    public Position(String pos){
+
+        char[] split = pos.toCharArray();
 
         if (split[0] < 'a' || split[0] > 'h' || (int) split[1] < 1 || (int) split[1] > 8) {
             throw new IllegalArgumentException("Invalid position: " + split[0] + (int) split[1]);

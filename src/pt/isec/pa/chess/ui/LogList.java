@@ -14,6 +14,12 @@ public class LogList extends BorderPane {
         listView = new ListView<>();
         this.setCenter(listView);
 
+        ModelLog.getInstance().addPropertyChangeListener(evt -> {
+            if ("newLog".equals(evt.getPropertyName())) { //verifica se é do tipo newlog
+                listView.getItems().add(evt.getNewValue().toString());
+            }
+        });
+
         Button btnClear = new Button("Clear Logs");
         btnClear.setOnAction(e -> {
             ModelLog.getInstance().reset();

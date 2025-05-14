@@ -213,7 +213,6 @@ public class ChessGame implements Serializable {
 
         Position newPos = new Position (SnewPos);
         Position oldPos = new Position (SoldPos);
-        //dar return das string e passar para position
 
         Piece pMover = board.getPiece(oldPos);
         if (pMover == null || !pMover.getPossibleMoves().contains(newPos) || pMover.getColor() != cCurrentPlayer)
