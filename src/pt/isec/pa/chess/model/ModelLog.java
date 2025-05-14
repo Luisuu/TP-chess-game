@@ -31,6 +31,4 @@ public class ModelLog {
         return new ArrayList<>(log);
     }
 
-
-    //...
 }

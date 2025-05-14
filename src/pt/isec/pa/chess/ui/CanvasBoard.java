@@ -56,8 +56,14 @@ public class CanvasBoard extends Canvas {
         double mouseX = e.getX();
         double mouseY = e.getY();
 
-        if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth || mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight)
+        pt.isec.pa.chess.model.ModelLog.getInstance().log("Mouse clicked at: (" + mouseX + ", " + mouseY + ")");
+
+        if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth ||
+                mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight) {
+            pt.isec.pa.chess.model.ModelLog.getInstance().log("Click outside the board area.");
+            updateLogWindow();
             return;
+        }
 
         int col = (int) ((mouseX - offsetX - marginX) / cellWidth);
         int row = (int) ((mouseY - offsetY - marginY) / cellHeight);
@@ -69,9 +75,13 @@ public class CanvasBoard extends Canvas {
                 clicked.append(colLetter);
                 clicked.append( (char) boardRow);
 
+        pt.isec.pa.chess.model.ModelLog.getInstance().log("Board position clicked: " + clicked);
+
         if (selectedPos == null) {
             selectedPos = String.valueOf(clicked);
+            pt.isec.pa.chess.model.ModelLog.getInstance().log("Selected position: " + selectedPos);
         } else {
+            pt.isec.pa.chess.model.ModelLog.getInstance().log("Attempting move from " + selectedPos + " to " + clicked);
             data.movePiece(selectedPos, String.valueOf(clicked));
             selectedPos = null;
 
@@ -79,6 +89,17 @@ public class CanvasBoard extends Canvas {
                 parent.update();
 
             update();
+        }
+
+        updateLogWindow();
+    }
+
+    private void updateLogWindow() {
+        if (parent.getLogWindow() != null) {
+            parent.getLogWindow().clearLogs();
+            for (String log : pt.isec.pa.chess.model.ModelLog.getInstance().getLog()) {
+                parent.getLogWindow().log(log);
+            }
         }
     }
 

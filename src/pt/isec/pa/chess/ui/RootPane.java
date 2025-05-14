@@ -19,6 +19,7 @@ public class RootPane extends BorderPane {
     private CanvasBoard canvasBoard;
     private Label lbStatus;
     private Position selectedPos = null;
+    private LogList logWindow;
 
     Menu mnGame, mnMode;
     MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit, mnDebug;
@@ -163,7 +164,14 @@ public class RootPane extends BorderPane {
             Platform.exit();
         });
         mnDebug.setOnAction(actionEvent -> {
-            System.out.println(data.debug());
+            String debugOutput = data.debug();
+            System.out.println(debugOutput);
+            if (logWindow != null) {
+                logWindow.log("DEBUG:");
+                for (String line : debugOutput.split("\n")) {
+                    logWindow.log("  " + line);
+                }
+            }
         });
 
         normalMode.setOnAction(e -> {
@@ -215,4 +223,13 @@ public class RootPane extends BorderPane {
         String result = dialog.showAndWait().orElse("Queen");
         return result.charAt(0);
     }
+
+    public void setLogWindow(LogList logWindow) {
+        this.logWindow = logWindow;
+    }
+
+    public LogList getLogWindow() {
+        return logWindow;
+    }
+
 }
