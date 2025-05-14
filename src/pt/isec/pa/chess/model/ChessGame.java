@@ -209,7 +209,7 @@ public class ChessGame implements Serializable {
         board.removePiece(pos);
 
         char normalizedType = Character.toUpperCase(pieceType);
-        Piece newPiece = switch (Character.toUpperCase(pieceType)) {
+        Piece newPiece = switch (normalizedType) {
             case 'Q' -> PieceFactory.QUEEN.createPiece(color, board, column, row);
             case 'R' -> PieceFactory.ROOK.createPiece(color, board, column, row);
             case 'B' -> PieceFactory.BISHOP.createPiece(color, board, column, row);
