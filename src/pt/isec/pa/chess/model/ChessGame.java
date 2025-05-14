@@ -187,26 +187,39 @@ public class ChessGame implements Serializable {
 
 
 
-   /* //PAWN PROMOTION
+    //PAWN PROMOTION
     public void promotePawn(String position, char pieceType) {
-        Piece pawn = board.getPiece(position);
-        if (pawn == null || !(pawn instanceof Pawn)) return;
+
+        if (position == null || position.length() != 2)
+            return;
+
+        char column = position.charAt(0);
+        int row = Character.getNumericValue(position.charAt(1));
+
+        if (column < 'a' || column > 'h' || row < 1 || row > 8)
+            return;
+
+        Position pos = new Position(column, row);
+
+        Piece pawn = board.getPiece(pos);
+        if (pawn == null || !(pawn instanceof Pawn))
+            return;
 
         PieceColor color = pawn.getColor();
-        board.removePiece(position);
+        board.removePiece(pos);
 
         char normalizedType = Character.toUpperCase(pieceType);
-        Piece newPiece = switch (normalizedType) {
-            case 'Q' -> PieceFactory.QUEEN.createPiece(color, board, position.getColumn(), position.getRow());
-            case 'R' -> PieceFactory.ROOK.createPiece(color, board, position.getColumn(), position.getRow());
-            case 'B' -> PieceFactory.BISHOP.createPiece(color, board, position.getColumn(), position.getRow());
-            case 'N' -> PieceFactory.KNIGHT.createPiece(color, board, position.getColumn(), position.getRow());
+        Piece newPiece = switch (Character.toUpperCase(pieceType)) {
+            case 'Q' -> PieceFactory.QUEEN.createPiece(color, board, column, row);
+            case 'R' -> PieceFactory.ROOK.createPiece(color, board, column, row);
+            case 'B' -> PieceFactory.BISHOP.createPiece(color, board, column, row);
+            case 'N' -> PieceFactory.KNIGHT.createPiece(color, board, column, row);
             default -> throw new IllegalArgumentException("Invalid piece: " + pieceType);
         };
 
-        board.addPiece(position, newPiece);
+        board.addPiece(pos, newPiece);
     }
-*/
+
 
     public boolean movePiece(String SoldPos, String SnewPos) {
         if (isGameOver()) return false;

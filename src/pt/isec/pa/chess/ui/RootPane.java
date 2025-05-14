@@ -210,7 +210,7 @@ public class RootPane extends BorderPane {
 
         data.setPromotionListener(position -> {
             char chosen = showPromotionDialog();
-            //data.promotePawn(position, chosen);
+            data.promotePawn(position, chosen);
         });
     }
 

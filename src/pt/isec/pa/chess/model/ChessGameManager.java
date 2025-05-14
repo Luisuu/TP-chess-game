@@ -88,14 +88,16 @@ public class ChessGameManager {
         }
     }
 
-    /*  public void promotePawn(String position, char pieceType) {
+     public void promotePawn(String position, char pieceType) {
           try {
               cgGame.promotePawn(position, pieceType);
+              pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+              pcs.firePropertyChange(PROP_GAME_STATE, null, null);
           } catch (IllegalArgumentException e) {
               System.err.println("Error on promotion: " + e.getMessage());
           }
       }
-  */
+
     public void restart() {
         try {
             cgGame.restart();
