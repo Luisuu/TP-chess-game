@@ -56,11 +56,7 @@ public class CanvasBoard extends Canvas {
         double mouseX = e.getX();
         double mouseY = e.getY();
 
-        pt.isec.pa.chess.model.ModelLog.getInstance().log("Mouse clicked at: (" + mouseX + ", " + mouseY + ")");
-
-        if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth ||
-                mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight) {
-            pt.isec.pa.chess.model.ModelLog.getInstance().log("Click outside the board area.");
+        if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth || mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight) {
             updateLogWindow();
             return;
         }
@@ -72,23 +68,15 @@ public class CanvasBoard extends Canvas {
         int boardRow = numRows - row;
 
         StringBuilder clicked = new StringBuilder();
-                clicked.append(colLetter);
-                clicked.append( (char) boardRow);
+        clicked.append(colLetter);
+        clicked.append((char) boardRow);
 
-        pt.isec.pa.chess.model.ModelLog.getInstance().log("Board position clicked: " + clicked);
 
         if (selectedPos == null) {
             selectedPos = String.valueOf(clicked);
-            pt.isec.pa.chess.model.ModelLog.getInstance().log("Selected position: " + selectedPos);
         } else {
-            pt.isec.pa.chess.model.ModelLog.getInstance().log("Attempting move from " + selectedPos + " to " + clicked);
             data.movePiece(selectedPos, String.valueOf(clicked));
             selectedPos = null;
-
-            if (parent != null)
-                parent.update();
-
-            update();
         }
 
         updateLogWindow();

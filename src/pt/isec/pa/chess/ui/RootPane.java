@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
+import pt.isec.pa.chess.model.ModelLog;
 import pt.isec.pa.chess.model.data.pieces.Position;
 
 import java.io.File;
@@ -33,7 +34,6 @@ public class RootPane extends BorderPane {
         this.numCols = data.getBoardCols();
         createViews();
         registerHandlers();
-        update();
     }
 
     private void createViews() {
@@ -87,6 +87,17 @@ public class RootPane extends BorderPane {
     }
 
     private void registerHandlers() {
+        data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
+            //System.out.println("Board updated");
+            canvasBoard.update();
+        });
+
+        data.addPropertyChangeListener(ChessGameManager.PROP_GAME_STATE, evt -> {
+            //System.out.println("Game state");
+            updateStatus();
+        });
+
+
         mnNew.setOnAction(actionEvent -> {
             canvasBoard.setVisible(false);
             lbStatus.setText("Game not started. Create or load a game from the menu.");
@@ -97,9 +108,8 @@ public class RootPane extends BorderPane {
             if (data.getPlayerName(data.getcCurrentPlayer()) != null) {
                 data.restart();
                 canvasBoard.setVisible(true);
-
+                ModelLog.getInstance().log("New game started.");
             }
-            update();
         });
 
         mnOpen.setOnAction(e -> {
@@ -115,7 +125,6 @@ public class RootPane extends BorderPane {
                 //askName.showAndWait();
                 canvasBoard.setVisible(true);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
-                update();
             }
         });
 
@@ -143,7 +152,6 @@ public class RootPane extends BorderPane {
                 askName.showAndWait();
                 canvasBoard.setVisible(true);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
-                update();
             }
         });
 
@@ -151,9 +159,7 @@ public class RootPane extends BorderPane {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Export Game");
             fileChooser.setInitialDirectory(new File("."));
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"),
-                    new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files (*.txt)", "*.txt"), new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
             File file = fileChooser.showSaveDialog(getScene().getWindow());
             if (file != null) {
                 data.exporta(file.getAbsolutePath());
@@ -163,6 +169,7 @@ public class RootPane extends BorderPane {
         mnExit.setOnAction(actionEvent -> {
             Platform.exit();
         });
+
         mnDebug.setOnAction(actionEvent -> {
             String debugOutput = data.debug();
             System.out.println(debugOutput);
@@ -200,18 +207,19 @@ public class RootPane extends BorderPane {
         data.setPromotionListener(position -> {
             char chosen = showPromotionDialog();
             //data.promotePawn(position, chosen);
-            update();
         });
     }
 
-    public void update() {
-        lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) +
-                " Color: " + data.getcCurrentPlayer().toString());
-
+    private void updateStatus() {
         if (data.getWinner() != null) {
             lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
+        } else {
+            lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
         }
+    }
 
+    public void update() {
+        updateStatus();
         canvasBoard.update();
     }
 

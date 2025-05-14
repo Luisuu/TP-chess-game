@@ -8,12 +8,16 @@ import java.io.*;
 import java.util.Set;
 
 public class ChessGameManager {
+    public static final String PROP_BOARD_UPDATE = "boardUpdate";
+    public static final String PROP_GAME_STATE = "gameState";
+
     ChessGame cgGame;
     private PropertyChangeSupport pcs;
 
     public interface PromotionListener {
         void onPromote(String position);
     }
+
     private transient PromotionListener promotionListener;
 
     public ChessGameManager() {
@@ -45,6 +49,8 @@ public class ChessGameManager {
     public void importa(String sFileName) {
         try {
             cgGame.importa(sFileName);
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
@@ -61,9 +67,13 @@ public class ChessGameManager {
     public void open(String sFileName) {
         try {
             cgGame.open(sFileName);
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             cgGame.restart();
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         }
     }
 
@@ -71,24 +81,26 @@ public class ChessGameManager {
         try {
             boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
             if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (Exception e) {
             System.err.println("Error moving a piece: " + e.getMessage());
         }
     }
 
-
-
-  /*  public void promotePawn(String position, char pieceType) {
-        try {
-            cgGame.promotePawn(position, pieceType);
-        } catch (IllegalArgumentException e) {
-            System.err.println("Error on promotion: " + e.getMessage());
-        }
-    }
-*/
+    /*  public void promotePawn(String position, char pieceType) {
+          try {
+              cgGame.promotePawn(position, pieceType);
+          } catch (IllegalArgumentException e) {
+              System.err.println("Error on promotion: " + e.getMessage());
+          }
+      }
+  */
     public void restart() {
         try {
             cgGame.restart();
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (Exception e) {
             System.err.println("Error restarting the game: " + e.getMessage());
         }
@@ -97,6 +109,7 @@ public class ChessGameManager {
     public void setPlayerName(int player, String name) {
         try {
             cgGame.setPlayerName(player, name);
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IllegalArgumentException e) {
             System.err.println("Error setting a name: " + e.getMessage());
         }
@@ -138,7 +151,7 @@ public class ChessGameManager {
             return null;
         }
     }
-    
+
     public boolean bIsCheckmate(PieceColor color) {
         try {
             return cgGame.bIsCheckmate(color);
@@ -197,6 +210,8 @@ public class ChessGameManager {
     private void removePiece(String pos) {
         try {
             cgGame.removePiece(pos);
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IllegalArgumentException e) {
             System.err.println("Error removing pieces: " + e.getMessage());
         }
