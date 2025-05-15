@@ -7,21 +7,21 @@ public class Position implements Serializable {
     private char cColumn;
     private int iRow;
 
-    public Position(String pos){
-        char[] split = pos.toCharArray();
-        System.out.println(split[0]);
-        System.out.println((int)split[1]);
-
-        if (split[0] < 'a' || split[0] > 'h' || (int) split[1] < 1 || (int) split[1] > 8) {
-            throw new IllegalArgumentException("Invalid position: " + split[0] + (int) split[1]);
+    public Position(String pos) {
+        if (pos.length() != 2) {
+            throw new IllegalArgumentException("Invalid position: " + pos);
         }
-        this.cColumn =  split[0];
-        this.iRow =  (int) split[1];
+        char col = pos.charAt(0);
+        char rowChar = pos.charAt(1);
+        if (col < 'a' || col > 'h' || !Character.isDigit(rowChar) || rowChar < '1' || rowChar > '8') {
+            throw new IllegalArgumentException("Invalid position: " + pos);
+        }
+        this.cColumn = col;
+        this.iRow = Character.getNumericValue(rowChar);
     }
 
     public Position(char cColumn, int iRow) {
         if (cColumn < 'a' || cColumn > 'h' || iRow < 1 || iRow > 8) {
-            // FIXME
             throw new IllegalArgumentException("Invalid position: " + cColumn + iRow);
         }
         this.cColumn = cColumn;

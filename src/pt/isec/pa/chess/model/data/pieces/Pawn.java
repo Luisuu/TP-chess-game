@@ -39,7 +39,7 @@ public class Pawn extends Piece {
         }
 
         char colLeft = (char) (col - 1);
-        if (colLeft >= 'a') {
+        if (colLeft >= 'a' && colLeft <= 'h') {
             Position diagLeft = new Position(colLeft, row + direction);
             if (isPossibleMove(diagLeft)) {
                 Piece targetLeft = board.getPiece(diagLeft);
@@ -50,7 +50,7 @@ public class Pawn extends Piece {
         }
 
         char colRight = (char) (col + 1);
-        if (colRight <= 'h') {
+        if (colRight <= 'h' && colRight >= 'a') {
             Position diagRight = new Position(colRight, row + direction);
             if (isPossibleMove(diagRight)) {
                 Piece targetRight = board.getPiece(diagRight);

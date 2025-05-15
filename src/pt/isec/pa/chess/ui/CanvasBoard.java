@@ -71,7 +71,7 @@ public class CanvasBoard extends Canvas {
 
         StringBuilder clicked = new StringBuilder();
         clicked.append(colLetter);
-        clicked.append((char) (boardRow));
+        clicked.append(boardRow);
 
         if (selectedPos == null) {
             selectedPos = String.valueOf(clicked);
