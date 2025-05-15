@@ -8,8 +8,9 @@ public class Position implements Serializable {
     private int iRow;
 
     public Position(String pos){
-
         char[] split = pos.toCharArray();
+        System.out.println(split[0]);
+        System.out.println((int)split[1]);
 
         if (split[0] < 'a' || split[0] > 'h' || (int) split[1] < 1 || (int) split[1] > 8) {
             throw new IllegalArgumentException("Invalid position: " + split[0] + (int) split[1]);
@@ -20,6 +21,7 @@ public class Position implements Serializable {
 
     public Position(char cColumn, int iRow) {
         if (cColumn < 'a' || cColumn > 'h' || iRow < 1 || iRow > 8) {
+            // FIXME
             throw new IllegalArgumentException("Invalid position: " + cColumn + iRow);
         }
         this.cColumn = cColumn;
