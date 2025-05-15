@@ -234,8 +234,28 @@ public class ChessGame implements Serializable {
 
 
         board.removePiece(oldPos);
-        pMover.setPosition(newPos);
-        board.addPiece(newPos, pMover);
+
+        boolean lolxd = false;
+        if (pMover.getColor() == PieceColor.BLACK) {
+            if (pMover.getDefinition() == 'P') {
+                if (newPos.getRow() == 1) {
+                    board.addPiece(new Position(pMover.getPosition().getColumn(), 1), new Queen(PieceColor.BLACK, this.board, pMover.getPosition().getColumn(), 1));
+                    lolxd = true;
+                }
+            }
+        } else {
+            if (pMover.getDefinition() == 'P') {
+                if (newPos.getRow() == 8) {
+                    board.addPiece(new Position(pMover.getPosition().getColumn(), 8), new Queen(PieceColor.WHITE, this.board, pMover.getPosition().getColumn(), 8));
+                    lolxd = true;
+                }
+            }
+        }
+
+        if (!lolxd) {
+            pMover.setPosition(newPos);
+            board.addPiece(newPos, pMover);
+        }
 
         pMover.setHasMoved(true);
 
