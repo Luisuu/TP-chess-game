@@ -7,6 +7,19 @@ public class Position implements Serializable {
     private char cColumn;
     private int iRow;
 
+    public Position(String pos) {
+        if (pos.length() != 2) {
+            throw new IllegalArgumentException("Invalid position: " + pos);
+        }
+        char col = pos.charAt(0);
+        char rowChar = pos.charAt(1);
+        if (col < 'a' || col > 'h' || !Character.isDigit(rowChar) || rowChar < '1' || rowChar > '8') {
+            throw new IllegalArgumentException("Invalid position: " + pos);
+        }
+        this.cColumn = col;
+        this.iRow = Character.getNumericValue(rowChar);
+    }
+
     public Position(char cColumn, int iRow) {
         if (cColumn < 'a' || cColumn > 'h' || iRow < 1 || iRow > 8) {
             throw new IllegalArgumentException("Invalid position: " + cColumn + iRow);

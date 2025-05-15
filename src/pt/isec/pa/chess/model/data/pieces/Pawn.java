@@ -23,21 +23,23 @@ public class Pawn extends Piece {
         char col = pPos.getColumn();
         int row = pPos.getRow();
 
-        Position oneStep = new Position(col, row + direction);
-        if (isPossibleMove(oneStep) && board.getPiece(oneStep) == null) {
-            possibleMoves.add(oneStep);
+        if ((row + direction) <= 8 && (row + direction) >= 1) {
+            Position oneStep = new Position(col, row + direction);
+            if (isPossibleMove(oneStep) && board.getPiece(oneStep) == null) {
+                possibleMoves.add(oneStep);
 
-            if((row + 2 * direction) <= 8 && (row + 2 * direction) >= 1){
-                Position twoSteps = new Position(col, row + 2 * direction);
-                if (!bHasMoved && isPossibleMove(twoSteps) && board.getPiece(twoSteps) == null) {
-                    possibleMoves.add(twoSteps);
+                if ((row + 2 * direction) <= 8 && (row + 2 * direction) >= 1) {
+                    Position twoSteps = new Position(col, row + 2 * direction);
+                    if (!bHasMoved && isPossibleMove(twoSteps) && board.getPiece(twoSteps) == null) {
+                        possibleMoves.add(twoSteps);
+                    }
                 }
-            }
 
+            }
         }
 
         char colLeft = (char) (col - 1);
-        if (colLeft >= 'a') {
+        if (colLeft >= 'a' && colLeft <= 'h') {
             Position diagLeft = new Position(colLeft, row + direction);
             if (isPossibleMove(diagLeft)) {
                 Piece targetLeft = board.getPiece(diagLeft);
@@ -48,7 +50,7 @@ public class Pawn extends Piece {
         }
 
         char colRight = (char) (col + 1);
-        if (colRight <= 'h') {
+        if (colRight <= 'h' && colRight >= 'a') {
             Position diagRight = new Position(colRight, row + direction);
             if (isPossibleMove(diagRight)) {
                 Piece targetRight = board.getPiece(diagRight);
@@ -70,7 +72,6 @@ public class Pawn extends Piece {
     }
 
     public boolean isPromotionPosition() {
-        return (PieceColor == PieceColor.WHITE && pPos.getRow() == 8) ||
-                (PieceColor == PieceColor.BLACK && pPos.getRow() == 1);
+        return (PieceColor == PieceColor.WHITE && pPos.getRow() == 8) || (PieceColor == PieceColor.BLACK && pPos.getRow() == 1);
     }
 }
