@@ -235,6 +235,10 @@ public class ChessGame implements Serializable {
 
         board.removePiece(oldPos);
 
+
+        // AHAH XDDDD
+        // Temporary fix !!!!
+        // FIXME
         boolean lolxd = false;
         if (pMover.getColor() == PieceColor.BLACK) {
             if (pMover.getDefinition() == 'P') {
