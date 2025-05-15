@@ -71,17 +71,11 @@ public class CanvasBoard extends Canvas {
 
         StringBuilder clicked = new StringBuilder();
         clicked.append(colLetter);
-        char aux = (char) (boardRow + '0');
-        clicked.append(aux);
-        ModelLog.getInstance().log("Board position clicked: " + clicked);
+        clicked.append((char) (boardRow));
 
         if (selectedPos == null) {
             selectedPos = String.valueOf(clicked);
-
-            ModelLog.getInstance().log("Selected position: " + selectedPos);
         } else {
-            ModelLog.getInstance().log("Attempting move from " + selectedPos + " to " + clicked);
-
             data.movePiece(selectedPos, String.valueOf(clicked));
             selectedPos = null;
         }

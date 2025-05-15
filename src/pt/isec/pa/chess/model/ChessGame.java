@@ -98,7 +98,7 @@ public class ChessGame implements Serializable {
 
         Set<Position> possibleMoves = piece.getPossibleMoves();
         Set<String> sb = new HashSet<>();
-        for(Position move : possibleMoves) {
+        for (Position move : possibleMoves) {
             if (move.getColumn() < 'a' || move.getColumn() > 'h' || move.getRow() < 1 || move.getRow() > 8) {
                 String moveStr = String.valueOf(move.getColumn()) + move.getRow();
                 sb.add(moveStr);
@@ -154,7 +154,6 @@ public class ChessGame implements Serializable {
     }
 
 
-
     public boolean bIsCheckmate(PieceColor cPieceColor) {
 
         Set<Position> sPositions = new HashSet<>();
@@ -186,24 +185,20 @@ public class ChessGame implements Serializable {
     }
 
 
-
     //PAWN PROMOTION
     public void promotePawn(String position, char pieceType) {
 
-        if (position == null || position.length() != 2)
-            return;
+        if (position == null || position.length() != 2) return;
 
         char column = position.charAt(0);
         int row = Character.getNumericValue(position.charAt(1));
 
-        if (column < 'a' || column > 'h' || row < 1 || row > 8)
-            return;
+        if (column < 'a' || column > 'h' || row < 1 || row > 8) return;
 
         Position pos = new Position(column, row);
 
         Piece pawn = board.getPiece(pos);
-        if (pawn == null || !(pawn instanceof Pawn))
-            return;
+        if (pawn == null || !(pawn instanceof Pawn)) return;
 
         PieceColor color = pawn.getColor();
         board.removePiece(pos);
@@ -224,12 +219,14 @@ public class ChessGame implements Serializable {
     public boolean movePiece(String SoldPos, String SnewPos) {
         if (isGameOver()) return false;
 
-        Position newPos = new Position (SnewPos);
-        Position oldPos = new Position (SoldPos);
+        Position newPos = new Position(SnewPos);
+        Position oldPos = new Position(SoldPos);
 
         Piece pMover = board.getPiece(oldPos);
         if (pMover == null || !pMover.getPossibleMoves().contains(newPos) || pMover.getColor() != cCurrentPlayer)
             return false;
+
+        ModelLog.getInstance().log(cCurrentPlayer + " moved piece to: " + newPos);
 
         // Remove peça capturada
         Piece target = board.getPiece(newPos);
