@@ -71,8 +71,8 @@ public class CanvasBoard extends Canvas {
 
         StringBuilder clicked = new StringBuilder();
         clicked.append(colLetter);
-        clicked.append((char) boardRow);
-
+        char aux = (char) (boardRow + '0');
+        clicked.append(aux);
         ModelLog.getInstance().log("Board position clicked: " + clicked);
 
         if (selectedPos == null) {
