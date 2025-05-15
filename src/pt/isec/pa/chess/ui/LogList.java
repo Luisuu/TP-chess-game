@@ -7,6 +7,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import pt.isec.pa.chess.model.ModelLog;
 
+import static pt.isec.pa.chess.model.ModelLog.PROP_NEW_LOG;
+
 public class LogList extends BorderPane {
     private final ListView<String> listView;
 
@@ -15,7 +17,7 @@ public class LogList extends BorderPane {
         this.setCenter(listView);
 
         ModelLog.getInstance().addPropertyChangeListener(evt -> {
-            if ("newLog".equals(evt.getPropertyName())) { //verifica se é do tipo newlog
+            if (PROP_NEW_LOG.equals(evt.getPropertyName())) { //verifica se é do tipo newlog
                 listView.getItems().add(evt.getNewValue().toString());
             }
         });

@@ -9,6 +9,7 @@ public class ModelLog {
     private static ModelLog _instance = null;
 
     private final PropertyChangeSupport pcs;
+    public static final String PROP_NEW_LOG = "newLog";
 
     protected ArrayList<String> log;
 
@@ -27,9 +28,10 @@ public class ModelLog {
         log.clear();
     }
 
+
     public void log(String msg) {
         log.add(msg);
-        pcs.firePropertyChange("newLog", null, msg);
+        pcs.firePropertyChange(PROP_NEW_LOG, null, msg);
     }
 
     public List<String> getLog() {
@@ -37,7 +39,7 @@ public class ModelLog {
     }
 
     public void addPropertyChangeListener(java.beans.PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener("newLog", listener); //regista o listener para a propriedade newLog
+        pcs.addPropertyChangeListener(PROP_NEW_LOG, listener);
     }
 
 }
