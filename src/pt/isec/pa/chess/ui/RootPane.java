@@ -198,8 +198,8 @@ public class RootPane extends BorderPane {
         learningMode.setOnAction(e -> {
             if (learningMode.isSelected()) {
                 showMoves.setDisable(false);
-                undoMove.setDisable(true);
-                redoMove.setDisable(true);
+                undoMove.setDisable(false);
+                redoMove.setDisable(false);
                 System.out.println("Learning mode activated");
             }
         });
@@ -207,6 +207,24 @@ public class RootPane extends BorderPane {
         showMoves.setOnAction(e -> {
             boolean show = showMoves.isSelected();
             System.out.println("Show possible moves: " + show);
+        });
+
+        undoMove.setOnAction(e -> {
+            if (data.hasUndo()) {
+                data.undo();
+                updateStatus();
+                undoMove.setDisable(!data.hasUndo());
+                redoMove.setDisable(!data.hasRedo());
+            }
+        });
+
+        redoMove.setOnAction(e -> {
+            if (data.hasRedo()) {
+                data.redo();
+                updateStatus();
+                undoMove.setDisable(!data.hasUndo());
+                redoMove.setDisable(!data.hasRedo());
+            }
         });
 
         /* FIXME tirar promotion

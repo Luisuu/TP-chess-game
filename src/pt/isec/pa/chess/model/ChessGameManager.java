@@ -1,5 +1,7 @@
 package pt.isec.pa.chess.model;
 
+import pt.isec.pa.chess.model.command.CommandManager;
+import pt.isec.pa.chess.model.command.MovePieceCommand;
 import pt.isec.pa.chess.model.data.pieces.PieceColor;
 
 import java.beans.PropertyChangeListener;
@@ -11,19 +13,17 @@ public class ChessGameManager {
     public static final String PROP_BOARD_UPDATE = "boardUpdate";
     public static final String PROP_GAME_STATE = "gameState";
 
+    private CommandManager cm = new CommandManager();
+
+
     ChessGame cgGame;
     private PropertyChangeSupport pcs;
 
-    /* FIXME RAPAZES ISTO É PRA TIRAR.
     public interface PromotionListener {
         void onPromote(String position);
     }
 
     private transient PromotionListener promotionListener;
-
-    public void setPromotionListener(PromotionListener listener) {
-        this.promotionListener = listener;
-    }*/
 
     public ChessGameManager() {
         cgGame = new ChessGame();
@@ -202,4 +202,28 @@ public class ChessGameManager {
         }
         return -1;
     }
+
+    public boolean undo() {
+        boolean ok = cm.undo();
+        if (ok)
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+        return ok;
+    }
+
+    public boolean redo() {
+        boolean ok = cm.redo();
+        if (ok)
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+        return ok;
+    }
+
+    public boolean hasUndo() {
+        return cm.hasUndo();
+    }
+
+    public boolean hasRedo() {
+        return cm.hasRedo();
+    }
+
+
 }

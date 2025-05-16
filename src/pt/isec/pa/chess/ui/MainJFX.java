@@ -9,8 +9,6 @@ public class MainJFX extends Application {
     private ChessGameManager gameManager;
     private RootPane root;
     private Stage logStage;
-
-    // 2 STAGES TEST
     private Stage NewStage;
 
     @Override
@@ -22,8 +20,6 @@ public class MainJFX extends Application {
     @Override
     public void start(Stage stage) {
         createMainStage(stage);
-
-        // 2 STAGES TEST
         NewStage = new Stage();
         createMainStage(NewStage);
 

@@ -19,7 +19,6 @@ public class ModelLog {
         pcs = new PropertyChangeSupport(this);
     }
 
-
     public static ModelLog getInstance() {
         if (_instance == null) _instance = new ModelLog();
         return _instance;
