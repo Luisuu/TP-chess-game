@@ -10,6 +10,9 @@ public class MainJFX extends Application {
     private RootPane root;
     private Stage logStage;
 
+    // 2 STAGES TEST
+    private Stage NewStage;
+
     @Override
     public void init() throws Exception {
         super.init();
@@ -19,6 +22,10 @@ public class MainJFX extends Application {
     @Override
     public void start(Stage stage) {
         createMainStage(stage);
+
+        // 2 STAGES TEST
+        NewStage = new Stage();
+        createMainStage(NewStage);
 
         logStage = new Stage();
         createLogStage(logStage, stage.getX() + stage.getWidth(), stage.getY());
