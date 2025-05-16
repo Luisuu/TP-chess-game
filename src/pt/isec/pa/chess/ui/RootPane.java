@@ -34,6 +34,7 @@ public class RootPane extends BorderPane {
         this.numCols = data.getBoardCols();
         createViews();
         registerHandlers();
+        update();
     }
 
     private void createViews() {
@@ -89,7 +90,7 @@ public class RootPane extends BorderPane {
     private void registerHandlers() {
         data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
             //System.out.println("Board updated");
-            canvasBoard.update();
+            //canvasBoard.update();
         });
 
         data.addPropertyChangeListener(ChessGameManager.PROP_GAME_STATE, evt -> {
@@ -208,10 +209,11 @@ public class RootPane extends BorderPane {
             System.out.println("Show possible moves: " + show);
         });
 
+        /* FIXME tirar promotion
         data.setPromotionListener(position -> {
             char chosen = showPromotionDialog();
             data.promotePawn(position, chosen);
-        });
+        });*/
     }
 
     private void updateStatus() {
@@ -224,7 +226,7 @@ public class RootPane extends BorderPane {
 
     public void update() {
         updateStatus();
-        canvasBoard.update();
+        //canvasBoard.update();
     }
 
     private char showPromotionDialog() {

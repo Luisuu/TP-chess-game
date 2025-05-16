@@ -24,20 +24,25 @@ public class CanvasBoard extends Canvas {
         this.numRows = data.getBoardRows();
         this.numCols = data.getBoardCols();
         this.parent = parent;
-        createView();
+        createViews();
         registerHandlers();
+        update();
     }
 
-    private void createView() {
-        widthProperty().addListener((obs, oldVal, newVal) -> update());
-        heightProperty().addListener((obs, oldVal, newVal) -> update());
+    private void createViews() {
     }
 
     private void registerHandlers() {
+        data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
+            update();
+        });
+
+        widthProperty().addListener((obs, oldVal, newVal) -> update());
+        heightProperty().addListener((obs, oldVal, newVal) -> update());
         this.setOnMouseClicked(this::handleClick);
     }
 
-    public void update() {
+    private void update() {
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, getWidth(), getHeight());
         drawBoard(gc);

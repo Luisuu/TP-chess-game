@@ -14,11 +14,16 @@ public class ChessGameManager {
     ChessGame cgGame;
     private PropertyChangeSupport pcs;
 
+    /* FIXME RAPAZES ISTO É PRA TIRAR.
     public interface PromotionListener {
         void onPromote(String position);
     }
 
     private transient PromotionListener promotionListener;
+
+    public void setPromotionListener(PromotionListener listener) {
+        this.promotionListener = listener;
+    }*/
 
     public ChessGameManager() {
         cgGame = new ChessGame();
@@ -28,14 +33,6 @@ public class ChessGameManager {
 
     public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(property, listener);
-    }
-
-    public void addProperyChangeListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
-    }
-
-    public void setPromotionListener(PromotionListener listener) {
-        this.promotionListener = listener;
     }
 
     public void save(String sFileName) {
@@ -80,7 +77,8 @@ public class ChessGameManager {
     public void movePiece(String SoldPos, String SnewPos) {
         try {
             boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
-            if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
+            // fixme
+            //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IllegalArgumentException ex) {
@@ -203,14 +201,5 @@ public class ChessGameManager {
             e.printStackTrace();
         }
         return -1;
-    }
-
-    private void removePiece(String pos) {
-        try {
-            cgGame.removePiece(pos);
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
-            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-        } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Erro: " + ex.getMessage());        }
     }
 }

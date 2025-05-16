@@ -1,6 +1,7 @@
 package pt.isec.pa.chess.model;
 
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.beans.PropertyChangeSupport;
@@ -38,8 +39,13 @@ public class ModelLog {
         return new ArrayList<>(log);
     }
 
-    public void addPropertyChangeListener(java.beans.PropertyChangeListener listener) {
+    /*
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(PROP_NEW_LOG, listener);
+    }*/
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(propertyName, listener);
     }
 
 }
