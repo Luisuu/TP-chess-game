@@ -80,6 +80,7 @@ public class RootPane extends BorderPane {
         redoMove = new MenuItem("Redo");
         undoMove.setDisable(true);
         redoMove.setDisable(true);
+        showMoves.setDisable(true);
 
         mnMode.getItems().addAll(normalMode, learningMode, new SeparatorMenuItem(), showMoves, undoMove, redoMove);
 
@@ -206,6 +207,7 @@ public class RootPane extends BorderPane {
 
         showMoves.setOnAction(e -> {
             boolean show = showMoves.isSelected();
+            showMoves.setDisable(false);
             System.out.println("Show possible moves: " + show);
         });
 
@@ -262,6 +264,14 @@ public class RootPane extends BorderPane {
 
     public LogList getLogWindow() {
         return logWindow;
+    }
+
+    public boolean isLearningModeActive() {
+        return learningMode.isSelected();
+    }
+
+    public boolean isShowMovesActive() {
+        return showMoves.isSelected();
     }
 
 }

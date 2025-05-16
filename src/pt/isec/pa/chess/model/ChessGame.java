@@ -85,28 +85,23 @@ public class ChessGame implements Serializable {
     public Set<String> getPossibleMovesFromPieceAt(String pos) {
         if (pos == null) throw new IllegalArgumentException("Position can't be null");
 
-        char[] split = pos.toCharArray();
-
-        if (split[0] < 'a' || split[0] > 'h' || (int) split[1] < 1 || (int) split[1] > 8) {
-            throw new IllegalArgumentException("Invalid position: " + split[0] + (int) split[1]);
-        }
-
         Position p = new Position(pos);
-
         Piece piece = board.getPiece(p);
         if (piece == null) return new HashSet<>();
 
         Set<Position> possibleMoves = piece.getPossibleMoves();
-        Set<String> sb = new HashSet<>();
+        Set<String> result = new HashSet<>();
         for (Position move : possibleMoves) {
-            if (move.getColumn() < 'a' || move.getColumn() > 'h' || move.getRow() < 1 || move.getRow() > 8) {
-                String moveStr = String.valueOf(move.getColumn()) + move.getRow();
-                sb.add(moveStr);
+            if (move.getColumn() >= 'a' && move.getColumn() <= 'h' &&
+                    move.getRow() >= 1 && move.getRow() <= 8) {
+                String moveStr = "" + move.getColumn() + move.getRow();
+                result.add(moveStr);
             }
         }
 
-        return sb;
+        return result;
     }
+
 
 
     public PieceColor getWinner() {

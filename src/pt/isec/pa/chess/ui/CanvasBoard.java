@@ -10,6 +10,9 @@ import pt.isec.pa.chess.model.ModelLog;
 import pt.isec.pa.chess.ui.res.ImageManager;
 import javafx.scene.image.Image;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import static java.lang.Double.min;
 
 public class CanvasBoard extends Canvas {
@@ -18,6 +21,7 @@ public class CanvasBoard extends Canvas {
     private final int numCols;
     private String selectedPos = null;
     private final RootPane parent;
+    private Set<String> possibleMoves = new HashSet<>();
 
     public CanvasBoard(ChessGameManager data, RootPane parent) {
         this.data = data;
@@ -65,7 +69,6 @@ public class CanvasBoard extends Canvas {
         if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth || mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight) {
             ModelLog.getInstance().log("Click outside the board area.");
             return;
-            //updateLogWindow();
         }
 
         int col = (int) ((mouseX - offsetX - marginX) / cellWidth);
@@ -74,18 +77,30 @@ public class CanvasBoard extends Canvas {
         char colLetter = (char) ('a' + col);
         int boardRow = numRows - row;
 
-        StringBuilder clicked = new StringBuilder();
-        clicked.append(colLetter);
-        clicked.append(boardRow);
+        String clicked = String.valueOf(colLetter) + boardRow;
 
         if (selectedPos == null) {
-            selectedPos = String.valueOf(clicked);
-        } else {
-            data.movePiece(selectedPos, String.valueOf(clicked));
-            selectedPos = null;
-        }
+            selectedPos = clicked;
 
-        //updateLogWindow();
+            if (parent.isLearningModeActive() && parent.isShowMovesActive()) {
+                String movesStr = data.getPossibleMovesFromPieceAt(selectedPos);
+                possibleMoves = new HashSet<>(Arrays.asList(movesStr.replaceAll("[\\[\\]\\s]", "").split(",")));
+            } else {
+                possibleMoves.clear();
+            }
+
+            update();
+        } else {
+            if (parent.isLearningModeActive()) {
+                //data.movePieceWithUndo(selectedPos, clicked);
+                data.movePiece(selectedPos, clicked);
+            } else {
+                data.movePiece(selectedPos, clicked);
+            }
+            selectedPos = null;
+            possibleMoves.clear();
+            update();
+        }
     }
 
     /*private void updateLogWindow() {
@@ -114,11 +129,21 @@ public class CanvasBoard extends Canvas {
 
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                boolean light = (row + col) % 2 == 0;
-                gc.setFill(light ? lightColor : darkColor);
+                boolean Light = (row + col) % 2 == 0;
                 double x = offsetX + marginX + col * cellWidth;
                 double y = offsetY + marginY + row * cellHeight;
+                gc.setFill(Light ? lightColor : darkColor);
                 gc.fillRect(x, y, cellWidth, cellHeight);
+
+                String pos = "" + (char)('a' + col) + (numRows - row);
+                if (possibleMoves.contains(pos)) {
+                    double circleRadius = Math.min(cellWidth, cellHeight) * 0.2;
+                    double cx = x + cellWidth / 2;
+                    double cy = y + cellHeight / 2;
+
+                    gc.setFill(Color.web("#88888888"));
+                    gc.fillOval(cx - circleRadius, cy - circleRadius, circleRadius * 2, circleRadius * 2);
+                }
             }
         }
 
@@ -136,6 +161,7 @@ public class CanvasBoard extends Canvas {
             gc.fillText(rowLabel, offsetX + marginX - cellWidth * 0.4, y);
             gc.fillText(rowLabel, offsetX + marginX + boardWidth + cellWidth * 0.1, y);
         }
+        drawPieces(gc);
     }
 
     private void drawPieces(GraphicsContext gc) {
