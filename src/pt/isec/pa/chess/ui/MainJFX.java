@@ -20,8 +20,9 @@ public class MainJFX extends Application {
     @Override
     public void start(Stage stage) {
         createMainStage(stage);
-        NewStage = new Stage();
+        /*NewStage = new Stage();
         createMainStage(NewStage);
+        */
 
         logStage = new Stage();
         createLogStage(logStage, stage.getX() + stage.getWidth(), stage.getY());

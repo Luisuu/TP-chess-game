@@ -16,7 +16,7 @@ public class SoundManager {
 
     public static boolean play(String filename) {
         try {
-            var url = SoundManager.class.getResource("sounds/" + filename);
+            var url = SoundManager.class.getResource("sounds/en/" + filename);
             if (url == null) return false;
             String path = url.toExternalForm();
             Media music = new Media(path);
@@ -47,7 +47,7 @@ public class SoundManager {
     }
 
     public static List<String> getSoundList() {
-        File soundsDir = new File(SoundManager.class.getResource("sounds/").getFile());
+        File soundsDir = new File(SoundManager.class.getResource("sounds/en/").getFile());
         return Arrays.stream(soundsDir.listFiles()).map(x -> x.getName()).toList();
     }
 }

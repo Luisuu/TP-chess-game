@@ -9,6 +9,8 @@ import pt.isec.pa.chess.model.ChessGameManager;
 import pt.isec.pa.chess.model.ModelLog;
 import pt.isec.pa.chess.model.data.pieces.Position;
 
+import pt.isec.pa.chess.ui.res.SoundManager;
+
 import java.io.File;
 
 public class RootPane extends BorderPane {
@@ -28,10 +30,13 @@ public class RootPane extends BorderPane {
     CheckMenuItem showMoves;
     MenuItem undoMove, redoMove;
 
+
+
     public RootPane(ChessGameManager data) {
         this.data = data;
         this.numRows = data.getBoardRows();
         this.numCols = data.getBoardCols();
+
         createViews();
         registerHandlers();
         update();
@@ -78,6 +83,7 @@ public class RootPane extends BorderPane {
         showMoves = new CheckMenuItem("Show possible moves");
         undoMove = new MenuItem("Undo");
         redoMove = new MenuItem("Redo");
+
         undoMove.setDisable(true);
         redoMove.setDisable(true);
         showMoves.setDisable(true);
@@ -92,6 +98,7 @@ public class RootPane extends BorderPane {
         data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
             //System.out.println("Board updated");
             //canvasBoard.update();
+
         });
 
         data.addPropertyChangeListener(ChessGameManager.PROP_GAME_STATE, evt -> {
@@ -273,5 +280,4 @@ public class RootPane extends BorderPane {
     public boolean isShowMovesActive() {
         return showMoves.isSelected();
     }
-
 }

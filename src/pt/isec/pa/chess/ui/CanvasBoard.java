@@ -9,6 +9,8 @@ import pt.isec.pa.chess.model.ChessGameManager;
 import pt.isec.pa.chess.model.ModelLog;
 import pt.isec.pa.chess.ui.res.ImageManager;
 import javafx.scene.image.Image;
+import pt.isec.pa.chess.ui.res.SoundManager;
+
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,6 +40,8 @@ public class CanvasBoard extends Canvas {
 
     private void registerHandlers() {
         data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
+            System.out.println(evt.getOldValue());
+            System.out.println(evt.getNewValue());
             update();
         });
 
@@ -91,6 +95,7 @@ public class CanvasBoard extends Canvas {
 
             update();
         } else {
+
             if (parent.isLearningModeActive()) {
                 //data.movePieceWithUndo(selectedPos, clicked);
                 data.movePiece(selectedPos, clicked);
