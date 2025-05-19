@@ -2,7 +2,7 @@ package pt.isec.pa.chess.model.command;
 
 import pt.isec.pa.chess.model.ChessGame;
 
-public abstract class MovePieceCommand extends AbstractCommand {
+public class MovePieceCommand extends AbstractCommand {
     private final String from, to;
 
     public MovePieceCommand(ChessGame receiver, String from, String to) {

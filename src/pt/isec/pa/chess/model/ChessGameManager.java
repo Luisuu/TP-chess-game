@@ -13,10 +13,8 @@ public class ChessGameManager {
     public static final String PROP_BOARD_UPDATE = "boardUpdate";
     public static final String PROP_GAME_STATE = "gameState";
 
-    private CommandManager cm = new CommandManager();
-
-
     ChessGame cgGame;
+    CommandManager cm;
     private PropertyChangeSupport pcs;
 
     public interface PromotionListener {
@@ -27,6 +25,7 @@ public class ChessGameManager {
 
     public ChessGameManager() {
         cgGame = new ChessGame();
+        cm = new CommandManager();
         pcs = new PropertyChangeSupport(this);
         //System.out.println("ChessGameManager");
     }
@@ -74,15 +73,18 @@ public class ChessGameManager {
         }
     }
 
-    public void movePiece(String SoldPos, String SnewPos) {
+    public boolean movePiece(String SoldPos, String SnewPos) {
         try {
-            boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
+            //boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
+            boolean xd = cm.invokeCommand(new MovePieceCommand(cgGame, SoldPos, SnewPos));
             // fixme
             //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            return xd;
         } catch (IllegalArgumentException ex) {
             ModelLog.getInstance().log("Erro: " + ex.getMessage());
+            return false;
         }
     }
 
@@ -92,7 +94,8 @@ public class ChessGameManager {
             pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Erro: " + ex.getMessage());        }
+            ModelLog.getInstance().log("Erro: " + ex.getMessage());
+        }
     }
 
     public void restart() {
@@ -101,7 +104,8 @@ public class ChessGameManager {
             pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (Exception ex) {
-            ModelLog.getInstance().log("Erro: " + ex.getMessage());        }
+            ModelLog.getInstance().log("Erro: " + ex.getMessage());
+        }
     }
 
     public void setPlayerName(int player, String name) {
@@ -109,14 +113,16 @@ public class ChessGameManager {
             cgGame.setPlayerName(player, name);
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Erro: " + ex.getMessage());        }
+            ModelLog.getInstance().log("Erro: " + ex.getMessage());
+        }
     }
 
     public String getPlayerName(PieceColor eColor) {
         try {
             return cgGame.getPlayerName(eColor);
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Erro: " + ex.getMessage());        }
+            ModelLog.getInstance().log("Erro: " + ex.getMessage());
+        }
         return null;
     }
 
@@ -205,15 +211,13 @@ public class ChessGameManager {
 
     public boolean undo() {
         boolean ok = cm.undo();
-        if (ok)
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+        if (ok) pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
         return ok;
     }
 
     public boolean redo() {
         boolean ok = cm.redo();
-        if (ok)
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+        if (ok) pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
         return ok;
     }
 
@@ -224,6 +228,4 @@ public class ChessGameManager {
     public boolean hasRedo() {
         return cm.hasRedo();
     }
-
-
 }
