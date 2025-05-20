@@ -15,6 +15,7 @@ import pt.isec.pa.chess.ui.res.SoundManager;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 import static java.lang.Double.min;
 
 public class CanvasBoard extends Canvas {
@@ -40,6 +41,49 @@ public class CanvasBoard extends Canvas {
 
     private void registerHandlers() {
         data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
+            if (evt.getOldValue() != null) {
+                String oldGame = (String) evt.getOldValue();
+                String[] OldGameTokens = oldGame.trim().split(",");
+                String newGame = (String) evt.getNewValue();
+                String[] NewGameTokens = newGame.trim().split(",");
+                Character pieceXd = null;
+                String fromXd = null, toXd = null;
+
+                Arrays.sort(OldGameTokens);
+                Arrays.sort(NewGameTokens);
+
+                for (int i = 0; i < OldGameTokens.length; i++) {
+                    if (!OldGameTokens[i].equals(NewGameTokens[i])) {
+                        System.out.println("From: " + OldGameTokens[i]);
+                        fromXd = OldGameTokens[i];
+                        System.out.println("To:   " + NewGameTokens[i]);
+                        toXd = NewGameTokens[i];
+                        pieceXd = OldGameTokens[i].charAt(0);
+                        break;
+                    }
+                }
+
+                if (Character.toLowerCase(pieceXd) == 'k') {
+                    SoundManager.play("king.mp3");
+                } else if (Character.toLowerCase(pieceXd) == 'q') {
+                    SoundManager.play("queen.mp3");
+                } else if (Character.toLowerCase(pieceXd) == 'r') {
+                    SoundManager.play("rook.mp3");
+                } else if (Character.toLowerCase(pieceXd) == 'b') {
+                    SoundManager.play("bishop.mp3");
+                } else if (Character.toLowerCase(pieceXd) == 'n') {
+                    SoundManager.play("knight.mp3");
+                } else if (Character.toLowerCase(pieceXd) == 'p') {
+                    SoundManager.play("pawn.mp3");
+                }
+
+
+                SoundManager.play(fromXd.charAt(0) + ".mp3");
+                SoundManager.play(fromXd.charAt(1) + ".mp3");
+                SoundManager.play(toXd.charAt(0) + ".mp3");
+                SoundManager.play(toXd.charAt(1) + ".mp3");
+            }
+
             System.out.println(evt.getOldValue());
             System.out.println(evt.getNewValue());
             update();
@@ -140,7 +184,7 @@ public class CanvasBoard extends Canvas {
                 gc.setFill(Light ? lightColor : darkColor);
                 gc.fillRect(x, y, cellWidth, cellHeight);
 
-                String pos = "" + (char)('a' + col) + (numRows - row);
+                String pos = "" + (char) ('a' + col) + (numRows - row);
                 if (possibleMoves.contains(pos)) {
                     double circleRadius = Math.min(cellWidth, cellHeight) * 0.2;
                     double cx = x + cellWidth / 2;

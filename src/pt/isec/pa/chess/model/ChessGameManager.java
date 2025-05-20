@@ -12,6 +12,7 @@ import java.util.Set;
 public class ChessGameManager {
     public static final String PROP_BOARD_UPDATE = "boardUpdate";
     public static final String PROP_GAME_STATE = "gameState";
+    private String oldGameState = null;
 
     ChessGame cgGame;
     CommandManager cm;
@@ -45,7 +46,8 @@ public class ChessGameManager {
     public void importa(String sFileName) {
         try {
             cgGame.importa(sFileName);
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            oldGameState = cgGame.getBoardPiecesString();
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
@@ -63,23 +65,25 @@ public class ChessGameManager {
     public void open(String sFileName) {
         try {
             cgGame.open(sFileName);
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            oldGameState = cgGame.getBoardPiecesString();
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             cgGame.restart();
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         }
     }
 
     public boolean movePiece(String SoldPos, String SnewPos) {
         try {
+            oldGameState = cgGame.getBoardPiecesString();
             //boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
             boolean xd = cm.invokeCommand(new MovePieceCommand(cgGame, SoldPos, SnewPos));
             // fixme
             //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
             return xd;
         } catch (IllegalArgumentException ex) {
@@ -90,20 +94,24 @@ public class ChessGameManager {
 
     public void promotePawn(String position, char pieceType) {
         try {
+            oldGameState = cgGame.getBoardPiecesString();
             cgGame.promotePawn(position, pieceType);
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());        }
+            ModelLog.getInstance().log("Error: " + ex.getMessage());
+        }
     }
 
     public void restart() {
         try {
             cgGame.restart();
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            oldGameState = cgGame.getBoardPiecesString();
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (Exception ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());        }
+            ModelLog.getInstance().log("Error: " + ex.getMessage());
+        }
     }
 
     public void setPlayerName(int player, String name) {
@@ -111,14 +119,16 @@ public class ChessGameManager {
             cgGame.setPlayerName(player, name);
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());        }
+            ModelLog.getInstance().log("Error: " + ex.getMessage());
+        }
     }
 
     public String getPlayerName(PieceColor eColor) {
         try {
             return cgGame.getPlayerName(eColor);
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());        }
+            ModelLog.getInstance().log("Error: " + ex.getMessage());
+        }
         return null;
     }
 
