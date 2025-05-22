@@ -7,6 +7,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
 import pt.isec.pa.chess.model.ModelLog;
+import pt.isec.pa.chess.model.data.pieces.PieceColor;
 import pt.isec.pa.chess.model.data.pieces.Position;
 
 import pt.isec.pa.chess.ui.res.SoundManager;
@@ -207,7 +208,6 @@ public class RootPane extends BorderPane {
                 showMoves.setDisable(true);
                 undoMove.setDisable(true);
                 redoMove.setDisable(true);
-                System.out.println("Normal mode activated");
             }
         });
 
@@ -216,14 +216,13 @@ public class RootPane extends BorderPane {
                 showMoves.setDisable(false);
                 undoMove.setDisable(false);
                 redoMove.setDisable(false);
-                System.out.println("Learning mode activated");
             }
         });
 
         showMoves.setOnAction(e -> {
             boolean show = showMoves.isSelected();
             showMoves.setDisable(false);
-            System.out.println("Show possible moves: " + show);
+            //System.out.println("Show possible moves: " + show);
         });
 
         undoMove.setOnAction(e -> {
@@ -242,6 +241,10 @@ public class RootPane extends BorderPane {
     }
 
     private void updateStatus() {
+        if(data.getPlayerName(PieceColor.WHITE) == null || data.getPlayerName(PieceColor.BLACK) == null) {
+            lbStatus.setText("Game not started. Create or load a game from the menu.");
+            return;
+        }
         if (data.getWinner() != null) {
             lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
         } else {

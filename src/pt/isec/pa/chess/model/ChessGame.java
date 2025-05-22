@@ -393,6 +393,7 @@ public class ChessGame implements Serializable {
 
     public void restart() {
         cCurrentPlayer = PieceColor.WHITE;
+        cWinner = null;
         board = new Board();
         board.initializeBoard();
     }
