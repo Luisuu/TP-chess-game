@@ -25,11 +25,6 @@ public class SoundManager {
             mp.setStartTime(Duration.ZERO);
             mp.setStopTime(music.getDuration());
             mp.setAutoPlay(true);
-
-            // mp.setOnPlaying(()-> System.out.println("onPlaying"));
-            // mp.setOnReady(()-> System.out.println("onReady"));
-            // mp.setOnEndOfMedia(()-> System.out.println("onEndMedia"));
-            // mp.setOnStopped(()-> System.out.println("onStopped"));
         } catch (Exception e) {
             return false;
         }
@@ -41,13 +36,65 @@ public class SoundManager {
     }
 
     public static void stop() {
-        if (mp != null && mp.getStatus() == MediaPlayer.Status.PLAYING) {
+        if (mp != null) {
             mp.stop();
+            mp.dispose();
+            mp = null;
         }
     }
 
     public static List<String> getSoundList() {
         File soundsDir = new File(SoundManager.class.getResource("sounds/en/").getFile());
-        return Arrays.stream(soundsDir.listFiles()).map(x -> x.getName()).toList();
+        return Arrays.stream(soundsDir.listFiles()).map(File::getName).toList();
+    }
+
+    public static void playSequence(String move) {
+        if (move == null || move.length() < 5) return;
+
+        char pieceChar = move.charAt(0);
+        String fromCol = String.valueOf(move.charAt(1));
+        String fromRow = String.valueOf(move.charAt(2));
+        String toCol = String.valueOf(move.charAt(3));
+        String toRow = String.valueOf(move.charAt(4));
+
+        String pieceSound = switch (Character.toLowerCase(pieceChar)) {
+            case 'k' -> "king.mp3";
+            case 'q' -> "queen.mp3";
+            case 'r' -> "rook.mp3";
+            case 'b' -> "bishop.mp3";
+            case 'n' -> "knight.mp3";
+            case 'p' -> "pawn.mp3";
+            default -> null;
+        };
+
+        List<String> sounds = new java.util.ArrayList<>();
+        if (pieceSound != null) sounds.add(pieceSound);
+        sounds.add(fromCol + ".mp3");
+        sounds.add(fromRow + ".mp3");
+        sounds.add(toCol + ".mp3");
+        sounds.add(toRow + ".mp3");
+
+        playNextInSequence(sounds, 0);
+    }
+
+    private static void playNextInSequence(List<String> sounds, int index) {
+        if (index >= sounds.size()) return;
+
+        String filename = sounds.get(index);
+        var url = SoundManager.class.getResource("sounds/en/" + filename);
+        if (url == null) {
+            playNextInSequence(sounds, index + 1);
+            return;
+        }
+
+        String path = url.toExternalForm();
+        Media music = new Media(path);
+        stop();
+        mp = new MediaPlayer(music);
+        mp.setOnEndOfMedia(() -> {
+            stop();
+            playNextInSequence(sounds, index + 1);
+        });
+        mp.setAutoPlay(true);
     }
 }

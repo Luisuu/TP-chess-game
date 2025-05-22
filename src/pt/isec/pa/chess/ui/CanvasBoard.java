@@ -63,25 +63,7 @@ public class CanvasBoard extends Canvas {
                     }
                 }
 
-                if (Character.toLowerCase(pieceXd) == 'k') {
-                    SoundManager.play("king.mp3");
-                } else if (Character.toLowerCase(pieceXd) == 'q') {
-                    SoundManager.play("queen.mp3");
-                } else if (Character.toLowerCase(pieceXd) == 'r') {
-                    SoundManager.play("rook.mp3");
-                } else if (Character.toLowerCase(pieceXd) == 'b') {
-                    SoundManager.play("bishop.mp3");
-                } else if (Character.toLowerCase(pieceXd) == 'n') {
-                    SoundManager.play("knight.mp3");
-                } else if (Character.toLowerCase(pieceXd) == 'p') {
-                    SoundManager.play("pawn.mp3");
-                }
-
-
-                SoundManager.play(fromXd.charAt(0) + ".mp3");
-                SoundManager.play(fromXd.charAt(1) + ".mp3");
-                SoundManager.play(toXd.charAt(0) + ".mp3");
-                SoundManager.play(toXd.charAt(1) + ".mp3");
+                SoundManager.playSequence(pieceXd + fromXd.substring(1) + toXd.substring(1));
             }
 
             System.out.println(evt.getOldValue());
