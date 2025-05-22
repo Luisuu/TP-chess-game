@@ -106,8 +106,7 @@ public class ChessGameManager {
     public void restart() {
         try {
             cgGame.restart();
-            oldGameState = cgGame.getBoardPiecesString();
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (Exception ex) {
             ModelLog.getInstance().log("Error: " + ex.getMessage());

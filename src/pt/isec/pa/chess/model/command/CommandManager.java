@@ -15,14 +15,17 @@ public class CommandManager {
     public boolean invokeCommand(ICommand cmd) {
         redoCmds.clear();
         if(cmd.execute()){
+            System.out.println("@1");
             history.push(cmd);
             return true;
         }
+        System.out.println("@2");
         history.clear();
         return false;
     }
 
     public boolean undo(){
+        System.out.println("asdsaasd");
         if(history.isEmpty()){
             return false;
         }

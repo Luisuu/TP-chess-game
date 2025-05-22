@@ -13,11 +13,14 @@ public class MovePieceCommand extends AbstractCommand {
 
     @Override
     public boolean execute() {
-        return receiver.movePiece(from, to);
+        receiver.movePiece(from, to);
+        return true;
     }
 
     @Override
     public boolean undo() {
-        return receiver.movePiece(to, from);
+        System.out.println(receiver.getBoardPiecesString());
+        receiver.movePiece(to, from);
+        return true;
     }
 }
