@@ -24,12 +24,11 @@ public class RootPane extends BorderPane {
     private Position selectedPos = null;
     private LogList logWindow;
 
-    Menu mnGame, mnMode;
+    Menu mnGame, mnMode, mnSettings;
     MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit, mnDebug;
     RadioMenuItem normalMode, learningMode;
-    CheckMenuItem showMoves;
+    CheckMenuItem showMoves, soundToggle;
     MenuItem undoMove, redoMove;
-
 
 
     public RootPane(ChessGameManager data) {
@@ -90,11 +89,20 @@ public class RootPane extends BorderPane {
 
         mnMode.getItems().addAll(normalMode, learningMode, new SeparatorMenuItem(), showMoves, undoMove, redoMove);
 
-        mb.getMenus().addAll(mnGame, mnMode);
+        mnSettings = new Menu("Settings");
+        soundToggle = new CheckMenuItem("Sound");
+        mnSettings.getItems().addAll(soundToggle);
+
+        mb.getMenus().addAll(mnGame, mnMode, mnSettings);
         return mb;
     }
 
     private void registerHandlers() {
+        soundToggle.setOnAction(e -> {
+            boolean bSound = soundToggle.isSelected();
+            SoundManager.setEnabled(bSound);
+        });
+
         data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
             //System.out.println("Board updated");
             //canvasBoard.update();

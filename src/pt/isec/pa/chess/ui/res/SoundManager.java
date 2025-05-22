@@ -9,12 +9,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SoundManager {
+    private static MediaPlayer mp;
+    private static boolean enabled = false;
+
     private SoundManager() {
     }
 
-    private static MediaPlayer mp;
+    public static void setEnabled(boolean value) {
+        enabled = value;
+    }
+
+    public static boolean isEnabled() {
+        return enabled;
+    }
 
     public static boolean play(String filename) {
+        if (!enabled) return false;
         try {
             var url = SoundManager.class.getResource("sounds/en/" + filename);
             if (url == null) return false;
@@ -49,6 +59,7 @@ public class SoundManager {
     }
 
     public static void playSequence(String move) {
+        if (!enabled) return;
         if (move == null || move.length() < 5) return;
 
         char pieceChar = move.charAt(0);
