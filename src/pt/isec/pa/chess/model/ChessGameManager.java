@@ -1,6 +1,8 @@
 package pt.isec.pa.chess.model;
 
 import pt.isec.pa.chess.model.data.pieces.PieceColor;
+import pt.isec.pa.chess.model.memento.CareTaker;
+import pt.isec.pa.chess.model.memento.MyOriginator;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -13,6 +15,7 @@ public class ChessGameManager {
     private String oldGameState = null;
 
     ChessGame cgGame;
+    private CareTaker careTaker;
     private PropertyChangeSupport pcs;
 
     public interface PromotionListener {
@@ -23,6 +26,7 @@ public class ChessGameManager {
 
     public ChessGameManager() {
         cgGame = new ChessGame();
+        careTaker = new CareTaker(new MyOriginator(cgGame));
         pcs = new PropertyChangeSupport(this);
         //System.out.println("ChessGameManager");
     }
@@ -45,6 +49,7 @@ public class ChessGameManager {
             oldGameState = cgGame.getBoardPiecesString();
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            careTaker.save();
         } catch (IOException | RuntimeException e) {
             ModelLog.getInstance().log("Error importing game: " + e.getMessage());
         }
@@ -64,6 +69,7 @@ public class ChessGameManager {
             oldGameState = cgGame.getBoardPiecesString();
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            careTaker.save();
         } catch (IOException | ClassNotFoundException e) {
             ModelLog.getInstance().log("Error opening game: " + e.getMessage());
             cgGame.restart();
@@ -80,6 +86,7 @@ public class ChessGameManager {
             //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            careTaker.save();
             return needsPromotion;
         } catch (IllegalArgumentException ex) {
             ModelLog.getInstance().log("Error: " + ex.getMessage());
@@ -93,6 +100,7 @@ public class ChessGameManager {
             cgGame.promotePawn(position, pieceType);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            careTaker.save();
         } catch (IllegalArgumentException ex) {
             ModelLog.getInstance().log("Error promoting pawn: " + ex.getMessage());
         }
@@ -101,6 +109,7 @@ public class ChessGameManager {
     public void restart() {
         try {
             cgGame.restart();
+            careTaker.reset();
             pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (Exception ex) {
@@ -207,5 +216,27 @@ public class ChessGameManager {
             ModelLog.getInstance().log("Error getting board rows: " + e.getMessage());
         }
         return -1;
+    }
+
+    public boolean undo() {
+        careTaker.undo();
+        pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+        pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+        return true;
+    }
+
+    public boolean redo() {
+        careTaker.redo();
+        pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+        pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+        return true;
+    }
+
+    public boolean hasUndo() {
+        return careTaker.hasUndo();
+    }
+
+    public boolean hasRedo() {
+        return careTaker.hasRedo();
     }
 }

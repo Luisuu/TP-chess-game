@@ -227,11 +227,11 @@ public class RootPane extends BorderPane {
         });
 
         undoMove.setOnAction(e -> {
-
+            data.undo();
         });
 
         redoMove.setOnAction(e -> {
-
+            data.redo();
         });
 
         /* FIXME tirar promotion

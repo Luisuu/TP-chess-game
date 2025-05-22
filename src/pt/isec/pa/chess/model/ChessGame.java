@@ -281,6 +281,30 @@ public class ChessGame implements Serializable {
         board.removePiece(p);
     }
 
+    public void loadBoardStateFromString(String state, PieceColor currentPlayer) {
+        if (state == null || state.isEmpty()) {
+            board = new Board();
+            board.initializeBoard();
+            cCurrentPlayer = PieceColor.WHITE;
+            return;
+        }
+
+        String[] tokens = state.split(",");
+        if (tokens.length == 0) {
+            board = new Board();
+            board.initializeBoard();
+            cCurrentPlayer = currentPlayer;
+            return;
+        }
+
+        board = new Board();
+        board.initializeBoard(tokens);
+        cCurrentPlayer = currentPlayer;
+
+        for (Piece piece : board.getPieces()) {
+            piece.setBoard(board);
+        }
+    }
 
     public void importa(String sFileName) throws IOException {
         board.clearBoard();
