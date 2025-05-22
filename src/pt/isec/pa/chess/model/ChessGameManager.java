@@ -1,7 +1,5 @@
 package pt.isec.pa.chess.model;
 
-import pt.isec.pa.chess.model.command.CommandManager;
-import pt.isec.pa.chess.model.command.MovePieceCommand;
 import pt.isec.pa.chess.model.data.pieces.PieceColor;
 
 import java.beans.PropertyChangeListener;
@@ -15,7 +13,6 @@ public class ChessGameManager {
     private String oldGameState = null;
 
     ChessGame cgGame;
-    CommandManager cm;
     private PropertyChangeSupport pcs;
 
     public interface PromotionListener {
@@ -26,7 +23,6 @@ public class ChessGameManager {
 
     public ChessGameManager() {
         cgGame = new ChessGame();
-        cm = new CommandManager();
         pcs = new PropertyChangeSupport(this);
         //System.out.println("ChessGameManager");
     }
@@ -79,13 +75,12 @@ public class ChessGameManager {
     public boolean movePiece(String SoldPos, String SnewPos) {
         try {
             oldGameState = cgGame.getBoardPiecesString();
-            //boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
-            boolean xd = cm.invokeCommand(new MovePieceCommand(cgGame, SoldPos, SnewPos));
+            boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
             // fixme
             //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-            return xd;
+            return needsPromotion;
         } catch (IllegalArgumentException ex) {
             ModelLog.getInstance().log("Error: " + ex.getMessage());
             return false;
@@ -212,25 +207,5 @@ public class ChessGameManager {
             ModelLog.getInstance().log("Error getting board rows: " + e.getMessage());
         }
         return -1;
-    }
-
-    public boolean undo() {
-        boolean ok = cm.undo();
-        if (ok) pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
-        return ok;
-    }
-
-    public boolean redo() {
-        boolean ok = cm.redo();
-        if (ok) pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
-        return ok;
-    }
-
-    public boolean hasUndo() {
-        return cm.hasUndo();
-    }
-
-    public boolean hasRedo() {
-        return cm.hasRedo();
     }
 }
