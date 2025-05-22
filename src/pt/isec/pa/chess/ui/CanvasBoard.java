@@ -41,33 +41,29 @@ public class CanvasBoard extends Canvas {
 
     private void registerHandlers() {
         data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
-            if (evt.getOldValue() != null) {
-                String oldGame = (String) evt.getOldValue();
-                String[] OldGameTokens = oldGame.trim().split(",");
-                String newGame = (String) evt.getNewValue();
-                String[] NewGameTokens = newGame.trim().split(",");
+            if (evt.getOldValue() instanceof String oldGame && evt.getNewValue() instanceof String newGame) {
+                String[] oldGameTokens = oldGame.trim().split(",");
+                String[] newGameTokens = newGame.trim().split(",");
                 Character pieceXd = null;
                 String fromXd = null, toXd = null;
 
-                Arrays.sort(OldGameTokens);
-                Arrays.sort(NewGameTokens);
+                Arrays.sort(oldGameTokens);
+                Arrays.sort(newGameTokens);
 
-                for (int i = 0; i < OldGameTokens.length; i++) {
-                    if (!OldGameTokens[i].equals(NewGameTokens[i])) {
-                        System.out.println("From: " + OldGameTokens[i]);
-                        fromXd = OldGameTokens[i];
-                        System.out.println("To:   " + NewGameTokens[i]);
-                        toXd = NewGameTokens[i];
-                        pieceXd = OldGameTokens[i].charAt(0);
+                for (int i = 0; i < Math.min(oldGameTokens.length, newGameTokens.length); i++) {
+                    if (!oldGameTokens[i].equals(newGameTokens[i])) {
+                        fromXd = oldGameTokens[i];
+                        toXd = newGameTokens[i];
+                        pieceXd = oldGameTokens[i].charAt(0);
                         break;
                     }
                 }
 
-                SoundManager.playSequence(pieceXd + fromXd.substring(1) + toXd.substring(1));
+                if (pieceXd != null && fromXd != null && toXd != null) {
+                    SoundManager.playSequence(pieceXd + fromXd.substring(1) + toXd.substring(1));
+                }
             }
 
-            System.out.println(evt.getOldValue());
-            System.out.println(evt.getNewValue());
             update();
         });
 

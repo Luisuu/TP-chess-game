@@ -80,13 +80,13 @@ public class ChessGameManager {
 
     public boolean movePiece(String SoldPos, String SnewPos) {
         try {
+            careTaker.save();
             oldGameState = cgGame.getBoardPiecesString();
             boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
             // fixme
             //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-            careTaker.save();
             return needsPromotion;
         } catch (IllegalArgumentException ex) {
             ModelLog.getInstance().log("Error: " + ex.getMessage());
@@ -219,15 +219,16 @@ public class ChessGameManager {
     }
 
     public boolean undo() {
+        String oldState = cgGame.getBoardPiecesString();
         careTaker.undo();
-        pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+        pcs.firePropertyChange(PROP_BOARD_UPDATE, oldState, cgGame.getBoardPiecesString());
         pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         return true;
     }
 
     public boolean redo() {
         careTaker.redo();
-        pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+        pcs.firePropertyChange(PROP_BOARD_UPDATE, new Object(), cgGame.getBoardPiecesString());
         pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         return true;
     }
