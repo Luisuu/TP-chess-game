@@ -219,9 +219,9 @@ public class ChessGameManager {
     }
 
     public boolean undo() {
-        String oldState = cgGame.getBoardPiecesString();
+
         careTaker.undo();
-        pcs.firePropertyChange(PROP_BOARD_UPDATE, oldState, cgGame.getBoardPiecesString());
+        pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
         pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         return true;
     }
