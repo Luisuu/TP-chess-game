@@ -39,7 +39,7 @@ public class ChessGameManager {
         try {
             cgGame.save(sFileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            ModelLog.getInstance().log("Error saving game: " + e.getMessage());
         }
     }
 
@@ -50,7 +50,7 @@ public class ChessGameManager {
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IOException | RuntimeException e) {
-            e.printStackTrace();
+            ModelLog.getInstance().log("Error importing game: " + e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public class ChessGameManager {
         try {
             cgGame.exporta(sFileName);
         } catch (IOException | RuntimeException e) {
-            e.printStackTrace();
+            ModelLog.getInstance().log("Error exporting game: " + e.getMessage());
         }
     }
 
@@ -69,7 +69,7 @@ public class ChessGameManager {
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            ModelLog.getInstance().log("Error opening game: " + e.getMessage());
             cgGame.restart();
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
@@ -99,7 +99,7 @@ public class ChessGameManager {
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error promoting pawn: " + ex.getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ public class ChessGameManager {
             pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (Exception ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error restarting game: " + ex.getMessage());
         }
     }
 
@@ -118,7 +118,7 @@ public class ChessGameManager {
             cgGame.setPlayerName(player, name);
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error setting player name:: " + ex.getMessage());
         }
     }
 
@@ -126,7 +126,7 @@ public class ChessGameManager {
         try {
             return cgGame.getPlayerName(eColor);
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error getting player name: " + ex.getMessage());
         }
         return null;
     }
@@ -136,7 +136,7 @@ public class ChessGameManager {
             Set<String> moves = cgGame.getPossibleMovesFromPieceAt(pos);
             return moves.toString();
         } catch (IllegalArgumentException ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error getting possible moves: " + ex.getMessage());
             return "[]";
         }
     }
@@ -145,7 +145,7 @@ public class ChessGameManager {
         try {
             return cgGame.getBoardPiecesString();
         } catch (Exception ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error getting board pieces: " + ex.getMessage());
             return "";
         }
     }
@@ -154,7 +154,7 @@ public class ChessGameManager {
         try {
             return cgGame.getcCurrentPlayer();
         } catch (Exception ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error getting current player: " + ex.getMessage());
             return null;
         }
     }
@@ -163,7 +163,7 @@ public class ChessGameManager {
         try {
             return cgGame.bIsCheckmate(color);
         } catch (Exception ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error checking checkmate: " + ex.getMessage());
             return false;
         }
     }
@@ -172,7 +172,7 @@ public class ChessGameManager {
         try {
             return cgGame.getWinner();
         } catch (Exception ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error getting winner: " + ex.getMessage());
             return null;
         }
     }
@@ -181,7 +181,7 @@ public class ChessGameManager {
         try {
             return cgGame.isGameOver();
         } catch (Exception ex) {
-            ModelLog.getInstance().log("Error: " + ex.getMessage());
+            ModelLog.getInstance().log("Error checking game over: " + ex.getMessage());
             return false;
         }
     }
@@ -200,7 +200,7 @@ public class ChessGameManager {
         try {
             return cgGame.getBoardSize();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            ModelLog.getInstance().log("Error getting board columns: " + e.getMessage());
         }
         return -1;
     }
@@ -209,7 +209,7 @@ public class ChessGameManager {
         try {
             return cgGame.getBoardSize();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            ModelLog.getInstance().log("Error getting board rows: " + e.getMessage());
         }
         return -1;
     }
