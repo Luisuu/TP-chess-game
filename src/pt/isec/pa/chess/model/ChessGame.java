@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ChessGame implements Serializable, Cloneable {
+public class ChessGame implements Serializable {
     @Serial
     static final long serialVersionUID = 1L;
 
@@ -371,11 +371,5 @@ public class ChessGame implements Serializable, Cloneable {
         cCurrentPlayer = PieceColor.WHITE;
         board = new Board();
         board.initializeBoard();
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        // Returning a clone of the current object
-        return super.clone();
     }
 }

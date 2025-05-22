@@ -1,27 +1,18 @@
 package pt.isec.pa.chess.model.memento;
 
-import pt.isec.pa.chess.model.ChessGame;
-
 import java.io.Serializable;
 
-class MyOriginator implements IOriginator {
-    ChessGame data;
-
-    private static class MyMemento implements IMemento {
-        ChessGame data;
-
-        MyMemento(MyOriginator base) throws CloneNotSupportedException {
-            this.data = (ChessGame) base.data.clone();
-        }
-    }
+class MyOriginator implements Serializable, IOriginator {
+    MyObject data;
 
     @Override
-    public IMemento save() throws CloneNotSupportedException {
-        return new MyMemento(this);
+    public IMemento save() {
+        return new Memento(this);
     }
 
     @Override
     public void restore(IMemento memento) {
-        if (memento instanceof MyMemento m) data = m.data;
+        Object obj = memento.getSnapshot();
+        if (obj instanceof MyOriginator m) data = m.data;
     }
 }

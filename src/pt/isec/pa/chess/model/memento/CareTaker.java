@@ -14,18 +14,18 @@ public class CareTaker {
         redoHist = new ArrayDeque<>();
     }
 
-    public void save() throws CloneNotSupportedException {
+    public void save() {
         redoHist.clear();
         history.push(originator.save());
     }
 
-    public void undo() throws CloneNotSupportedException {
+    public void undo() {
         if (history.isEmpty()) return;
         redoHist.push(originator.save());
         originator.restore(history.pop());
     }
 
-    public void redo() throws CloneNotSupportedException {
+    public void redo() {
         if (redoHist.isEmpty()) return;
         history.push(originator.save());
         originator.restore(redoHist.pop());
