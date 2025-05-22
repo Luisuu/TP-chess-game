@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ChessGame implements Serializable {
+public class ChessGame implements Serializable, Cloneable {
     @Serial
     static final long serialVersionUID = 1L;
 
@@ -92,8 +92,7 @@ public class ChessGame implements Serializable {
         Set<Position> possibleMoves = piece.getPossibleMoves();
         Set<String> result = new HashSet<>();
         for (Position move : possibleMoves) {
-            if (move.getColumn() >= 'a' && move.getColumn() <= 'h' &&
-                    move.getRow() >= 1 && move.getRow() <= 8) {
+            if (move.getColumn() >= 'a' && move.getColumn() <= 'h' && move.getRow() >= 1 && move.getRow() <= 8) {
                 String moveStr = "" + move.getColumn() + move.getRow();
                 result.add(moveStr);
             }
@@ -101,7 +100,6 @@ public class ChessGame implements Serializable {
 
         return result;
     }
-
 
 
     public PieceColor getWinner() {
@@ -375,4 +373,9 @@ public class ChessGame implements Serializable {
         board.initializeBoard();
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        // Returning a clone of the current object
+        return super.clone();
+    }
 }
