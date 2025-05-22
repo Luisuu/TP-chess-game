@@ -85,27 +85,20 @@ public class ChessGame implements Serializable {
     public Set<String> getPossibleMovesFromPieceAt(String pos) {
         if (pos == null) throw new IllegalArgumentException("Position can't be null");
 
-        char[] split = pos.toCharArray();
-
-        if (split[0] < 'a' || split[0] > 'h' || (int) split[1] < 1 || (int) split[1] > 8) {
-            throw new IllegalArgumentException("Invalid position: " + split[0] + (int) split[1]);
-        }
-
         Position p = new Position(pos);
-
         Piece piece = board.getPiece(p);
         if (piece == null) return new HashSet<>();
 
         Set<Position> possibleMoves = piece.getPossibleMoves();
-        Set<String> sb = new HashSet<>();
+        Set<String> result = new HashSet<>();
         for (Position move : possibleMoves) {
-            if (move.getColumn() < 'a' || move.getColumn() > 'h' || move.getRow() < 1 || move.getRow() > 8) {
-                String moveStr = String.valueOf(move.getColumn()) + move.getRow();
-                sb.add(moveStr);
+            if (move.getColumn() >= 'a' && move.getColumn() <= 'h' && move.getRow() >= 1 && move.getRow() <= 8) {
+                String moveStr = "" + move.getColumn() + move.getRow();
+                result.add(moveStr);
             }
         }
 
-        return sb;
+        return result;
     }
 
 
@@ -288,6 +281,30 @@ public class ChessGame implements Serializable {
         board.removePiece(p);
     }
 
+    public void loadBoardStateFromString(String state, PieceColor currentPlayer) {
+        if (state == null || state.isEmpty()) {
+            board = new Board();
+            board.initializeBoard();
+            cCurrentPlayer = PieceColor.WHITE;
+            return;
+        }
+
+        String[] tokens = state.split(",");
+        if (tokens.length == 0) {
+            board = new Board();
+            board.initializeBoard();
+            cCurrentPlayer = currentPlayer;
+            return;
+        }
+
+        board = new Board();
+        board.initializeBoard(tokens);
+        cCurrentPlayer = currentPlayer;
+
+        for (Piece piece : board.getPieces()) {
+            piece.setBoard(board);
+        }
+    }
 
     public void importa(String sFileName) throws IOException {
         board.clearBoard();
@@ -376,8 +393,8 @@ public class ChessGame implements Serializable {
 
     public void restart() {
         cCurrentPlayer = PieceColor.WHITE;
+        cWinner = null;
         board = new Board();
         board.initializeBoard();
     }
-
 }

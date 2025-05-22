@@ -7,20 +7,18 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import pt.isec.pa.chess.model.ModelLog;
 
-import static pt.isec.pa.chess.model.ModelLog.PROP_NEW_LOG;
-
 public class LogList extends BorderPane {
-    private final ListView<String> listView;
+    private ListView<String> listView;
 
     public LogList() {
+        createViews();
+        registerHandlers();
+        update();
+    }
+
+    private void createViews() {
         listView = new ListView<>();
         this.setCenter(listView);
-
-        ModelLog.getInstance().addPropertyChangeListener(evt -> {
-            if (PROP_NEW_LOG.equals(evt.getPropertyName())) { //verifica se é do tipo newlog
-                listView.getItems().add(evt.getNewValue().toString());
-            }
-        });
 
         Button btnClear = new Button("Clear Logs");
         btnClear.setOnAction(e -> {
@@ -31,6 +29,15 @@ public class LogList extends BorderPane {
         HBox bottomBox = new HBox(btnClear);
         bottomBox.setPadding(new Insets(5));
         this.setBottom(bottomBox);
+    }
+
+    private void registerHandlers() {
+        ModelLog.getInstance().addPropertyChangeListener(ModelLog.PROP_NEW_LOG, evt -> {
+            listView.getItems().add((String) evt.getNewValue());
+        });
+    }
+
+    private void update() {
     }
 
     public void log(String message) {

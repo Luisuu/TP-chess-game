@@ -9,6 +9,7 @@ public class MainJFX extends Application {
     private ChessGameManager gameManager;
     private RootPane root;
     private Stage logStage;
+    private Stage NewStage;
 
     @Override
     public void init() throws Exception {
@@ -19,6 +20,9 @@ public class MainJFX extends Application {
     @Override
     public void start(Stage stage) {
         createMainStage(stage);
+        /*NewStage = new Stage();
+        createMainStage(NewStage);
+        */
 
         logStage = new Stage();
         createLogStage(logStage, stage.getX() + stage.getWidth(), stage.getY());

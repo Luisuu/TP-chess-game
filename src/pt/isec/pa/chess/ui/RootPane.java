@@ -7,7 +7,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
 import pt.isec.pa.chess.model.ModelLog;
+import pt.isec.pa.chess.model.data.pieces.PieceColor;
 import pt.isec.pa.chess.model.data.pieces.Position;
+
+import pt.isec.pa.chess.ui.res.SoundManager;
 
 import java.io.File;
 
@@ -22,18 +25,21 @@ public class RootPane extends BorderPane {
     private Position selectedPos = null;
     private LogList logWindow;
 
-    Menu mnGame, mnMode;
+    Menu mnGame, mnMode, mnSettings;
     MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit, mnDebug;
     RadioMenuItem normalMode, learningMode;
-    CheckMenuItem showMoves;
+    CheckMenuItem showMoves, soundToggle;
     MenuItem undoMove, redoMove;
+
 
     public RootPane(ChessGameManager data) {
         this.data = data;
         this.numRows = data.getBoardRows();
         this.numCols = data.getBoardCols();
+
         createViews();
         registerHandlers();
+        update();
     }
 
     private void createViews() {
@@ -77,19 +83,31 @@ public class RootPane extends BorderPane {
         showMoves = new CheckMenuItem("Show possible moves");
         undoMove = new MenuItem("Undo");
         redoMove = new MenuItem("Redo");
+
         undoMove.setDisable(true);
         redoMove.setDisable(true);
+        showMoves.setDisable(true);
 
         mnMode.getItems().addAll(normalMode, learningMode, new SeparatorMenuItem(), showMoves, undoMove, redoMove);
 
-        mb.getMenus().addAll(mnGame, mnMode);
+        mnSettings = new Menu("Settings");
+        soundToggle = new CheckMenuItem("Sound");
+        mnSettings.getItems().addAll(soundToggle);
+
+        mb.getMenus().addAll(mnGame, mnMode, mnSettings);
         return mb;
     }
 
     private void registerHandlers() {
+        soundToggle.setOnAction(e -> {
+            boolean bSound = soundToggle.isSelected();
+            SoundManager.setEnabled(bSound);
+        });
+
         data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
             //System.out.println("Board updated");
-            canvasBoard.update();
+            //canvasBoard.update();
+
         });
 
         data.addPropertyChangeListener(ChessGameManager.PROP_GAME_STATE, evt -> {
@@ -190,31 +208,43 @@ public class RootPane extends BorderPane {
                 showMoves.setDisable(true);
                 undoMove.setDisable(true);
                 redoMove.setDisable(true);
-                System.out.println("Normal mode activated");
             }
         });
 
         learningMode.setOnAction(e -> {
             if (learningMode.isSelected()) {
                 showMoves.setDisable(false);
-                undoMove.setDisable(true);
-                redoMove.setDisable(true);
-                System.out.println("Learning mode activated");
+                undoMove.setDisable(false);
+                redoMove.setDisable(false);
             }
         });
 
         showMoves.setOnAction(e -> {
             boolean show = showMoves.isSelected();
-            System.out.println("Show possible moves: " + show);
+            showMoves.setDisable(false);
+            //System.out.println("Show possible moves: " + show);
         });
 
+        undoMove.setOnAction(e -> {
+            data.undo();
+        });
+
+        redoMove.setOnAction(e -> {
+            data.redo();
+        });
+
+        /* FIXME tirar promotion
         data.setPromotionListener(position -> {
             char chosen = showPromotionDialog();
             data.promotePawn(position, chosen);
-        });
+        });*/
     }
 
     private void updateStatus() {
+        if(data.getPlayerName(PieceColor.WHITE) == null || data.getPlayerName(PieceColor.BLACK) == null) {
+            lbStatus.setText("Game not started. Create or load a game from the menu.");
+            return;
+        }
         if (data.getWinner() != null) {
             lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
         } else {
@@ -224,7 +254,7 @@ public class RootPane extends BorderPane {
 
     public void update() {
         updateStatus();
-        canvasBoard.update();
+        //canvasBoard.update();
     }
 
     private char showPromotionDialog() {
@@ -244,4 +274,11 @@ public class RootPane extends BorderPane {
         return logWindow;
     }
 
+    public boolean isLearningModeActive() {
+        return learningMode.isSelected();
+    }
+
+    public boolean isShowMovesActive() {
+        return showMoves.isSelected();
+    }
 }
