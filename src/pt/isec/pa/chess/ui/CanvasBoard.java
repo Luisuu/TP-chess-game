@@ -126,7 +126,6 @@ public class CanvasBoard extends Canvas {
             }
             selectedPos = null;
             possibleMoves.clear();
-            update();
         }
     }
 
