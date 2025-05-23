@@ -82,12 +82,12 @@ public class ChessGameManager {
         try {
             oldGameState = cgGame.getBoardPiecesString();
             careTaker.save();
-            boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
+            boolean pieceMoved = cgGame.movePiece(SoldPos, SnewPos);
             // fixme
             //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-            return needsPromotion;
+            return pieceMoved;
         } catch (IllegalArgumentException ex) {
             ModelLog.getInstance().log("Error: " + ex.getMessage());
             return false;

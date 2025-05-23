@@ -234,7 +234,7 @@ public class ChessGame implements Serializable {
         // FIXME
         boolean lolxd = false;
         if (pMover.getColor() == PieceColor.BLACK) {
-            if (pMover.getDefinition() == 'P') {
+            if (pMover.getDefinition() == 'p') {
                 if (newPos.getRow() == 1) {
                     board.addPiece(new Position(pMover.getPosition().getColumn(), 1), new Queen(PieceColor.BLACK, this.board, pMover.getPosition().getColumn(), 1));
                     lolxd = true;
@@ -256,13 +256,14 @@ public class ChessGame implements Serializable {
 
         pMover.setHasMoved(true);
 
-        // Verifica se pawnpromotion
-        boolean needsPromotion = (pMover instanceof Pawn pawn && pawn.isPromotionPosition());
-
         cCurrentPlayer = getcOpponent();
         isGameOver();
 
-        return needsPromotion;
+        return true;
+
+        // Verifica se pawnpromotion
+        //boolean needsPromotion = (pMover instanceof Pawn pawn && pawn.isPromotionPosition());
+        //return needsPromotion;
     }
 
 
