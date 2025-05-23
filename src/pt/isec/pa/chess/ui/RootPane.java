@@ -107,7 +107,6 @@ public class RootPane extends BorderPane {
         data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
             //System.out.println("Board updated");
             //canvasBoard.update();
-
         });
 
         data.addPropertyChangeListener(ChessGameManager.PROP_GAME_STATE, evt -> {
@@ -241,7 +240,7 @@ public class RootPane extends BorderPane {
     }
 
     private void updateStatus() {
-        if(data.getPlayerName(PieceColor.WHITE) == null || data.getPlayerName(PieceColor.BLACK) == null) {
+        if (data.getPlayerName(PieceColor.WHITE) == null || data.getPlayerName(PieceColor.BLACK) == null) {
             lbStatus.setText("Game not started. Create or load a game from the menu.");
             return;
         }
