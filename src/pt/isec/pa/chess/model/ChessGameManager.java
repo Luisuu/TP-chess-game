@@ -45,8 +45,8 @@ public class ChessGameManager {
 
     public void importa(String sFileName) {
         try {
-            cgGame.importa(sFileName);
             oldGameState = cgGame.getBoardPiecesString();
+            cgGame.importa(sFileName);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
             careTaker.save();
@@ -65,8 +65,8 @@ public class ChessGameManager {
 
     public void open(String sFileName) {
         try {
-            cgGame.open(sFileName);
             oldGameState = cgGame.getBoardPiecesString();
+            cgGame.open(sFileName);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
             careTaker.save();
@@ -80,8 +80,8 @@ public class ChessGameManager {
 
     public boolean movePiece(String SoldPos, String SnewPos) {
         try {
-            careTaker.save();
             oldGameState = cgGame.getBoardPiecesString();
+            careTaker.save();
             boolean needsPromotion = cgGame.movePiece(SoldPos, SnewPos);
             // fixme
             //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
