@@ -4,9 +4,7 @@ import pt.isec.pa.chess.model.data.Board;
 import pt.isec.pa.chess.model.data.pieces.*;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Core logic of the chess game. Maintains the board state, current player,
@@ -142,23 +140,45 @@ public class ChessGame implements Serializable {
      * @return Set of valid move strings
      */
     public Set<String> getPossibleMovesFromPieceAt(String pos) {
-        if (pos == null) throw new IllegalArgumentException("Position can't be null");
+        if (pos == null)
+            throw new IllegalArgumentException("Position can't be null");
 
         Position p = new Position(pos);
         Piece piece = board.getPiece(p);
-        if (piece == null) return new HashSet<>();
+        if (piece == null || piece.getColor() != cCurrentPlayer)
+            return new HashSet<>();
 
-        Set<Position> possibleMoves = piece.getPossibleMoves();
         Set<String> result = new HashSet<>();
-        for (Position move : possibleMoves) {
-            if (move.getColumn() >= 'a' && move.getColumn() <= 'h' && move.getRow() >= 1 && move.getRow() <= 8) {
-                String moveStr = "" + move.getColumn() + move.getRow();
-                result.add(moveStr);
+        Position originalPos = piece.getPosition();
+
+        for (Position move : piece.getPossibleMoves()) {
+            Piece captured = board.getPiece(move);
+            Piece backup = captured;
+
+            // Simulate move
+            board.removePiece(originalPos);
+            if (captured != null)
+                board.removePiece(move);
+
+            piece.setPosition(move);
+            board.addPiece(move, piece);
+
+            // Check if king is still in check
+            if (!isInCheck(cCurrentPlayer)) {
+                result.add("" + move.getColumn() + move.getRow());
             }
+
+            // Undo
+            board.removePiece(move);
+            piece.setPosition(originalPos);
+            board.addPiece(originalPos, piece);
+            if (backup != null)
+                board.addPiece(move, backup);
         }
 
         return result;
     }
+
 
     /**
      * Returns the winner of the game, if determined.
@@ -217,38 +237,78 @@ public class ChessGame implements Serializable {
     }
 
     /**
+     * Determines if the specified player's king is currently under threat.
+     * This means at least one enemy piece has a legal move that could capture the king.
+     *
+     * @param color The color of the player to check (WHITE or BLACK)
+     * @return true if the player's king is in check, false otherwise
+     */
+    private boolean isInCheck(PieceColor color) {
+        Position kingPos = null;
+
+        for (Piece piece : new ArrayList<>(board.getAllPieces())) {
+            if (Character.toUpperCase(piece.getDefinition()) == 'K' && piece.getColor() == color) {
+                kingPos = piece.getPosition();
+                break;
+            }
+        }
+
+        if (kingPos == null)
+            return false; // king already captured
+
+        for (Piece enemy : new ArrayList<>(board.getAllPieces())) {
+            if (enemy.getColor() != color && enemy.getPossibleMoves().contains(kingPos)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Checks if a player is in checkmate.
      *
-     * @param cPieceColor Player's color
+     * @param color Player's color
      * @return true if in checkmate
      */
-    public boolean bIsCheckmate(PieceColor cPieceColor) {
-
-        Set<Position> sPositions = new HashSet<>();
-        Position kingPos = null;
-        Piece kingPiece = null;
-
-        for (Piece piece : board.getAllPieces()) {
-            if (Character.toUpperCase(piece.getDefinition()) == 'K' && piece.getColor() == cPieceColor) {
-                kingPos = piece.getPosition();
-                kingPiece = piece;
-            }
-            if (piece.getColor() != cPieceColor) {
-                sPositions.addAll(piece.getPossibleMoves());
-            }
-        }
-        if (kingPos == null) {
+    public boolean bIsCheckmate(PieceColor color) {
+        if (!isInCheck(color))
             return false;
-        }
 
-        if (!sPositions.contains(kingPos)) {
-            return false;
-        }
-        for (Position move : kingPiece.getPossibleMoves()) {
-            if (!sPositions.contains(move)) {
-                return false;
+        List<Piece> piecesCopy = new ArrayList<>(board.getAllPieces());
+
+        for (Piece piece : piecesCopy) {
+            if (piece.getColor() != color)
+                continue;
+
+            Set<Position> moves = piece.getPossibleMoves();
+            Position originalPos = piece.getPosition();
+
+            for (Position move : moves) {
+                Piece captured = board.getPiece(move);
+                Piece backup = captured;
+
+                board.removePiece(originalPos);
+                if (captured != null)
+                    board.removePiece(move);
+
+                piece.setPosition(move);
+                board.addPiece(move, piece);
+
+                boolean stillInCheck = isInCheck(color);
+
+                // Undo the move
+                board.removePiece(move);
+                piece.setPosition(originalPos);
+                board.addPiece(originalPos, piece);
+                if (backup != null)
+                    board.addPiece(move, backup);
+
+                if (!stillInCheck)
+                    return false;
             }
         }
+
         return true;
     }
 
@@ -301,7 +361,11 @@ public class ChessGame implements Serializable {
         Position oldPos = new Position(SoldPos);
 
         Piece pMover = board.getPiece(oldPos);
-        if (pMover == null || !pMover.getPossibleMoves().contains(newPos) || pMover.getColor() != cCurrentPlayer)
+        if (pMover == null || pMover.getColor() != cCurrentPlayer)
+            return false;
+
+        Set<String> legalMoves = getPossibleMovesFromPieceAt(SoldPos);
+        if (!legalMoves.contains(SnewPos))
             return false;
 
         ModelLog.getInstance().log(cCurrentPlayer + " moved piece to: " + newPos);
