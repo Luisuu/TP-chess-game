@@ -251,7 +251,7 @@ public class RootPane extends BorderPane {
         }
     }
 
-    public void update() {
+    private void update() { //VERIFICAR SE E PRIVATE OU PUBLIC ACHO QU E PRIVATE
         updateStatus();
         //canvasBoard.update();
     }

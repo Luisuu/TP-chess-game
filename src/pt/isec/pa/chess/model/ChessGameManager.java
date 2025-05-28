@@ -9,6 +9,19 @@ import java.beans.PropertyChangeSupport;
 import java.io.*;
 import java.util.Set;
 
+/**
+ * Facade class that manages the core functionality of the chess game.
+ * Handles user interactions such as moving pieces, saving/loading games,
+ * importing/exporting partial games, and maintaining game state.
+ * Uses PropertyChangeSupport to notify UI components of updates.
+ *
+ * @author Antonio Pedorso, Luis Duarte, Carolina Veloso
+ * @version 1.0.0
+ *
+ * @see ChessGame
+ * @see ModelLog
+ */
+
 public class ChessGameManager {
     public static final String PROP_BOARD_UPDATE = "boardUpdate";
     public static final String PROP_GAME_STATE = "gameState";
@@ -18,12 +31,21 @@ public class ChessGameManager {
     private CareTaker careTaker;
     private PropertyChangeSupport pcs;
 
+    /**
+     * Listener instance for handling promotions.
+     * Marked transient to avoid serialization.
+     */
     public interface PromotionListener {
         void onPromote(String position);
     }
 
     private transient PromotionListener promotionListener;
 
+    /**
+     * Constructs a new ChessGameManager instance.
+     * Initializes the internal ChessGame object, sets up the CareTaker for undo/redo support,
+     * and prepares the property change support for UI notification.
+     */
     public ChessGameManager() {
         cgGame = new ChessGame();
         careTaker = new CareTaker(new MyOriginator(cgGame));
@@ -31,10 +53,21 @@ public class ChessGameManager {
         //System.out.println("ChessGameManager");
     }
 
+    /**
+     * Adds a listener for property change events.
+     *
+     * @param property Property name to listen to
+     * @param listener Listener to be notified
+     */
     public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(property, listener);
     }
 
+    /**
+     * Saves the current game state to a file using serialization.
+     *
+     * @param sFileName The file path to save the game
+     */
     public void save(String sFileName) {
         try {
             cgGame.save(sFileName);
@@ -43,6 +76,11 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Imports a partial game from a formatted file.
+     *
+     * @param sFileName The file to import
+     */
     public void importa(String sFileName) {
         try {
             oldGameState = cgGame.getBoardPiecesString();
@@ -55,6 +93,11 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Exports the current game state to a formatted file.
+     *
+     * @param sFileName The destination file name
+     */
     public void exporta(String sFileName) {
         try {
             cgGame.exporta(sFileName);
@@ -63,6 +106,11 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Opens a previously saved game.
+     *
+     * @param sFileName File to load from
+     */
     public void open(String sFileName) {
         try {
             oldGameState = cgGame.getBoardPiecesString();
@@ -78,6 +126,14 @@ public class ChessGameManager {
         }
     }
 
+
+    /**
+     * Moves a piece from one position to another.
+     *
+     * @param SoldPos Source position (e.g., "e2")
+     * @param SnewPos Destination position (e.g., "e4")
+     * @return true if the move was successful, false otherwise
+     */
     public boolean movePiece(String SoldPos, String SnewPos) {
         try {
             oldGameState = cgGame.getBoardPiecesString();
@@ -94,6 +150,12 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Promotes a pawn at the specified position to the selected type.
+     *
+     * @param position Position of the pawn
+     * @param pieceType Piece type to promote to (Q, R, B, N)
+     */
     public void promotePawn(String position, char pieceType) {
         try {
             oldGameState = cgGame.getBoardPiecesString();
@@ -106,6 +168,9 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Resets the game to the initial state.
+     */
     public void restart() {
         try {
             cgGame.restart();
@@ -117,6 +182,12 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Sets the name of a player.
+     *
+     * @param player Player number (1 or 2)
+     * @param name Player's name
+     */
     public void setPlayerName(int player, String name) {
         try {
             cgGame.setPlayerName(player, name);
@@ -126,6 +197,12 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Gets the name of the player of the specified color.
+     *
+     * @param eColor Piece color
+     * @return Player's name
+     */
     public String getPlayerName(PieceColor eColor) {
         try {
             return cgGame.getPlayerName(eColor);
@@ -135,6 +212,12 @@ public class ChessGameManager {
         return null;
     }
 
+    /**
+     * Gets the possible moves for the piece at the given position.
+     *
+     * @param pos Board position
+     * @return List of possible target positions
+     */
     public String getPossibleMovesFromPieceAt(String pos) {
         try {
             Set<String> moves = cgGame.getPossibleMovesFromPieceAt(pos);
@@ -145,6 +228,12 @@ public class ChessGameManager {
         }
     }
 
+
+    /**
+     * Returns a string representation of the current board.
+     *
+     * @return Board string
+     */
     public String getBoardPiecesString() {
         try {
             return cgGame.getBoardPiecesString();
@@ -154,6 +243,11 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Returns the color of the current player.
+     *
+     * @return Current player's color
+     */
     public PieceColor getcCurrentPlayer() {
         try {
             return cgGame.getcCurrentPlayer();
@@ -163,6 +257,12 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Checks whether the specified player is in checkmate.
+     *
+     * @param color Player color
+     * @return true if checkmate, false otherwise
+     */
     public boolean bIsCheckmate(PieceColor color) {
         try {
             return cgGame.bIsCheckmate(color);
@@ -172,6 +272,11 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Returns the winner of the game, if any.
+     *
+     * @return Winner's color
+     */
     public PieceColor getWinner() {
         try {
             return cgGame.getWinner();
@@ -181,6 +286,11 @@ public class ChessGameManager {
         }
     }
 
+    /**
+     * Checks if the game is over.
+     *
+     * @return true if game over, false otherwise
+     */
     public boolean isGameOver() {
         try {
             return cgGame.isGameOver();
@@ -190,7 +300,11 @@ public class ChessGameManager {
         }
     }
 
-
+    /**
+     * Returns debug info about the game.
+     *
+     * @return Debug string
+     */
     public String debug() {
         StringBuilder sb = new StringBuilder();
         sb.append(cgGame.sPlayer1).append(",");
@@ -200,6 +314,11 @@ public class ChessGameManager {
         return sb.toString();
     }
 
+    /**
+     * Gets the board column count.
+     *
+     * @return Number of columns
+     */
     public int getBoardCols() {
         try {
             return cgGame.getBoardSize();
@@ -209,6 +328,11 @@ public class ChessGameManager {
         return -1;
     }
 
+    /**
+     * Gets the board row count.
+     *
+     * @return Number of rows
+     */
     public int getBoardRows() {
         try {
             return cgGame.getBoardSize();
@@ -218,6 +342,12 @@ public class ChessGameManager {
         return -1;
     }
 
+
+    /**
+     * Undoes the last move.
+     *
+     * @return true if undo was successful
+     */
     public boolean undo() {
 
         careTaker.undo();
@@ -226,6 +356,11 @@ public class ChessGameManager {
         return true;
     }
 
+    /**
+     * Redoes the last undone move.
+     *
+     * @return true if redo was successful
+     */
     public boolean redo() {
         careTaker.redo();
         pcs.firePropertyChange(PROP_BOARD_UPDATE, new Object(), cgGame.getBoardPiecesString());
@@ -233,10 +368,20 @@ public class ChessGameManager {
         return true;
     }
 
+    /**
+     * Checks if an undo operation is available.
+     *
+     * @return true if undo is available
+     */
     public boolean hasUndo() {
         return careTaker.hasUndo();
     }
 
+    /**
+     * Checks if a redo operation is available.
+     *
+     * @return true if redo is available
+     */
     public boolean hasRedo() {
         return careTaker.hasRedo();
     }

@@ -8,6 +8,21 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Core logic of the chess game. Maintains the board state, current player,
+ * game rules, checkmate detection, and player management.
+ * Handles moves, pawn promotion, game loading/saving, and turn control.
+ *
+ * Serializable for saving/loading full game state.
+ *
+ * @see Board
+ * @see Piece
+ * @see PieceColor
+ * @see PieceFactory
+ * @see ModelLog
+ */
+
+
 public class ChessGame implements Serializable {
     @Serial
     static final long serialVersionUID = 1L;
@@ -17,16 +32,32 @@ public class ChessGame implements Serializable {
     PieceColor cWinner = null;
     String sPlayer1 = null, sPlayer2 = null;
 
+    /**
+     * Constructs a new ChessGame instance with a standard 8x8 chessboard.
+     * Initializes the board and sets the current player to white.
+     */
     public ChessGame() {
         board = new Board();
         board.clearBoard();
         board.initializeBoard();
     }
 
+    /**
+     * Returns the size of the board (number of rows/columns).
+     *
+     * @return The board size
+     */
     public int getBoardSize() {
         return board.getBoardSize();
     }
 
+    /**
+     * Sets the name of the specified player.
+     *
+     * @param player The player number (1 or 2)
+     * @param name   The name to assign to the player
+     * @throws RuntimeException if the player number is invalid
+     */
     public void setPlayerName(int player, String name) {
         if (player < 1 || player > 2) {
             throw new RuntimeException("tried to set invalid player");
@@ -40,6 +71,12 @@ public class ChessGame implements Serializable {
         }
     }
 
+    /**
+     * Returns the name of the player associated with the specified color.
+     *
+     * @param eColor The color of the player (WHITE or BLACK)
+     * @return The name of the player
+     */
     public String getPlayerName(PieceColor eColor) {
         if (eColor == PieceColor.WHITE) {
             return sPlayer1;
@@ -63,25 +100,47 @@ public class ChessGame implements Serializable {
         return sb.toString();
     }
 
+    /**
+     * Starts a new game with initial board setup.
+     */
     public void start() {
         board.clearBoard();
         board.initializeBoard();
     }
 
+    /**
+     * Returns the current board pieces as a string.
+     *
+     * @return Board state string
+     */
     public String getBoardPiecesString() {
         return board.printPieces();
     }
 
+    /**
+     * Gets the current player's color.
+     *
+     * @return Current player
+     */
     public PieceColor getcCurrentPlayer() {
         return cCurrentPlayer;
     }
 
-
+    /**
+     * Returns the opposing player's color.
+     *
+     * @return Opponent player
+     */
     public PieceColor getcOpponent() {
         return cCurrentPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
     }
 
-
+    /**
+     * Gets valid moves for a piece at the given position.
+     *
+     * @param pos Position on board
+     * @return Set of valid move strings
+     */
     public Set<String> getPossibleMovesFromPieceAt(String pos) {
         if (pos == null) throw new IllegalArgumentException("Position can't be null");
 
@@ -101,11 +160,20 @@ public class ChessGame implements Serializable {
         return result;
     }
 
-
+    /**
+     * Returns the winner of the game, if determined.
+     *
+     * @return The color of the winning player, or null if the game is not over
+     */
     public PieceColor getWinner() {
         return cWinner;
     }
 
+    /**
+     * Checks if the game has ended (checkmate or no king).
+     *
+     * @return true if game is over
+     */
     public boolean isGameOver() {
         boolean bWhiteKing = false;
         boolean bBlackKing = false;
@@ -139,14 +207,21 @@ public class ChessGame implements Serializable {
         return false;
     }
 
-
+    /**
+     * Resets the game to its initial state.
+     */
     public void resetGame() {
         cCurrentPlayer = PieceColor.WHITE;
         board = new Board();
         board.initializeBoard();
     }
 
-
+    /**
+     * Checks if a player is in checkmate.
+     *
+     * @param cPieceColor Player's color
+     * @return true if in checkmate
+     */
     public boolean bIsCheckmate(PieceColor cPieceColor) {
 
         Set<Position> sPositions = new HashSet<>();
@@ -177,8 +252,12 @@ public class ChessGame implements Serializable {
         return true;
     }
 
-
-    //PAWN PROMOTION
+    /**
+     * Promotes a pawn to a new piece at a specific position.
+     *
+     * @param position Position of the pawn
+     * @param pieceType New piece type (Q, R, B, N)
+     */
     public void promotePawn(String position, char pieceType) {
 
         if (position == null || position.length() != 2) return;
@@ -208,7 +287,13 @@ public class ChessGame implements Serializable {
         board.addPiece(pos, newPiece);
     }
 
-
+    /**
+     * Moves a piece from one position to another.
+     *
+     * @param SoldPos Starting position
+     * @param SnewPos Ending position
+     * @return true if move was valid
+     */
     public boolean movePiece(String SoldPos, String SnewPos) {
         if (isGameOver()) return false;
 
@@ -266,7 +351,11 @@ public class ChessGame implements Serializable {
         //return needsPromotion;
     }
 
-
+    /**
+     * Removes a piece from the board.
+     *
+     * @param pos Position of the piece to remove
+     */
     public void removePiece(String pos) {
         if (pos == null) throw new IllegalArgumentException("Position can't be null");
 
@@ -282,6 +371,13 @@ public class ChessGame implements Serializable {
         board.removePiece(p);
     }
 
+
+    /**
+     * Loads a board state from string representation.
+     *
+     * @param state Board data
+     * @param currentPlayer Current player
+     */
     public void loadBoardStateFromString(String state, PieceColor currentPlayer) {
         if (state == null || state.isEmpty()) {
             board = new Board();
@@ -307,6 +403,11 @@ public class ChessGame implements Serializable {
         }
     }
 
+    /**
+     * Imports a partial game from a file.
+     *
+     * @param sFileName File to import
+     */
     public void importa(String sFileName) throws IOException {
         board.clearBoard();
         try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(sFileName)))) {
@@ -349,6 +450,11 @@ public class ChessGame implements Serializable {
         }
     }
 
+    /**
+     * Exports the current game to a file.
+     *
+     * @param sFileName File to export to
+     */
     public void exporta(String sFileName) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append(cCurrentPlayer).append(",");
@@ -359,6 +465,11 @@ public class ChessGame implements Serializable {
         }
     }
 
+    /**
+     * Opens a full game state from a serialized file.
+     *
+     * @param sFileName File to open
+     */
     public void open(String sFileName) throws IOException, ClassNotFoundException {
 
         ChessGame loaded = ChessGameSerialization.load(sFileName);
@@ -388,10 +499,18 @@ public class ChessGame implements Serializable {
     }
 
 
+    /**
+     * Saves the current game state to a file.
+     *
+     * @param sFileName Destination file
+     */
     public void save(String sFileName) throws IOException {
         ChessGameSerialization.save(sFileName, this);
     }
 
+    /**
+     * Restarts the game, reinitializing the board and players.
+     */
     public void restart() {
         cCurrentPlayer = PieceColor.WHITE;
         cWinner = null;
