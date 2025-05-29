@@ -6,13 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Rook extends Piece {
-    private boolean bHasMoved;
 
     public Rook(PieceColor PieceColor, Board board, char cColumn, int iRow) {
         super('R', board, PieceColor, cColumn, iRow);
         this.bHasMoved = (PieceColor == PieceColor.WHITE && iRow == 1 && (cColumn == 'a' || cColumn == 'h')) || (PieceColor == PieceColor.BLACK && iRow == 8 && (cColumn == 'a' || cColumn == 'h')) ? false : true;
     }
 
+    @Override
     public Set<Position> getPossibleMoves() {
         Set<Position> possibleMoves = new HashSet<>();
 
@@ -21,10 +21,12 @@ public class Rook extends Piece {
         return getLinearMoves(moves);
     }
 
+    @Override
     public boolean hasMoved() {
         return bHasMoved;
     }
 
+    @Override
     public void setHasMoved(boolean hasMoved) {
         this.bHasMoved = hasMoved;
     }

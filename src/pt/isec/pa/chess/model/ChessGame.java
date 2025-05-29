@@ -10,7 +10,7 @@ import java.util.*;
  * Core logic of the chess game. Maintains the board state, current player,
  * game rules, checkmate detection, and player management.
  * Handles moves, pawn promotion, game loading/saving, and turn control.
- *
+ * <p>
  * Serializable for saving/loading full game state.
  *
  * @see Board
@@ -140,31 +140,41 @@ public class ChessGame implements Serializable {
      * @return Set of valid move strings
      */
     public Set<String> getPossibleMovesFromPieceAt(String pos) {
-        if (pos == null)
-            throw new IllegalArgumentException("Position can't be null");
+        if (pos == null) throw new IllegalArgumentException("Position can't be null");
 
         Position p = new Position(pos);
         Piece piece = board.getPiece(p);
-        if (piece == null || piece.getColor() != cCurrentPlayer)
-            return new HashSet<>();
+        if (piece == null || piece.getColor() != cCurrentPlayer) return new HashSet<>();
 
         Set<String> result = new HashSet<>();
         Position originalPos = piece.getPosition();
 
         for (Position move : piece.getPossibleMoves()) {
+
+            // movimentos castling King
+            boolean isCastling = piece instanceof King && Math.abs(move.getColumn() - originalPos.getColumn()) == 2;
+
+            if (isCastling) {
+                if (!isValidCastling(piece, originalPos, move)) {
+                    continue;
+                }
+            }
+
+
             Piece captured = board.getPiece(move);
             Piece backup = captured;
 
             // Simulate move
             board.removePiece(originalPos);
-            if (captured != null)
-                board.removePiece(move);
+            if (captured != null) board.removePiece(move);
 
             piece.setPosition(move);
             board.addPiece(move, piece);
 
-            // Check if king is still in check
-            if (!isInCheck(cCurrentPlayer)) {
+
+            if (!isCastling && !isInCheck(cCurrentPlayer)) {
+                result.add("" + move.getColumn() + move.getRow());
+            } else if (isCastling) {
                 result.add("" + move.getColumn() + move.getRow());
             }
 
@@ -172,13 +182,46 @@ public class ChessGame implements Serializable {
             board.removePiece(move);
             piece.setPosition(originalPos);
             board.addPiece(originalPos, piece);
-            if (backup != null)
-                board.addPiece(move, backup);
+            if (backup != null) board.addPiece(move, backup);
         }
-
         return result;
     }
 
+
+    private boolean isValidCastling(Piece king, Position from, Position to) {
+        if (!(king instanceof King) || king.hasMoved() || isInCheck(king.getColor())) {
+            return false;
+        }
+
+        boolean isKingside = to.getColumn() > from.getColumn();
+        char rookCol = isKingside ? 'h' : 'a';
+        Position rookPos = new Position(rookCol, from.getRow());
+        Piece rook = board.getPiece(rookPos);
+
+        if (rook == null || !(rook instanceof Rook) || rook.getColor() != king.getColor() || rook.hasMoved()) {
+            return false;
+        }
+
+        int colStep = isKingside ? 1 : -1;
+        char startFreeCol = (char) (from.getColumn() + colStep);
+        char endFreeCol = isKingside ? 'g' : 'b';
+        for (char col = startFreeCol; col != endFreeCol + colStep; col += colStep) {
+            if (!board.isEmpty(new Position(col, from.getRow()))) {
+                return false;
+            }
+        }
+        char kingEndCol = isKingside ? 'g' : 'c';
+        for (char col = from.getColumn(); col != kingEndCol + (isKingside ? 1 : -1); col += colStep) {
+            Position pos = new Position(col, from.getRow());
+            for (Piece enemy : board.getAllPieces()) {
+                if (enemy.getColor() != king.getColor() && enemy.getPossibleMoves().contains(pos)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 
     /**
      * Returns the winner of the game, if determined.
@@ -253,8 +296,7 @@ public class ChessGame implements Serializable {
             }
         }
 
-        if (kingPos == null)
-            return false; // king already captured
+        if (kingPos == null) return false; // king already captured
 
         for (Piece enemy : new ArrayList<>(board.getAllPieces())) {
             if (enemy.getColor() != color && enemy.getPossibleMoves().contains(kingPos)) {
@@ -272,14 +314,12 @@ public class ChessGame implements Serializable {
      * @return true if in checkmate
      */
     public boolean bIsCheckmate(PieceColor color) {
-        if (!isInCheck(color))
-            return false;
+        if (!isInCheck(color)) return false;
 
         List<Piece> piecesCopy = new ArrayList<>(board.getAllPieces());
 
         for (Piece piece : piecesCopy) {
-            if (piece.getColor() != color)
-                continue;
+            if (piece.getColor() != color) continue;
 
             Set<Position> moves = piece.getPossibleMoves();
             Position originalPos = piece.getPosition();
@@ -289,8 +329,7 @@ public class ChessGame implements Serializable {
                 Piece backup = captured;
 
                 board.removePiece(originalPos);
-                if (captured != null)
-                    board.removePiece(move);
+                if (captured != null) board.removePiece(move);
 
                 piece.setPosition(move);
                 board.addPiece(move, piece);
@@ -301,11 +340,9 @@ public class ChessGame implements Serializable {
                 board.removePiece(move);
                 piece.setPosition(originalPos);
                 board.addPiece(originalPos, piece);
-                if (backup != null)
-                    board.addPiece(move, backup);
+                if (backup != null) board.addPiece(move, backup);
 
-                if (!stillInCheck)
-                    return false;
+                if (!stillInCheck) return false;
             }
         }
 
@@ -315,7 +352,7 @@ public class ChessGame implements Serializable {
     /**
      * Promotes a pawn to a new piece at a specific position.
      *
-     * @param position Position of the pawn
+     * @param position  Position of the pawn
      * @param pieceType New piece type (Q, R, B, N)
      */
     public void promotePawn(String position, char pieceType) {
@@ -361,18 +398,34 @@ public class ChessGame implements Serializable {
         Position oldPos = new Position(SoldPos);
 
         Piece pMover = board.getPiece(oldPos);
-        if (pMover == null || pMover.getColor() != cCurrentPlayer)
-            return false;
+        if (pMover == null || pMover.getColor() != cCurrentPlayer) return false;
 
         Set<String> legalMoves = getPossibleMovesFromPieceAt(SoldPos);
-        if (!legalMoves.contains(SnewPos))
-            return false;
+        if (!legalMoves.contains(SnewPos)) return false;
 
         ModelLog.getInstance().log(cCurrentPlayer + " moved piece to: " + newPos);
+        boolean isCastling = false;
+
+
+        // castling
+        Position rookOldPos = null, rookNewPos = null;
+        if (pMover instanceof King && Math.abs(newPos.getColumn() - oldPos.getColumn()) == 2) {
+            isCastling = true;
+            if (newPos.getColumn() > oldPos.getColumn()) {
+                rookOldPos = new Position('h', oldPos.getRow());
+                rookNewPos = new Position('f', oldPos.getRow());
+            } else {
+                rookOldPos = new Position('a', oldPos.getRow());
+                rookNewPos = new Position('d', oldPos.getRow());
+            }
+        }
+
 
         // Remove peça capturada
         Piece target = board.getPiece(newPos);
-        if (target != null && target.getColor() != pMover.getColor()) board.removePiece(newPos);
+        if (target != null && target.getColor() != pMover.getColor()) {
+            board.removePiece(newPos);
+        }
 
 
         board.removePiece(oldPos);
@@ -402,6 +455,18 @@ public class ChessGame implements Serializable {
             pMover.setPosition(newPos);
             board.addPiece(newPos, pMover);
         }
+
+        // Mover rook castling
+        if (isCastling) {
+            Piece rook = board.getPiece(rookOldPos);
+            if (rook != null && rook instanceof Rook) {
+                board.removePiece(rookOldPos);
+                rook.setPosition(rookNewPos);
+                board.addPiece(rookNewPos, rook);
+                rook.setHasMoved(true);
+            }
+        }
+
 
         pMover.setHasMoved(true);
 
@@ -439,7 +504,7 @@ public class ChessGame implements Serializable {
     /**
      * Loads a board state from string representation.
      *
-     * @param state Board data
+     * @param state         Board data
      * @param currentPlayer Current player
      */
     public void loadBoardStateFromString(String state, PieceColor currentPlayer) {
