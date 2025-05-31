@@ -596,7 +596,11 @@ public class ChessGame implements Serializable {
         try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(sFileName)))) {
             byte[] data = dis.readAllBytes();
 
-            String line = new String(data).replaceAll("\\R", "").trim();
+            String line = new String(data).replaceAll("\\R", "");
+            line = line.replaceAll("\\s", "");
+            line = line.trim();
+
+            System.out.println(line);
 
             if (line.isEmpty()) { //fich vazio
                 return;
