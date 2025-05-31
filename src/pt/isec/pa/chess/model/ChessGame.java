@@ -298,8 +298,27 @@ public class ChessGame implements Serializable {
             return true;
         }
 
+        // Check for stalemate
+        if (!isInCheck(cCurrentPlayer) && !hasLegalMoves(cCurrentPlayer)) {
+            cWinner = null; // Null indicates a draw
+            return true;
+        }
+
         return false;
     }
+
+    private boolean hasLegalMoves(PieceColor color) {
+        for (Piece piece : board.getAllPieces()) {
+            if (piece.getColor() == color) {
+                String pos = "" + piece.getPosition().getColumn() + piece.getPosition().getRow();
+                if (!getPossibleMovesFromPieceAt(pos).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Resets the game to its initial state.

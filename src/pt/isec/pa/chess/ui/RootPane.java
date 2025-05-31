@@ -244,8 +244,12 @@ public class RootPane extends BorderPane {
             lbStatus.setText("Game not started. Create or load a game from the menu.");
             return;
         }
-        if (data.getWinner() != null) {
-            lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
+        if (data.isGameOver()) {
+            if (data.getWinner() != null) {
+                lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
+            } else {
+                lbStatus.setText("Game finished: Draw");
+            }
         } else {
             lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
         }
