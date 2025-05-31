@@ -73,7 +73,6 @@ public class CanvasBoard extends Canvas {
     }
 
     private void update() {
-        possibleMoves.clear();
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, getWidth(), getHeight());
         drawBoard(gc);

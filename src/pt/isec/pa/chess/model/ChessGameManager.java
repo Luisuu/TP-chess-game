@@ -2,7 +2,6 @@ package pt.isec.pa.chess.model;
 
 import pt.isec.pa.chess.model.data.pieces.PieceColor;
 import pt.isec.pa.chess.model.memento.CareTaker;
-import pt.isec.pa.chess.model.memento.MyOriginator;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -38,7 +37,7 @@ public class ChessGameManager {
      */
     public ChessGameManager() {
         cgGame = new ChessGame();
-        careTaker = new CareTaker(new MyOriginator(cgGame));
+        careTaker = new CareTaker(cgGame);
         pcs = new PropertyChangeSupport(this);
         //System.out.println("ChessGameManager");
 

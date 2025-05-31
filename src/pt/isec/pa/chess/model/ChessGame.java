@@ -2,6 +2,8 @@ package pt.isec.pa.chess.model;
 
 import pt.isec.pa.chess.model.data.Board;
 import pt.isec.pa.chess.model.data.pieces.*;
+import pt.isec.pa.chess.model.memento.IMemento;
+import pt.isec.pa.chess.model.memento.IOriginator;
 
 
 import java.io.*;
@@ -22,7 +24,7 @@ import java.util.*;
  */
 
 
-public class ChessGame implements Serializable {
+public class ChessGame implements Serializable, IOriginator {
     @Serial
     static final long serialVersionUID = 1L;
 
@@ -33,6 +35,60 @@ public class ChessGame implements Serializable {
     PieceColor cCurrentPlayer = PieceColor.WHITE;
     PieceColor cWinner = null;
     String sPlayer1 = null, sPlayer2 = null;
+
+    private static class MyMemento implements IMemento, Serializable {
+        private final String boardState;
+        private final PieceColor currentPlayer;
+        private final byte[] snapshot;
+
+        MyMemento(ChessGame base) {
+            this.boardState = base.getBoardPiecesString();
+            this.currentPlayer = base.getcCurrentPlayer();
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+                oos.writeObject(base);
+                this.snapshot = baos.toByteArray();
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to create memento snapshot", e);
+            }
+        }
+
+        public String getBoardState() {
+            return boardState;
+        }
+
+        public PieceColor getCurrentPlayer() {
+            return currentPlayer;
+        }
+
+        @Override
+        public Object getSnapshot() {
+            if (snapshot == null) return null;
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(snapshot); ObjectInputStream ois = new ObjectInputStream(bais)) {
+                return ois.readObject();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+    }
+
+    @Override
+    public IMemento save() {
+        return new MyMemento(this);
+    }
+
+    @Override
+    public void restore(IMemento memento) {
+        if (memento instanceof MyMemento m) {
+            loadBoardStateFromString(m.getBoardState(), m.getCurrentPlayer());
+            cWinner = null;
+            lastMovedPiece = null;
+            lastMoveFrom = null;
+            lastMoveTo = null;
+            for (Piece piece : board.getPieces()) {
+                piece.setBoard(board);
+            }
+        }
+    }
 
     /**
      * Constructs a new ChessGame instance with a standard 8x8 chessboard.
