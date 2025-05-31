@@ -118,15 +118,11 @@ public class CanvasBoard extends Canvas {
 
             update();
         } else {
-
-            if (parent.isLearningModeActive()) {
-                //data.movePieceWithUndo(selectedPos, clicked);
-                data.movePiece(selectedPos, clicked);
-            } else {
-                data.movePiece(selectedPos, clicked);
+            boolean moved = data.movePiece(selectedPos, clicked);
+            if (moved) {
+                selectedPos = null;
+                possibleMoves.clear();
             }
-            selectedPos = null;
-            possibleMoves.clear();
         }
     }
 
