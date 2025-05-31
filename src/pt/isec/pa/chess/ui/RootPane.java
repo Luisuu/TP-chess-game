@@ -2,8 +2,10 @@ package pt.isec.pa.chess.ui;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
 import pt.isec.pa.chess.model.ModelLog;
@@ -22,6 +24,7 @@ public class RootPane extends BorderPane {
 
     private CanvasBoard canvasBoard;
     private Label lbStatus;
+    private Label lbGameOver;
     private Position selectedPos = null;
     private LogList logWindow;
 
@@ -51,11 +54,22 @@ public class RootPane extends BorderPane {
         lbStatus.setPadding(new Insets(8));
         setBottom(lbStatus);
 
+        StackPane centerPane = new StackPane();
         canvasBoard = new CanvasBoard(data, this);
         canvasBoard.widthProperty().bind(widthProperty());
         canvasBoard.heightProperty().bind(heightProperty().subtract(lbStatus.heightProperty()).subtract(25));
-        setCenter(canvasBoard);
+        //setCenter(canvasBoard);
         canvasBoard.setVisible(false);
+
+        lbGameOver = new Label();
+        lbGameOver.setStyle("-fx-font-size: 24pt; -fx-font-weight: bold; -fx-text-fill: #e4d812; -fx-background-color: rgba(83,56,56,0.8); -fx-padding: 20;");
+        lbGameOver.setVisible(false);
+        lbGameOver.setAlignment(Pos.CENTER);
+
+        // Add canvas and game-over label to StackPane
+        centerPane.getChildren().addAll(canvasBoard, lbGameOver);
+        StackPane.setAlignment(lbGameOver, Pos.CENTER);
+        setCenter(centerPane);
     }
 
     private MenuBar createMenu() {
@@ -117,6 +131,7 @@ public class RootPane extends BorderPane {
 
         mnNew.setOnAction(actionEvent -> {
             canvasBoard.setVisible(false);
+            lbGameOver.setVisible(false);
             lbStatus.setText("Game not started. Create or load a game from the menu.");
             data.setPlayerName(1, null);
             data.setPlayerName(2, null);
@@ -141,6 +156,7 @@ public class RootPane extends BorderPane {
                 //AskName askName = new AskName(data);
                 //askName.showAndWait();
                 canvasBoard.setVisible(true);
+                lbGameOver.setVisible(false);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
                 ModelLog.getInstance().log("Game loaded from: " + hFile.getAbsolutePath());
             }
@@ -170,6 +186,7 @@ public class RootPane extends BorderPane {
                 AskName askName = new AskName(data);
                 askName.showAndWait();
                 canvasBoard.setVisible(true);
+                lbGameOver.setVisible(false);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
                 ModelLog.getInstance().log("Game imported from: " + file.getAbsolutePath());
             }
@@ -242,16 +259,22 @@ public class RootPane extends BorderPane {
     private void updateStatus() {
         if (data.getPlayerName(PieceColor.WHITE) == null || data.getPlayerName(PieceColor.BLACK) == null) {
             lbStatus.setText("Game not started. Create or load a game from the menu.");
+            lbGameOver.setVisible(false);
             return;
         }
         if (data.isGameOver()) {
             if (data.getWinner() != null) {
                 lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
+                lbGameOver.setText(data.getWinner().toString() + " WINS!");
+                lbGameOver.setVisible(true);
             } else {
                 lbStatus.setText("Game finished: Draw");
+                lbGameOver.setText("DRAW!");
+                lbGameOver.setVisible(true);
             }
         } else {
             lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
+            lbGameOver.setVisible(false);
         }
     }
 
