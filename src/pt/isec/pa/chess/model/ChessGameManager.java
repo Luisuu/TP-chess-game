@@ -17,7 +17,6 @@ import java.util.Set;
  *
  * @author Antonio Pedorso, Luis Duarte, Carolina Veloso
  * @version 1.0.0
- *
  * @see ChessGame
  * @see ModelLog
  */
@@ -75,11 +74,12 @@ public class ChessGameManager {
      */
     public void importa(String sFileName) {
         try {
+            careTaker.reset();
             oldGameState = cgGame.getBoardPiecesString();
             cgGame.importa(sFileName);
+            //careTaker.save();
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-            careTaker.save();
         } catch (IOException | RuntimeException e) {
             ModelLog.getInstance().log("Error importing game: " + e.getMessage());
         }
@@ -105,16 +105,14 @@ public class ChessGameManager {
      */
     public void open(String sFileName) {
         try {
+            careTaker.reset();
             oldGameState = cgGame.getBoardPiecesString();
             cgGame.open(sFileName);
+            //careTaker.save();
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-            careTaker.save();
         } catch (IOException | ClassNotFoundException e) {
             ModelLog.getInstance().log("Error opening game: " + e.getMessage());
-            cgGame.restart();
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
-            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
         }
     }
 
@@ -145,7 +143,7 @@ public class ChessGameManager {
     /**
      * Promotes a pawn at the specified position to the selected type.
      *
-     * @param position Position of the pawn
+     * @param position  Position of the pawn
      * @param pieceType Piece type to promote to (Q, R, B, N)
      */
     public void promotePawn(String position, char pieceType) {
@@ -178,7 +176,7 @@ public class ChessGameManager {
      * Sets the name of a player.
      *
      * @param player Player number (1 or 2)
-     * @param name Player's name
+     * @param name   Player's name
      */
     public void setPlayerName(int player, String name) {
         try {

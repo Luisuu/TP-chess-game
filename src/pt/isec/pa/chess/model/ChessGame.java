@@ -600,7 +600,7 @@ public class ChessGame implements Serializable {
             line = line.replaceAll("\\s", "");
             line = line.trim();
 
-            System.out.println(line);
+            //System.out.println(line);
 
             if (line.isEmpty()) { //fich vazio
                 return;

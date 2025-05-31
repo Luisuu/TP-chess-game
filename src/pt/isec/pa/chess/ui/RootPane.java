@@ -136,7 +136,7 @@ public class RootPane extends BorderPane {
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"), new FileChooser.ExtensionFilter("All", "*.*"));
             File hFile = fileChooser.showOpenDialog(this.getScene().getWindow());
             if (hFile != null) {
-                System.out.println(hFile.getAbsolutePath());
+                //System.out.println(hFile.getAbsolutePath());
                 data.open(hFile.getAbsolutePath());
                 //AskName askName = new AskName(data);
                 //askName.showAndWait();
@@ -153,7 +153,7 @@ public class RootPane extends BorderPane {
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"), new FileChooser.ExtensionFilter("All", "*.*"));
             File hFile = fileChooser.showSaveDialog(this.getScene().getWindow());
             if (hFile != null) {
-                System.out.println(hFile.getAbsolutePath());
+                //System.out.println(hFile.getAbsolutePath());
                 data.save(hFile.getAbsolutePath());
                 ModelLog.getInstance().log("Game saved to: " + hFile.getAbsolutePath());
             }
@@ -193,7 +193,7 @@ public class RootPane extends BorderPane {
 
         mnDebug.setOnAction(actionEvent -> {
             String debugOutput = data.debug();
-            System.out.println(debugOutput);
+            //System.out.println(debugOutput);
             if (logWindow != null) {
                 logWindow.log("DEBUG:");
                 for (String line : debugOutput.split("\n")) {
