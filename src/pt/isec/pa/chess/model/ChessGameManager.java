@@ -130,11 +130,7 @@ public class ChessGameManager {
             oldGameState = cgGame.getBoardPiecesString();
             careTaker.save();
             boolean pieceMoved = cgGame.movePiece(SoldPos, SnewPos);
-            if (!pieceMoved) {
-                careTaker.removeLast();
-            }
-            // fixme
-            //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
+
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
             return pieceMoved;
@@ -142,6 +138,10 @@ public class ChessGameManager {
             ModelLog.getInstance().log("Error: " + ex.getMessage());
             return false;
         }
+    }
+
+    public boolean willNeedPromotion(String from, String to) {
+        return cgGame.willNeedPromotion(from, to);
     }
 
     /**

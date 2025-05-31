@@ -120,6 +120,7 @@ public class ChessGame implements Serializable, IOriginator {
     public void setPlayerName(int player, String name) {
         if (player < 1 || player > 2) {
             throw new RuntimeException("tried to set invalid player");
+            //System.out.println("Invalid player number");
             //return;
         }
         if (player == 1) {
@@ -461,7 +462,7 @@ public class ChessGame implements Serializable, IOriginator {
      * @param pieceType New piece type (Q, R, B, N)
      */
     public void promotePawn(String position, char pieceType) {
-        if (position == null || position.length() != 2) return;
+        System.out.println("Promotion received: " + pieceType + " at " + position); // 👈 debug ici
 
         char column = position.charAt(0);
         int row = Character.getNumericValue(position.charAt(1));
@@ -471,10 +472,13 @@ public class ChessGame implements Serializable, IOriginator {
         Position pos = new Position(column, row);
 
         Piece pawn = board.getPiece(pos);
-        if (pawn == null || !(pawn instanceof Pawn)) return;
+        if (pawn == null || !(pawn instanceof Pawn)) {
+            System.out.println("No pawn found at promotion position.");
+            return;
+        }
 
-        PieceColor color = pawn.getColor();
         board.removePiece(pos);
+        PieceColor color = pawn.getColor();
 
         char normalizedType = Character.toUpperCase(pieceType);
         Piece newPiece = switch (normalizedType) {
@@ -485,8 +489,28 @@ public class ChessGame implements Serializable, IOriginator {
             default -> throw new IllegalArgumentException("Invalid piece: " + pieceType);
         };
 
-        board.addPiece(pos, newPiece);
+        if (newPiece != null) {
+            board.addPiece(pos, newPiece);
+            System.out.println("Promotion done: " + newPiece.getClass().getSimpleName());
+        } else {
+            System.out.println("Promotion failed: piece not created.");
+        }
+        System.out.println("Promotion done: " + newPiece.getClass().getSimpleName());
+        System.out.println("[DEBUG] board after promotion: " + board.printPieces());
     }
+
+
+    public boolean willNeedPromotion(String SoldPos, String SnewPos) {
+        Position oldPos = new Position(SoldPos);
+        Position newPos = new Position(SnewPos);
+        Piece piece = board.getPiece(oldPos);
+
+        if (!(piece instanceof Pawn)) return false;
+
+        return (piece.getColor() == PieceColor.WHITE && newPos.getRow() == 8) ||
+                (piece.getColor() == PieceColor.BLACK && newPos.getRow() == 1);
+    }
+
 
     /**
      * Moves a piece from one position to another.
@@ -510,8 +534,7 @@ public class ChessGame implements Serializable, IOriginator {
         ModelLog.getInstance().log(cCurrentPlayer + " moved piece to: " + newPos);
         boolean isCastling = false;
 
-
-        // castling
+        // Castling
         Position rookOldPos = null, rookNewPos = null;
         if (pMover instanceof King && Math.abs(newPos.getColumn() - oldPos.getColumn()) == 2) {
             isCastling = true;
@@ -553,34 +576,8 @@ public class ChessGame implements Serializable, IOriginator {
         board.removePiece(oldPos);
 
 
-        // AHAH XDDDD
-        // Temporary fix !!!!
-        // FIXME
-        boolean lolxd = false;
-        if (pMover.getColor() == PieceColor.BLACK) {
-            if (pMover.getDefinition() == 'p') {
-                if (newPos.getRow() == 1) {
-                    board.addPiece(new Position(pMover.getPosition().getColumn(), 1), new Queen(PieceColor.BLACK, this.board, pMover.getPosition().getColumn(), 1));
-                    lolxd = true;
-                }
-            }
-        } else {
-            if (pMover.getDefinition() == 'P') {
-                if (newPos.getRow() == 8) {
-                    board.addPiece(new Position(pMover.getPosition().getColumn(), 8), new Queen(PieceColor.WHITE, this.board, pMover.getPosition().getColumn(), 8));
-                    lolxd = true;
-                }
-            }
-        }
-
-        if (!lolxd) {
-            pMover.setPosition(newPos);
-            board.addPiece(newPos, pMover);
-        }
-
         pMover.setPosition(newPos);
         board.addPiece(newPos, pMover);
-
 
         // Mover rook castling
         if (isCastling) {

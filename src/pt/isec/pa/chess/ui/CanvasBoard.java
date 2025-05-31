@@ -117,15 +117,23 @@ public class CanvasBoard extends Canvas {
             }
             update();
         } else {
-            if (data.getPossibleMovesFromPieceAt(selectedPos).equals("[]")) {
-                selectedPos = null;
-                return;
+            System.out.println("[DEBUG] Promotion triggered for move: " + selectedPos + " -> " + clicked);
+            if (data.willNeedPromotion(selectedPos, clicked)) {
+                char chosen = parent.showPromotionDialog();
+
+
+                boolean moved = data.movePiece(selectedPos, clicked);
+                if (moved){
+                    data.promotePawn(clicked, chosen);
+                    update();
+                }
+            } else {
+                data.movePiece(selectedPos, clicked);
             }
-            boolean moved = data.movePiece(selectedPos, clicked);
-            if (moved) {
-                selectedPos = null;
-                possibleMoves.clear();
-            }
+
+            selectedPos = null;
+            possibleMoves.clear();
+            update();
         }
     }
 

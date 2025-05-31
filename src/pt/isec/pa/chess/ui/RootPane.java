@@ -260,13 +260,19 @@ public class RootPane extends BorderPane {
         //canvasBoard.update();
     }
 
-    private char showPromotionDialog() {
+    public char showPromotionDialog() {
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Queen", "Queen", "Rook", "Bishop", "Knight");
         dialog.setTitle("Pawn Promotion");
         dialog.setHeaderText("Chose a piece for promotion:");
         dialog.setContentText("Piece:");
         String result = dialog.showAndWait().orElse("Queen");
-        return result.charAt(0);
+        return switch (result) {
+            case "Queen" -> 'Q';
+            case "Rook" -> 'R';
+            case "Bishop" -> 'B';
+            case "Knight" -> 'N';
+            default -> 'Q'; // fallback
+        };
     }
 
     public void setLogWindow(LogList logWindow) {
