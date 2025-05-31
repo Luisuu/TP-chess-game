@@ -115,9 +115,12 @@ public class CanvasBoard extends Canvas {
             } else {
                 possibleMoves.clear();
             }
-
             update();
         } else {
+            if (data.getPossibleMovesFromPieceAt(selectedPos).equals("[]")) {
+                selectedPos = null;
+                return;
+            }
             boolean moved = data.movePiece(selectedPos, clicked);
             if (moved) {
                 selectedPos = null;
