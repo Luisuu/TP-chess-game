@@ -507,8 +507,7 @@ public class ChessGame implements Serializable, IOriginator {
 
         if (!(piece instanceof Pawn)) return false;
 
-        return (piece.getColor() == PieceColor.WHITE && newPos.getRow() == 8) ||
-                (piece.getColor() == PieceColor.BLACK && newPos.getRow() == 1);
+        return (piece.getColor() == PieceColor.WHITE && newPos.getRow() == 8) || (piece.getColor() == PieceColor.BLACK && newPos.getRow() == 1);
     }
 
 
