@@ -342,10 +342,12 @@ public class ChessGameManager {
      */
     public boolean undo() {
         try {
-            careTaker.undo();
+            if(careTaker.hasUndo()){
+                careTaker.undo();
+                ModelLog.getInstance().log("Undo performed");
+            }
             pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-            ModelLog.getInstance().log("Undo performed");
             return true;
         } catch (Exception ex) {
             ModelLog.getInstance().log("Error undoing move: " + ex.getMessage());
@@ -360,10 +362,12 @@ public class ChessGameManager {
      */
     public boolean redo() {
         try {
-            careTaker.redo();
+            if(careTaker.hasRedo()){
+                careTaker.redo();
+                ModelLog.getInstance().log("Redo performed");
+            }
             pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-            ModelLog.getInstance().log("Redo performed");
             return true;
         } catch (Exception ex) {
             ModelLog.getInstance().log("Error redoing move: " + ex.getMessage());
