@@ -3,6 +3,7 @@ package pt.isec.pa.chess.model;
 import pt.isec.pa.chess.model.data.Board;
 import pt.isec.pa.chess.model.data.pieces.*;
 
+
 import java.io.*;
 import java.util.*;
 
@@ -38,6 +39,7 @@ public class ChessGame implements Serializable {
         board = new Board();
         board.clearBoard();
         board.initializeBoard();
+
     }
 
     /**
@@ -356,7 +358,6 @@ public class ChessGame implements Serializable {
      * @param pieceType New piece type (Q, R, B, N)
      */
     public void promotePawn(String position, char pieceType) {
-
         if (position == null || position.length() != 2) return;
 
         char column = position.charAt(0);
@@ -430,7 +431,7 @@ public class ChessGame implements Serializable {
 
         board.removePiece(oldPos);
 
-
+        /*
         // AHAH XDDDD
         // Temporary fix !!!!
         // FIXME
@@ -454,7 +455,13 @@ public class ChessGame implements Serializable {
         if (!lolxd) {
             pMover.setPosition(newPos);
             board.addPiece(newPos, pMover);
-        }
+        }*/
+
+        pMover.setPosition(newPos);
+        board.addPiece(newPos, pMover);
+
+        // Check for pawn promotion
+
 
         // Mover rook castling
         if (isCastling) {
@@ -469,7 +476,6 @@ public class ChessGame implements Serializable {
 
 
         pMover.setHasMoved(true);
-
         cCurrentPlayer = getcOpponent();
         isGameOver();
 
@@ -490,13 +496,11 @@ public class ChessGame implements Serializable {
 
         char[] split = pos.toCharArray();
 
-
         if (split[0] < 'a' || split[0] > 'h' || (int) split[1] < 1 || (int) split[1] > 8) {
             throw new IllegalArgumentException("Invalid position: " + split[0] + (int) split[1]);
         }
 
         Position p = new Position(pos);
-
         board.removePiece(p);
     }
 
