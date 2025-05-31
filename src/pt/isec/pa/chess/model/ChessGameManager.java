@@ -130,6 +130,9 @@ public class ChessGameManager {
             oldGameState = cgGame.getBoardPiecesString();
             careTaker.save();
             boolean pieceMoved = cgGame.movePiece(SoldPos, SnewPos);
+            if (!pieceMoved) {
+                careTaker.removeLast();
+            }
             // fixme
             //if (needsPromotion && promotionListener != null) promotionListener.onPromote(SnewPos);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
@@ -342,7 +345,7 @@ public class ChessGameManager {
      */
     public boolean undo() {
         try {
-            if(careTaker.hasUndo()){
+            if (careTaker.hasUndo()) {
                 careTaker.undo();
                 ModelLog.getInstance().log("Undo performed");
             }
@@ -362,7 +365,7 @@ public class ChessGameManager {
      */
     public boolean redo() {
         try {
-            if(careTaker.hasRedo()){
+            if (careTaker.hasRedo()) {
                 careTaker.redo();
                 ModelLog.getInstance().log("Redo performed");
             }
