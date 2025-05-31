@@ -26,6 +26,9 @@ public class ChessGame implements Serializable {
     @Serial
     static final long serialVersionUID = 1L;
 
+    Piece lastMovedPiece;
+    Position lastMoveFrom;
+    Position lastMoveTo;
     Board board;
     PieceColor cCurrentPlayer = PieceColor.WHITE;
     PieceColor cWinner = null;
@@ -186,6 +189,32 @@ public class ChessGame implements Serializable {
             board.addPiece(originalPos, piece);
             if (backup != null) board.addPiece(move, backup);
         }
+
+        // EN PASSANT
+        if (piece instanceof Pawn && lastMovedPiece instanceof Pawn && lastMoveFrom != null && lastMoveTo != null) {
+            int dir = piece.getColor() == PieceColor.WHITE ? 1 : -1;
+
+            if (Math.abs(lastMoveTo.getRow() - lastMoveFrom.getRow()) == 2 && lastMovedPiece.getColor() != piece.getColor() && lastMoveTo.getRow() == piece.getPosition().getRow() && Math.abs(lastMoveTo.getColumn() - piece.getPosition().getColumn()) == 1) {
+
+                Position enPassantTarget = new Position(lastMoveTo.getColumn(), lastMoveTo.getRow() + dir);
+
+                board.removePiece(originalPos);
+                board.removePiece(lastMoveTo);
+                piece.setPosition(enPassantTarget);
+                board.addPiece(enPassantTarget, piece);
+
+                if (!isInCheck(cCurrentPlayer)) {
+                    result.add("" + enPassantTarget.getColumn() + enPassantTarget.getRow());
+                }
+
+                board.removePiece(enPassantTarget);
+                piece.setPosition(originalPos);
+                board.addPiece(originalPos, piece);
+                board.addPiece(lastMoveTo, lastMovedPiece);
+            }
+        }
+
+
         return result;
     }
 
@@ -428,6 +457,24 @@ public class ChessGame implements Serializable {
             board.removePiece(newPos);
         }
 
+        // EN PASSANT
+        if (pMover instanceof Pawn && lastMovedPiece instanceof Pawn) {
+            if (Math.abs(newPos.getColumn() - oldPos.getColumn()) == 1 && target == null) {
+                if (pMover.getColor() == PieceColor.WHITE && oldPos.getRow() == 5 && newPos.getRow() == 6) {
+                    Position capturedPos = new Position(newPos.getColumn(), 5);
+                    Piece maybeCaptured = board.getPiece(capturedPos);
+                    if (maybeCaptured == lastMovedPiece && maybeCaptured.getColor() != pMover.getColor()) {
+                        board.removePiece(capturedPos);
+                    }
+                } else if (pMover.getColor() == PieceColor.BLACK && oldPos.getRow() == 4 && newPos.getRow() == 3) {
+                    Position capturedPos = new Position(newPos.getColumn(), 4);
+                    Piece maybeCaptured = board.getPiece(capturedPos);
+                    if (maybeCaptured == lastMovedPiece && maybeCaptured.getColor() != pMover.getColor()) {
+                        board.removePiece(capturedPos);
+                    }
+                }
+            }
+        }
 
         board.removePiece(oldPos);
 
@@ -477,6 +524,9 @@ public class ChessGame implements Serializable {
 
         pMover.setHasMoved(true);
         cCurrentPlayer = getcOpponent();
+        lastMovedPiece = pMover;
+        lastMoveFrom = new Position(oldPos.getColumn(), oldPos.getRow());
+        lastMoveTo = new Position(newPos.getColumn(), newPos.getRow());
         isGameOver();
 
         return true;
