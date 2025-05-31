@@ -31,15 +31,6 @@ public class ChessGameManager {
     private CareTaker careTaker;
     private PropertyChangeSupport pcs;
 
-    /**
-     * Listener instance for handling promotions.
-     * Marked transient to avoid serialization.
-     */
-    public interface PromotionListener {
-        void onPromote(String position);
-    }
-
-    private transient PromotionListener promotionListener;
 
     /**
      * Constructs a new ChessGameManager instance.
@@ -51,6 +42,7 @@ public class ChessGameManager {
         careTaker = new CareTaker(new MyOriginator(cgGame));
         pcs = new PropertyChangeSupport(this);
         //System.out.println("ChessGameManager");
+
     }
 
     /**
