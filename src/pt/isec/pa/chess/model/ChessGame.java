@@ -120,7 +120,6 @@ public class ChessGame implements Serializable, IOriginator {
     public void setPlayerName(int player, String name) {
         if (player < 1 || player > 2) {
             throw new RuntimeException("tried to set invalid player");
-            //System.out.println("Invalid player number");
             //return;
         }
         if (player == 1) {
@@ -553,7 +552,7 @@ public class ChessGame implements Serializable, IOriginator {
 
         board.removePiece(oldPos);
 
-        /*
+
         // AHAH XDDDD
         // Temporary fix !!!!
         // FIXME
@@ -577,12 +576,10 @@ public class ChessGame implements Serializable, IOriginator {
         if (!lolxd) {
             pMover.setPosition(newPos);
             board.addPiece(newPos, pMover);
-        }*/
+        }
 
         pMover.setPosition(newPos);
         board.addPiece(newPos, pMover);
-
-        // Check for pawn promotion
 
 
         // Mover rook castling
@@ -606,9 +603,6 @@ public class ChessGame implements Serializable, IOriginator {
 
         return true;
 
-        // Verifica se pawnpromotion
-        //boolean needsPromotion = (pMover instanceof Pawn pawn && pawn.isPromotionPosition());
-        //return needsPromotion;
     }
 
     /**

@@ -39,8 +39,6 @@ public class ChessGameManager {
         cgGame = new ChessGame();
         careTaker = new CareTaker(cgGame);
         pcs = new PropertyChangeSupport(this);
-        //System.out.println("ChessGameManager");
-
     }
 
     /**
@@ -61,6 +59,7 @@ public class ChessGameManager {
     public void save(String sFileName) {
         try {
             cgGame.save(sFileName);
+            ModelLog.getInstance().log("Game saved to: " + sFileName);
         } catch (IOException e) {
             ModelLog.getInstance().log("Error saving game: " + e.getMessage());
         }
@@ -79,6 +78,7 @@ public class ChessGameManager {
             //careTaker.save();
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            ModelLog.getInstance().log("Game imported from: " + sFileName);
         } catch (IOException | RuntimeException e) {
             ModelLog.getInstance().log("Error importing game: " + e.getMessage());
         }
@@ -92,6 +92,7 @@ public class ChessGameManager {
     public void exporta(String sFileName) {
         try {
             cgGame.exporta(sFileName);
+            ModelLog.getInstance().log("Game exported to: " + sFileName);
         } catch (IOException | RuntimeException e) {
             ModelLog.getInstance().log("Error exporting game: " + e.getMessage());
         }
@@ -110,6 +111,7 @@ public class ChessGameManager {
             //careTaker.save();
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            ModelLog.getInstance().log("Game loaded from: " + sFileName);
         } catch (IOException | ClassNotFoundException e) {
             ModelLog.getInstance().log("Error opening game: " + e.getMessage());
         }
@@ -181,6 +183,7 @@ public class ChessGameManager {
         try {
             cgGame.setPlayerName(player, name);
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            ModelLog.getInstance().log("Player " + player + " set to: " + name);
         } catch (IllegalArgumentException ex) {
             ModelLog.getInstance().log("Error setting player name:: " + ex.getMessage());
         }
@@ -338,11 +341,16 @@ public class ChessGameManager {
      * @return true if undo was successful
      */
     public boolean undo() {
-
-        careTaker.undo();
-        pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
-        pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-        return true;
+        try {
+            careTaker.undo();
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            ModelLog.getInstance().log("Undo performed");
+            return true;
+        } catch (Exception ex) {
+            ModelLog.getInstance().log("Error undoing move: " + ex.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -351,10 +359,16 @@ public class ChessGameManager {
      * @return true if redo was successful
      */
     public boolean redo() {
-        careTaker.redo();
-        pcs.firePropertyChange(PROP_BOARD_UPDATE, new Object(), cgGame.getBoardPiecesString());
-        pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-        return true;
+        try {
+            careTaker.redo();
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            ModelLog.getInstance().log("Redo performed");
+            return true;
+        } catch (Exception ex) {
+            ModelLog.getInstance().log("Error redoing move: " + ex.getMessage());
+            return false;
+        }
     }
 
     /**

@@ -126,14 +126,6 @@ public class CanvasBoard extends Canvas {
         }
     }
 
-    /*private void updateLogWindow() {
-        if (parent.getLogWindow() != null) {
-            parent.getLogWindow().clearLogs();
-            for (String log : pt.isec.pa.chess.model.ModelLog.getInstance().getLog()) {
-                parent.getLogWindow().log(log);
-            }
-        }
-    }*/
 
     private void drawBoard(GraphicsContext gc) {
         double sizeUser = min(getWidth(), getHeight());
