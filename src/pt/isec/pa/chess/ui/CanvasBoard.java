@@ -80,6 +80,7 @@ public class CanvasBoard extends Canvas {
     }
 
     private void handleClick(MouseEvent e) {
+        possibleMoves.clear();
         double sizeUser = min(getWidth(), getHeight());
         double offsetX = (getWidth() - sizeUser) / 2;
         double offsetY = (getHeight() - sizeUser) / 2;
