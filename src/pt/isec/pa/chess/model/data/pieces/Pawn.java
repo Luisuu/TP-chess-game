@@ -1,9 +1,6 @@
 package pt.isec.pa.chess.model.data.pieces;
 
 import pt.isec.pa.chess.model.data.Board;
-import pt.isec.pa.chess.model.data.pieces.Piece;
-import pt.isec.pa.chess.model.data.pieces.PieceColor;
-import pt.isec.pa.chess.model.data.pieces.Position;
 
 import java.util.HashSet;
 import java.util.Set;

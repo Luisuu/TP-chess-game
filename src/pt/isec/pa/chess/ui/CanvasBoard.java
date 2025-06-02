@@ -11,8 +11,8 @@ import javafx.scene.image.Image;
 import pt.isec.pa.chess.ui.res.SoundManager;
 
 import java.util.*;
-
 import static java.lang.Double.min;
+
 
 public class CanvasBoard extends Canvas {
     private final ChessGameManager data;
