@@ -60,6 +60,17 @@ public class CanvasBoard extends Canvas {
                 }
 
                 if (pieceXd != null && fromXd != null && toXd != null) {
+                    if (pieceXd == 'K') {
+                        char fromCol = fromXd.charAt(1);
+                        char toCol = toXd.charAt(1);
+
+                        int colDiff = Math.abs(toCol - fromCol);
+                        if (colDiff == 2) {
+                            SoundManager.play("castling.mp3");
+                            return;
+                        }
+                    }
+
                     SoundManager.playSequence(pieceXd + fromXd.substring(1) + toXd.substring(1));
                 }
             }
