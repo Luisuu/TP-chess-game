@@ -190,7 +190,6 @@ public class RootPane extends BorderPane {
                 canvasBoard.setVisible(true);
                 lbGameOver.setVisible(false);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
-                ModelLog.getInstance().log("Game loaded from: " + hFile.getAbsolutePath());
             }
         });
 
@@ -203,7 +202,6 @@ public class RootPane extends BorderPane {
             if (hFile != null) {
                 //System.out.println(hFile.getAbsolutePath());
                 data.save(hFile.getAbsolutePath());
-                ModelLog.getInstance().log("Game saved to: " + hFile.getAbsolutePath());
             }
         });
 
@@ -220,7 +218,6 @@ public class RootPane extends BorderPane {
                 canvasBoard.setVisible(true);
                 lbGameOver.setVisible(false);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
-                ModelLog.getInstance().log("Game imported from: " + file.getAbsolutePath());
             }
         });
 
@@ -232,7 +229,6 @@ public class RootPane extends BorderPane {
             File file = fileChooser.showSaveDialog(getScene().getWindow());
             if (file != null) {
                 data.exporta(file.getAbsolutePath());
-                ModelLog.getInstance().log("Game exported to: " + file.getAbsolutePath());
             }
         });
 
