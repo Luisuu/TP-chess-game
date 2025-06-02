@@ -2,13 +2,13 @@ package pt.isec.pa.chess.ui;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
 import pt.isec.pa.chess.model.ModelLog;
-import pt.isec.pa.chess.model.data.pieces.PieceColor;
-import pt.isec.pa.chess.model.data.pieces.Position;
 
 import pt.isec.pa.chess.ui.res.SoundManager;
 
@@ -22,14 +22,13 @@ public class RootPane extends BorderPane {
 
     private CanvasBoard canvasBoard;
     private Label lbStatus;
-    private Position selectedPos = null;
+    private Label lbGameOver;
     private LogList logWindow;
 
-    Menu mnGame, mnMode, mnSettings;
-    MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit, mnDebug;
+    Menu mnGame, mnMode, mnEditor, mnSettings;
+    MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit, mnDebug, undoMove, redoMove, startEditor, addPiece;
     RadioMenuItem normalMode, learningMode;
     CheckMenuItem showMoves, soundToggle;
-    MenuItem undoMove, redoMove;
 
 
     public RootPane(ChessGameManager data) {
@@ -51,11 +50,22 @@ public class RootPane extends BorderPane {
         lbStatus.setPadding(new Insets(8));
         setBottom(lbStatus);
 
+        StackPane centerPane = new StackPane();
         canvasBoard = new CanvasBoard(data, this);
         canvasBoard.widthProperty().bind(widthProperty());
         canvasBoard.heightProperty().bind(heightProperty().subtract(lbStatus.heightProperty()).subtract(25));
-        setCenter(canvasBoard);
+        //setCenter(canvasBoard);
         canvasBoard.setVisible(false);
+
+        lbGameOver = new Label();
+        lbGameOver.setStyle("-fx-font-size: 24pt; -fx-font-weight: bold; -fx-text-fill: #e4d812; -fx-background-color: rgba(83,56,56,0.8); -fx-padding: 20;");
+        lbGameOver.setVisible(false);
+        lbGameOver.setAlignment(Pos.CENTER);
+
+        // Add canvas and game-over label to StackPane
+        centerPane.getChildren().addAll(canvasBoard, lbGameOver);
+        StackPane.setAlignment(lbGameOver, Pos.CENTER);
+        setCenter(centerPane);
     }
 
     private MenuBar createMenu() {
@@ -68,9 +78,10 @@ public class RootPane extends BorderPane {
         mnImport = new MenuItem("_Import");
         mnExport = new MenuItem("_Export");
         mnExit = new MenuItem("E_xit");
-        mnDebug = new MenuItem("_DEBUG");
+        //mnDebug = new MenuItem("_DEBUG");
+        //mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit, mnDebug);
 
-        mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit, mnDebug);
+        mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit);
 
         mnMode = new Menu("Mode");
         normalMode = new RadioMenuItem("Normal");
@@ -90,15 +101,50 @@ public class RootPane extends BorderPane {
 
         mnMode.getItems().addAll(normalMode, learningMode, new SeparatorMenuItem(), showMoves, undoMove, redoMove);
 
+        mnEditor = new Menu("Editor");
+        startEditor = new MenuItem("Start");
+        addPiece = new MenuItem("Add Piece");
+
+        mnEditor.getItems().addAll(startEditor, addPiece);
+
         mnSettings = new Menu("Settings");
         soundToggle = new CheckMenuItem("Sound");
         mnSettings.getItems().addAll(soundToggle);
 
-        mb.getMenus().addAll(mnGame, mnMode, mnSettings);
+        mb.getMenus().addAll(mnGame, mnMode, mnEditor, mnSettings);
         return mb;
     }
 
     private void registerHandlers() {
+        startEditor.setOnAction(actionEvent -> {
+            canvasBoard.setVisible(false);
+            lbGameOver.setVisible(false);
+            lbStatus.setText("Game not started. Create or load a game from the menu.");
+            AskName askName = new AskName(data);
+            askName.showAndWait();
+            if (data.getPlayerName(data.getcCurrentPlayer()) != null) {
+                data.startEmpty();
+                canvasBoard.setVisible(true);
+                ModelLog.getInstance().log("New empty game started.");
+            }
+        });
+
+        addPiece.setOnAction(actionEvent -> {
+            String input = showAddPieceDialog();
+            if (input == null || input.trim().isEmpty()) return;
+
+            input = input.trim();
+
+            boolean success = data.addPiece(input);
+            if (!success) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Invalid Piece");
+                alert.setHeaderText("Could not add piece");
+                alert.setContentText("Make sure the piece if valid");
+                alert.showAndWait();
+            }
+        });
+
         soundToggle.setOnAction(e -> {
             boolean bSound = soundToggle.isSelected();
             SoundManager.setEnabled(bSound);
@@ -107,7 +153,6 @@ public class RootPane extends BorderPane {
         data.addPropertyChangeListener(ChessGameManager.PROP_BOARD_UPDATE, evt -> {
             //System.out.println("Board updated");
             //canvasBoard.update();
-
         });
 
         data.addPropertyChangeListener(ChessGameManager.PROP_GAME_STATE, evt -> {
@@ -118,9 +163,8 @@ public class RootPane extends BorderPane {
 
         mnNew.setOnAction(actionEvent -> {
             canvasBoard.setVisible(false);
+            lbGameOver.setVisible(false);
             lbStatus.setText("Game not started. Create or load a game from the menu.");
-            data.setPlayerName(1, null);
-            data.setPlayerName(2, null);
             AskName askName = new AskName(data);
             askName.showAndWait();
             if (data.getPlayerName(data.getcCurrentPlayer()) != null) {
@@ -137,13 +181,13 @@ public class RootPane extends BorderPane {
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"), new FileChooser.ExtensionFilter("All", "*.*"));
             File hFile = fileChooser.showOpenDialog(this.getScene().getWindow());
             if (hFile != null) {
-                System.out.println(hFile.getAbsolutePath());
+                //System.out.println(hFile.getAbsolutePath());
                 data.open(hFile.getAbsolutePath());
                 //AskName askName = new AskName(data);
                 //askName.showAndWait();
                 canvasBoard.setVisible(true);
+                lbGameOver.setVisible(false);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
-                ModelLog.getInstance().log("Game loaded from: " + hFile.getAbsolutePath());
             }
         });
 
@@ -154,9 +198,8 @@ public class RootPane extends BorderPane {
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Bin (*.bin)", "*.bin"), new FileChooser.ExtensionFilter("All", "*.*"));
             File hFile = fileChooser.showSaveDialog(this.getScene().getWindow());
             if (hFile != null) {
-                System.out.println(hFile.getAbsolutePath());
+                //System.out.println(hFile.getAbsolutePath());
                 data.save(hFile.getAbsolutePath());
-                ModelLog.getInstance().log("Game saved to: " + hFile.getAbsolutePath());
             }
         });
 
@@ -171,8 +214,8 @@ public class RootPane extends BorderPane {
                 AskName askName = new AskName(data);
                 askName.showAndWait();
                 canvasBoard.setVisible(true);
+                lbGameOver.setVisible(false);
                 lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
-                ModelLog.getInstance().log("Game imported from: " + file.getAbsolutePath());
             }
         });
 
@@ -184,7 +227,6 @@ public class RootPane extends BorderPane {
             File file = fileChooser.showSaveDialog(getScene().getWindow());
             if (file != null) {
                 data.exporta(file.getAbsolutePath());
-                ModelLog.getInstance().log("Game exported to: " + file.getAbsolutePath());
             }
         });
 
@@ -192,16 +234,16 @@ public class RootPane extends BorderPane {
             Platform.exit();
         });
 
-        mnDebug.setOnAction(actionEvent -> {
+        /*mnDebug.setOnAction(actionEvent -> {
             String debugOutput = data.debug();
-            System.out.println(debugOutput);
+            //System.out.println(debugOutput);
             if (logWindow != null) {
                 logWindow.log("DEBUG:");
                 for (String line : debugOutput.split("\n")) {
                     logWindow.log("  " + line);
                 }
             }
-        });
+        });*/
 
         normalMode.setOnAction(e -> {
             if (normalMode.isSelected()) {
@@ -241,29 +283,54 @@ public class RootPane extends BorderPane {
     }
 
     private void updateStatus() {
-        if(data.getPlayerName(PieceColor.WHITE) == null || data.getPlayerName(PieceColor.BLACK) == null) {
+        if (data.getPlayerName(data.getcCurrentPlayer()) == null || data.getPlayerName(data.getcOpponent()) == null) {
             lbStatus.setText("Game not started. Create or load a game from the menu.");
+            lbGameOver.setVisible(false);
             return;
         }
-        if (data.getWinner() != null) {
-            lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
+        if (data.isGameOver()) {
+            if (data.getWinner() != null) {
+                lbStatus.setText("Game finished: " + data.getWinner().toString() + " won");
+                lbGameOver.setText(data.getWinner().toString() + " WINS!");
+                lbGameOver.setVisible(true);
+            } else {
+                lbStatus.setText("Game finished: Draw");
+                lbGameOver.setText("DRAW!");
+                lbGameOver.setVisible(true);
+            }
         } else {
             lbStatus.setText("Current Player: " + data.getPlayerName(data.getcCurrentPlayer()) + " Color: " + data.getcCurrentPlayer().toString());
+            lbGameOver.setVisible(false);
         }
     }
 
-    public void update() {
+    private void update() { //VERIFICAR SE E PRIVATE OU PUBLIC ACHO QU E PRIVATE
         updateStatus();
         //canvasBoard.update();
     }
 
-    private char showPromotionDialog() {
+    public char showPromotionDialog() {
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Queen", "Queen", "Rook", "Bishop", "Knight");
         dialog.setTitle("Pawn Promotion");
         dialog.setHeaderText("Chose a piece for promotion:");
         dialog.setContentText("Piece:");
         String result = dialog.showAndWait().orElse("Queen");
-        return result.charAt(0);
+        return switch (result) {
+            case "Queen" -> 'Q';
+            case "Rook" -> 'R';
+            case "Bishop" -> 'B';
+            case "Knight" -> 'N';
+            default -> 'Q'; // fallback
+        };
+    }
+
+    private String showAddPieceDialog() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Add Piece");
+        dialog.setHeaderText("Enter piece notation (e.g., Ke1, pa2, qd8)");
+        dialog.setContentText("Piece:");
+
+        return dialog.showAndWait().orElse(null);
     }
 
     public void setLogWindow(LogList logWindow) {

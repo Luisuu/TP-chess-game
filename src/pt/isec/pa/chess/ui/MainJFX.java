@@ -9,7 +9,7 @@ public class MainJFX extends Application {
     private ChessGameManager gameManager;
     private RootPane root;
     private Stage logStage;
-    private Stage NewStage;
+    //private Stage NewStage;
 
     @Override
     public void init() throws Exception {

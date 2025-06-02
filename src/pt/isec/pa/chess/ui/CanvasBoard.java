@@ -6,17 +6,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import pt.isec.pa.chess.model.ChessGameManager;
-import pt.isec.pa.chess.model.ModelLog;
 import pt.isec.pa.chess.ui.res.ImageManager;
 import javafx.scene.image.Image;
 import pt.isec.pa.chess.ui.res.SoundManager;
 
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.*;
 import static java.lang.Double.min;
+
 
 public class CanvasBoard extends Canvas {
     private final ChessGameManager data;
@@ -50,6 +46,32 @@ public class CanvasBoard extends Canvas {
                 Arrays.sort(oldGameTokens);
                 Arrays.sort(newGameTokens);
 
+                Map<Character, Integer> oldCounts = new HashMap<>();
+                for (String token : oldGameTokens) {
+                    if (!token.isEmpty()) {
+                        char piece = Character.toUpperCase(token.charAt(0));
+                        oldCounts.put(piece, oldCounts.getOrDefault(piece, 0) + 1);
+                    }
+                }
+
+                Map<Character, Integer> newCounts = new HashMap<>();
+                for (String token : newGameTokens) {
+                    if (!token.isEmpty()) {
+                        char piece = Character.toUpperCase(token.charAt(0));
+                        newCounts.put(piece, newCounts.getOrDefault(piece, 0) + 1);
+                    }
+                }
+
+                for (Map.Entry<Character, Integer> entry : newCounts.entrySet()) {
+                    char piece = entry.getKey();
+                    int newCount = entry.getValue();
+                    int oldCount = oldCounts.getOrDefault(piece, 0);
+                    if (piece != 'P' && newCount > oldCount) {
+                        SoundManager.play("promotion.mp3");
+                        return;
+                    }
+                }
+
                 for (int i = 0; i < Math.min(oldGameTokens.length, newGameTokens.length); i++) {
                     if (!oldGameTokens[i].equals(newGameTokens[i])) {
                         fromXd = oldGameTokens[i];
@@ -60,6 +82,18 @@ public class CanvasBoard extends Canvas {
                 }
 
                 if (pieceXd != null && fromXd != null && toXd != null) {
+                    Character upperPieceXd = Character.toUpperCase(pieceXd);
+
+                    if (upperPieceXd == 'K') {
+                        char fromCol = fromXd.charAt(1);
+                        char toCol = toXd.charAt(1);
+                        int colDiff = Math.abs(toCol - fromCol);
+                        if (colDiff == 2) {
+                            SoundManager.play("castling.mp3");
+                            return;
+                        }
+                    }
+
                     SoundManager.playSequence(pieceXd + fromXd.substring(1) + toXd.substring(1));
                 }
             }
@@ -80,6 +114,7 @@ public class CanvasBoard extends Canvas {
     }
 
     private void handleClick(MouseEvent e) {
+        possibleMoves.clear();
         double sizeUser = min(getWidth(), getHeight());
         double offsetX = (getWidth() - sizeUser) / 2;
         double offsetY = (getHeight() - sizeUser) / 2;
@@ -93,7 +128,7 @@ public class CanvasBoard extends Canvas {
         double mouseY = e.getY();
 
         if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth || mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight) {
-            ModelLog.getInstance().log("Click outside the board area.");
+            //ModelLog.getInstance().log("Click outside the board area.");
             return;
         }
 
@@ -114,30 +149,27 @@ public class CanvasBoard extends Canvas {
             } else {
                 possibleMoves.clear();
             }
-
             update();
         } else {
 
-            if (parent.isLearningModeActive()) {
-                //data.movePieceWithUndo(selectedPos, clicked);
-                data.movePiece(selectedPos, clicked);
+            if (data.willNeedPromotion(selectedPos, clicked)) {
+                //System.out.println("[DEBUG] Promotion triggered for move: " + selectedPos + " -> " + clicked);
+                char chosen = parent.showPromotionDialog();
+                boolean moved = data.movePiece(selectedPos, clicked);
+                if (moved) {
+                    data.promotePawn(clicked, chosen);
+                    update();
+                }
             } else {
                 data.movePiece(selectedPos, clicked);
             }
+
             selectedPos = null;
             possibleMoves.clear();
             update();
         }
     }
 
-    /*private void updateLogWindow() {
-        if (parent.getLogWindow() != null) {
-            parent.getLogWindow().clearLogs();
-            for (String log : pt.isec.pa.chess.model.ModelLog.getInstance().getLog()) {
-                parent.getLogWindow().log(log);
-            }
-        }
-    }*/
 
     private void drawBoard(GraphicsContext gc) {
         double sizeUser = min(getWidth(), getHeight());

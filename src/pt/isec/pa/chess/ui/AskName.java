@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import javafx.stage.Modality;
 import pt.isec.pa.chess.model.ChessGameManager;
 
-
 public class AskName extends Stage {
     ChessGameManager data;
     TextField tfPlayer1, tfPlayer2;

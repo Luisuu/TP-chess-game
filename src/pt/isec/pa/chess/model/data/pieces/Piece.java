@@ -12,12 +12,14 @@ abstract public class Piece implements Serializable {
     protected PieceColor PieceColor;
     protected Position pPos;
     protected Board board;
+    protected boolean bHasMoved;
 
     Piece(char cDefinition, Board board, PieceColor PieceColor, char cColumn, int iRow) {
         this.cDefinition = (PieceColor == PieceColor.WHITE) ? Character.toUpperCase(cDefinition) : Character.toLowerCase(cDefinition);
         this.PieceColor = PieceColor;
         this.pPos = new Position(cColumn, iRow);
         this.board = board;
+        this.bHasMoved = false;
     }
 
     abstract public Set<Position> getPossibleMoves();
@@ -82,7 +84,11 @@ abstract public class Piece implements Serializable {
     }
 
     public void setHasMoved(boolean hasMoved) {
+        this.bHasMoved = hasMoved;
+    }
 
+    public boolean hasMoved() {
+        return this.bHasMoved;
     }
 
 }

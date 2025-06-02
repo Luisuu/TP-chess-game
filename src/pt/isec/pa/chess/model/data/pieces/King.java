@@ -13,6 +13,7 @@ public class King extends Piece {
         this.bHasMoved = (PieceColor == PieceColor.WHITE && iRow == 1 && cColumn == 'e') || (PieceColor == PieceColor.BLACK && iRow == 8 && cColumn == 'e') ? false : true;
     }
 
+    @Override
     public Set<Position> getPossibleMoves() {
         Set<Position> possibleMoves = new HashSet<>();
 
@@ -26,25 +27,27 @@ public class King extends Piece {
                 Position newPos = new Position(cCol, iRow);
                 Piece pieceAtNewPos = board.getPiece(newPos);
 
-                if (pieceAtNewPos != null) {
-                    if (pieceAtNewPos.getColor() == this.PieceColor) {
-                        break;
-                    } else {
-                        possibleMoves.add(newPos);
-                        break;
-                    }
+                if (pieceAtNewPos == null || pieceAtNewPos.getColor() != this.PieceColor) {
+                    possibleMoves.add(newPos);
                 }
-                possibleMoves.add(newPos);
             }
         }
+
+        if (!bHasMoved) {
+            possibleMoves.add(new Position((char) (pPos.getColumn() + 2), pPos.getRow()));
+            possibleMoves.add(new Position((char) (pPos.getColumn() - 2), pPos.getRow()));
+        }
+
 
         return possibleMoves;
     }
 
+    @Override
     public boolean hasMoved() {
         return bHasMoved;
     }
 
+    @Override
     public void setHasMoved(boolean hasMoved) {
         this.bHasMoved = hasMoved;
     }

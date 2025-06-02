@@ -29,6 +29,42 @@ public class Board implements Serializable {
         mBoard.clear();
     }
 
+    public boolean addPiece(String sPiece) {
+        if (sPiece == null || sPiece.length() < 2) {
+            return false;
+        }
+
+        char col = sPiece.charAt(sPiece.length() - 2);
+        char row = sPiece.charAt(sPiece.length() - 1);
+
+        if (col < 'a' || col > 'h' || row < '1' || row > '8') {
+            return false;
+        }
+
+        Piece piece = PieceFactory.PieceFactoryFromText(sPiece, this);
+
+        if (piece == null || piece.getPosition() == null) {
+            return false;
+        }
+
+        if (!isEmpty(piece.getPosition())) {
+            return false;
+        }
+
+        if (Character.toUpperCase(piece.getDefinition()) == 'K') {
+            for (Piece p : mBoard.values()) {
+                if (Character.toUpperCase(p.getDefinition()) == 'K' && p.getColor() == piece.getColor()) {
+                    return false;
+                }
+            }
+        }
+
+        mBoard.put(piece.getPosition(), piece);
+
+        return true;
+    }
+
+
     public void initializeBoard() {
         clearBoard();
         for (char cCol = 'a'; cCol <= 'h'; cCol++) {

@@ -14,6 +14,10 @@ public class CareTaker {
         redoHist = new ArrayDeque<>();
     }
 
+    public void removeLast() {
+        history.removeFirst();
+    }
+
     public void save() {
         redoHist.clear();
         history.push(originator.save());
