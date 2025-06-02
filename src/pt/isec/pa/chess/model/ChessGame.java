@@ -14,14 +14,14 @@ import java.util.*;
  * Handles moves, pawn promotion, game loading/saving, and turn control.
  * <p>
  * Implements {@link Serializable} for saving/loading full game state and {@link IOriginator} for memento pattern support.
- *
+ * @author Antonio Pedorso, Luis Duarte, Carolina Veloso
+ * @version 1.0.0
  * @see Board
  * @see Piece
  * @see PieceColor
  * @see PieceFactory
  * @see ModelLog
  */
-
 
 public class ChessGame implements Serializable, IOriginator {
     @Serial
@@ -35,11 +35,24 @@ public class ChessGame implements Serializable, IOriginator {
     PieceColor cWinner = null;
     String sPlayer1 = null, sPlayer2 = null;
 
+    /**
+     * Private implementation of a memento object that captures a serialized snapshot of the ChessGame.
+     */
+    /**
+     * Internal class implementing the Memento design pattern to capture and restore the state of a ChessGame.
+     * Stores a serialized snapshot of the game and lightweight metadata (board state and current player).
+     */
     private static class MyMemento implements IMemento, Serializable {
         private final String boardState;
         private final PieceColor currentPlayer;
         private final byte[] snapshot;
 
+        /**
+         * Creates a new memento based on the current state of the ChessGame.
+         * Serializes the full object to allow complete restoration later.
+         *
+         * @param base the ChessGame instance to capture
+         */
         MyMemento(ChessGame base) {
             this.boardState = base.getBoardPiecesString();
             this.currentPlayer = base.getcCurrentPlayer();
@@ -51,18 +64,35 @@ public class ChessGame implements Serializable, IOriginator {
             }
         }
 
+        /**
+         * Gets a textual representation of the board state at the time of capture.
+         *
+         * @return a string representing the board state
+         */
         public String getBoardState() {
             return boardState;
         }
 
+        /**
+         * Gets the current player at the time of capture.
+         *
+         * @return the {@link PieceColor} of the player who was to move
+         */
         public PieceColor getCurrentPlayer() {
             return currentPlayer;
         }
 
+        /**
+         * Returns a deep copy of the ChessGame as it was when the memento was created.
+         * Uses object deserialization to reconstruct the full state.
+         *
+         * @return a reconstructed ChessGame object, or null if deserialization fails
+         */
         @Override
         public Object getSnapshot() {
             if (snapshot == null) return null;
-            try (ByteArrayInputStream bais = new ByteArrayInputStream(snapshot); ObjectInputStream ois = new ObjectInputStream(bais)) {
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(snapshot);
+                 ObjectInputStream ois = new ObjectInputStream(bais)) {
                 return ois.readObject();
             } catch (Exception e) {
                 return null;
@@ -300,6 +330,16 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
 
+    /**
+     * Checks whether a castling move is valid for the given king.
+     * Returns false if the king or rook has already moved, if there are pieces
+     * between them, or if the king is in check, passes through check, or lands in check.
+     *
+     * @param king the king piece attempting to castle
+     * @param from the current position of the king
+     * @param to   the target castling position of the king
+     * @return true if the castling move is valid, false otherwise
+     */
     private boolean isValidCastling(Piece king, Position from, Position to) {
         if (!(king instanceof King) || king.hasMoved() || isInCheck(king.getColor())) {
             return false;
@@ -394,6 +434,13 @@ public class ChessGame implements Serializable, IOriginator {
         return false;
     }
 
+    /**
+     * Checks whether the specified player has at least one legal move available.
+     * Iterates through all pieces of the given color and evaluates their possible moves.
+     *
+     * @param color the color of the player to check ({@link PieceColor#WHITE} or {@link PieceColor#BLACK})
+     * @return true if at least one legal move exists, false otherwise
+     */
     private boolean hasLegalMoves(PieceColor color) {
         for (Piece piece : board.getAllPieces()) {
             if (piece.getColor() == color) {
