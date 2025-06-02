@@ -4,8 +4,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 public class SoundManager {
@@ -17,10 +15,6 @@ public class SoundManager {
 
     public static void setEnabled(boolean value) {
         enabled = value;
-    }
-
-    public static boolean isEnabled() {
-        return enabled;
     }
 
     public static boolean play(String filename) {
@@ -41,21 +35,12 @@ public class SoundManager {
         return true;
     }
 
-    public static boolean isPlaying() {
-        return mp != null && mp.getStatus() == MediaPlayer.Status.PLAYING;
-    }
-
     public static void stop() {
         if (mp != null) {
             mp.stop();
             mp.dispose();
             mp = null;
         }
-    }
-
-    public static List<String> getSoundList() {
-        File soundsDir = new File(SoundManager.class.getResource("sounds/en/").getFile());
-        return Arrays.stream(soundsDir.listFiles()).map(File::getName).toList();
     }
 
     public static void playSequence(String move) {

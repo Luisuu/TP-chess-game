@@ -78,9 +78,10 @@ public class RootPane extends BorderPane {
         mnImport = new MenuItem("_Import");
         mnExport = new MenuItem("_Export");
         mnExit = new MenuItem("E_xit");
-        mnDebug = new MenuItem("_DEBUG");
+        //mnDebug = new MenuItem("_DEBUG");
+        //mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit, mnDebug);
 
-        mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit, mnDebug);
+        mnGame.getItems().addAll(mnNew, mnOpen, mnSave, mnImport, mnExport, new SeparatorMenuItem(), mnExit);
 
         mnMode = new Menu("Mode");
         normalMode = new RadioMenuItem("Normal");
@@ -233,7 +234,7 @@ public class RootPane extends BorderPane {
             Platform.exit();
         });
 
-        mnDebug.setOnAction(actionEvent -> {
+        /*mnDebug.setOnAction(actionEvent -> {
             String debugOutput = data.debug();
             //System.out.println(debugOutput);
             if (logWindow != null) {
@@ -242,7 +243,7 @@ public class RootPane extends BorderPane {
                     logWindow.log("  " + line);
                 }
             }
-        });
+        });*/
 
         normalMode.setOnAction(e -> {
             if (normalMode.isSelected()) {
