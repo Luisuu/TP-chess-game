@@ -428,17 +428,21 @@ public class ChessGame implements Serializable, IOriginator {
      * @return true if in checkmate
      */
     public boolean bIsCheckmate(PieceColor color) {
-        if (!isInCheck(color)) return false;
+        if (!isInCheck(color)) {
+            return false;
+        }
 
         List<Piece> piecesCopy = new ArrayList<>(board.getAllPieces());
 
         for (Piece piece : piecesCopy) {
             if (piece.getColor() != color) continue;
 
-            Set<Position> moves = piece.getPossibleMoves();
-            Position originalPos = piece.getPosition();
+            String pos = "" + piece.getPosition().getColumn() + piece.getPosition().getRow();
+            Set<String> moves = getPossibleMovesFromPieceAt(pos);
 
-            for (Position move : moves) {
+            for (String moveStr : moves) {
+                Position move = new Position(moveStr);
+                Position originalPos = piece.getPosition();
                 Piece captured = board.getPiece(move);
                 Piece backup = captured;
 
@@ -448,15 +452,39 @@ public class ChessGame implements Serializable, IOriginator {
                 piece.setPosition(move);
                 board.addPiece(move, piece);
 
-                boolean stillInCheck = isInCheck(color);
+                boolean isPromotion = willNeedPromotion(pos, moveStr);
+                List<Piece> promotedPieces = new ArrayList<>();
+                if (isPromotion) {
+                    promotedPieces.add(PieceFactory.QUEEN.createPiece(piece.getColor(), board, move.getColumn(), move.getRow()));
+                    promotedPieces.add(PieceFactory.ROOK.createPiece(piece.getColor(), board, move.getColumn(), move.getRow()));
+                    promotedPieces.add(PieceFactory.BISHOP.createPiece(piece.getColor(), board, move.getColumn(), move.getRow()));
+                    promotedPieces.add(PieceFactory.KNIGHT.createPiece(piece.getColor(), board, move.getColumn(), move.getRow()));
+                }
 
-                // Undo the move
+                boolean stillInCheck;
+                if (!isPromotion) {
+                    stillInCheck = isInCheck(color);
+                } else {
+                    stillInCheck = true;
+                    for (Piece promoted : promotedPieces) {
+                        board.removePiece(move);
+                        board.addPiece(move, promoted);
+                        boolean check = isInCheck(color);
+                        if (!check) {
+                            stillInCheck = false;
+                            break;
+                        }
+                    }
+                }
+
                 board.removePiece(move);
                 piece.setPosition(originalPos);
                 board.addPiece(originalPos, piece);
                 if (backup != null) board.addPiece(move, backup);
 
-                if (!stillInCheck) return false;
+                if (!stillInCheck) {
+                    return false;
+                }
             }
         }
 
@@ -795,4 +823,15 @@ public class ChessGame implements Serializable, IOriginator {
         board = new Board();
         board.initializeBoard();
     }
+
+    /*public void showAllPossiveMoves() {
+        for (Piece piece : board.getPieces()) {
+            if (piece.getColor() == cCurrentPlayer) {
+                System.out.println("Piece " + piece.getColor() + " " + piece.getPosition());
+                for (Position move : piece.getPossibleMoves()) {
+                    System.out.println("Move " + move.toString());
+                }
+            }
+        }
+    }*/
 }
