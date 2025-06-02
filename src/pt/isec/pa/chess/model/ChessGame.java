@@ -111,6 +111,13 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
     /**
+     * Add piece.
+     */
+    public boolean addPiece(String sPiece) {
+        return board.addPiece(sPiece);
+    }
+
+    /**
      * Returns the size of the chessboard (number of rows or columns).
      *
      * @return the size of the board (e.g., 8 for a standard chessboard)
@@ -343,6 +350,7 @@ public class ChessGame implements Serializable, IOriginator {
      * @return true if the game is over, false otherwise
      */
     public boolean isGameOver() {
+        if (board.getPieces().size() == 0) return false;
         boolean bWhiteKing = false;
         boolean bBlackKing = false;
 
@@ -355,6 +363,11 @@ public class ChessGame implements Serializable, IOriginator {
                 }
             }
         }
+
+        if (!bWhiteKing || !bBlackKing) {
+            return false;
+        }
+
         if (!bWhiteKing) {
             cWinner = PieceColor.BLACK;
             return true;
@@ -374,7 +387,7 @@ public class ChessGame implements Serializable, IOriginator {
 
         // Check for stalemate
         if (!isInCheck(cCurrentPlayer) && !hasLegalMoves(cCurrentPlayer)) {
-            cWinner = null; // Null indicates a draw
+            cWinner = null;
             return true;
         }
 
@@ -665,6 +678,16 @@ public class ChessGame implements Serializable, IOriginator {
 
         Position p = new Position(pos);
         board.removePiece(p);
+    }
+
+    /**
+     * Empty game.
+     */
+    public void loadEmptyGame() {
+        cCurrentPlayer = PieceColor.WHITE;
+        cWinner = null;
+        board = new Board();
+        board.initializeBoard(new String[0]);
     }
 
 

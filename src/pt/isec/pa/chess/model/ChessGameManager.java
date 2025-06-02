@@ -42,6 +42,21 @@ public class ChessGameManager {
     }
 
     /**
+     * Adds piece.
+     */
+    public boolean addPiece(String sPiece) {
+        try {
+            boolean worked = cgGame.addPiece(sPiece);
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+            return worked;
+        } catch (Exception ex) {
+            ModelLog.getInstance().log("Error adding piece: " + ex.getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Adds a listener for property change events.
      *
      * @param property Property name to listen to
@@ -159,6 +174,20 @@ public class ChessGameManager {
             careTaker.save();
         } catch (IllegalArgumentException ex) {
             ModelLog.getInstance().log("Error promoting pawn: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Starts an empty game.
+     */
+    public void startEmpty() {
+        try {
+            cgGame.loadEmptyGame();
+            careTaker.reset();
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_GAME_STATE, null, null);
+        } catch (Exception ex) {
+            ModelLog.getInstance().log("Error starting empty game: " + ex.getMessage());
         }
     }
 

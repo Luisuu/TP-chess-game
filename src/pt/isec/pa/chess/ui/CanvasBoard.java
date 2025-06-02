@@ -130,7 +130,7 @@ public class CanvasBoard extends Canvas {
         double mouseY = e.getY();
 
         if (mouseX < offsetX + marginX || mouseX > offsetX + marginX + boardWidth || mouseY < offsetY + marginY || mouseY > offsetY + marginY + boardHeight) {
-            ModelLog.getInstance().log("Click outside the board area.");
+            //ModelLog.getInstance().log("Click outside the board area.");
             return;
         }
 

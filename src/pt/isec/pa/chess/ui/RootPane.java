@@ -28,11 +28,10 @@ public class RootPane extends BorderPane {
     private Position selectedPos = null;
     private LogList logWindow;
 
-    Menu mnGame, mnMode, mnSettings;
-    MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit, mnDebug;
+    Menu mnGame, mnMode, mnEditor, mnSettings;
+    MenuItem mnNew, mnOpen, mnSave, mnImport, mnExport, mnExit, mnDebug, undoMove, redoMove, startEditor, addPiece;
     RadioMenuItem normalMode, learningMode;
     CheckMenuItem showMoves, soundToggle;
-    MenuItem undoMove, redoMove;
 
 
     public RootPane(ChessGameManager data) {
@@ -104,15 +103,51 @@ public class RootPane extends BorderPane {
 
         mnMode.getItems().addAll(normalMode, learningMode, new SeparatorMenuItem(), showMoves, undoMove, redoMove);
 
+        mnEditor = new Menu("Editor");
+        startEditor = new MenuItem("Start");
+        addPiece = new MenuItem("Add Piece");
+
+        mnEditor.getItems().addAll(startEditor, addPiece);
+
         mnSettings = new Menu("Settings");
         soundToggle = new CheckMenuItem("Sound");
         mnSettings.getItems().addAll(soundToggle);
 
-        mb.getMenus().addAll(mnGame, mnMode, mnSettings);
+        mb.getMenus().addAll(mnGame, mnMode, mnEditor, mnSettings);
         return mb;
     }
 
     private void registerHandlers() {
+        startEditor.setOnAction(actionEvent -> {
+            canvasBoard.setVisible(false);
+            lbGameOver.setVisible(false);
+            lbStatus.setText("Game not started. Create or load a game from the menu.");
+            AskName askName = new AskName(data);
+            askName.showAndWait();
+            if (data.getPlayerName(data.getcCurrentPlayer()) != null) {
+                data.startEmpty();
+                canvasBoard.setVisible(true);
+                ModelLog.getInstance().log("New empty game started.");
+            }
+        });
+
+        addPiece.setOnAction(actionEvent -> {
+            String input = showAddPieceDialog();
+            if (input == null || input.trim().isEmpty()) return;
+
+            input = input.trim();
+
+            boolean success = data.addPiece(input);
+            if (!success) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Invalid Piece");
+                alert.setHeaderText("Could not add piece");
+                alert.setContentText("Make sure the piece if valid");
+                alert.showAndWait();
+            }
+        });
+
+
         soundToggle.setOnAction(e -> {
             boolean bSound = soundToggle.isSelected();
             SoundManager.setEnabled(bSound);
@@ -133,8 +168,6 @@ public class RootPane extends BorderPane {
             canvasBoard.setVisible(false);
             lbGameOver.setVisible(false);
             lbStatus.setText("Game not started. Create or load a game from the menu.");
-            data.setPlayerName(1, null);
-            data.setPlayerName(2, null);
             AskName askName = new AskName(data);
             askName.showAndWait();
             if (data.getPlayerName(data.getcCurrentPlayer()) != null) {
@@ -296,6 +329,15 @@ public class RootPane extends BorderPane {
             case "Knight" -> 'N';
             default -> 'Q'; // fallback
         };
+    }
+
+    private String showAddPieceDialog() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Add Piece");
+        dialog.setHeaderText("Enter piece notation (e.g., Ke1, pa2, qd8)");
+        dialog.setContentText("Piece:");
+
+        return dialog.showAndWait().orElse(null);
     }
 
     public void setLogWindow(LogList logWindow) {
