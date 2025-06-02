@@ -431,6 +431,20 @@ public class ChessGame implements Serializable, IOriginator {
             return true;
         }
 
+        if (board.getPieces().size() == 2) {
+            boolean onlyKings = true;
+            for (Piece p : board.getPieces()) {
+                if (Character.toUpperCase(p.getDefinition()) != 'K') {
+                    onlyKings = false;
+                    break;
+                }
+            }
+            if (onlyKings) {
+                cWinner = null;
+                return true;
+            }
+        }
+
         return false;
     }
 

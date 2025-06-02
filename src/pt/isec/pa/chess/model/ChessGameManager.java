@@ -91,7 +91,7 @@ public class ChessGameManager {
             oldGameState = cgGame.getBoardPiecesString();
             cgGame.importa(sFileName);
             //careTaker.save();
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
             ModelLog.getInstance().log("Game imported from: " + sFileName);
         } catch (IOException | RuntimeException e) {
@@ -124,7 +124,7 @@ public class ChessGameManager {
             oldGameState = cgGame.getBoardPiecesString();
             cgGame.open(sFileName);
             //careTaker.save();
-            pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
+            pcs.firePropertyChange(PROP_BOARD_UPDATE, null, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
             ModelLog.getInstance().log("Game loaded from: " + sFileName);
         } catch (IOException | ClassNotFoundException e) {
@@ -145,7 +145,9 @@ public class ChessGameManager {
             oldGameState = cgGame.getBoardPiecesString();
             careTaker.save();
             boolean pieceMoved = cgGame.movePiece(SoldPos, SnewPos);
-
+            if (!pieceMoved) {
+                careTaker.removeLast();
+            }
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
             return pieceMoved;
