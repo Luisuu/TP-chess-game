@@ -10,11 +10,10 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Core logic of the chess game. Maintains the board state, current player,
- * game rules, checkmate detection, and player management.
+ * Core logic of the chess game. Maintains the board state, current player, game rules, checkmate detection, and player management.
  * Handles moves, pawn promotion, game loading/saving, and turn control.
  * <p>
- * Serializable for saving/loading full game state.
+ * Implements {@link Serializable} for saving/loading full game state and {@link IOriginator} for memento pattern support.
  *
  * @see Board
  * @see Piece
@@ -71,11 +70,21 @@ public class ChessGame implements Serializable, IOriginator {
         }
     }
 
+    /**
+     * Saves the current game state as a memento for undo functionality.
+     *
+     * @return an {@link IMemento} object containing the game state snapshot
+     */
     @Override
     public IMemento save() {
         return new MyMemento(this);
     }
 
+    /**
+     * Restores the game state from a given memento.
+     *
+     * @param memento the {@link IMemento} object containing the game state to restore
+     */
     @Override
     public void restore(IMemento memento) {
         if (memento instanceof MyMemento m) {
@@ -92,7 +101,7 @@ public class ChessGame implements Serializable, IOriginator {
 
     /**
      * Constructs a new ChessGame instance with a standard 8x8 chessboard.
-     * Initializes the board and sets the current player to white.
+     * Initializes the board with the standard chess setup and sets the current player to white.
      */
     public ChessGame() {
         board = new Board();
@@ -102,9 +111,9 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
     /**
-     * Returns the size of the board (number of rows/columns).
+     * Returns the size of the chessboard (number of rows or columns).
      *
-     * @return The board size
+     * @return the size of the board (e.g., 8 for a standard chessboard)
      */
     public int getBoardSize() {
         return board.getBoardSize();
@@ -113,9 +122,9 @@ public class ChessGame implements Serializable, IOriginator {
     /**
      * Sets the name of the specified player.
      *
-     * @param player The player number (1 or 2)
-     * @param name   The name to assign to the player
-     * @throws RuntimeException if the player number is invalid
+     * @param player the player number (1 for white, 2 for black)
+     * @param name   the name to assign to the player
+     * @throws RuntimeException if the player number is invalid (not 1 or 2)
      */
     public void setPlayerName(int player, String name) {
         if (player < 1 || player > 2) {
@@ -133,8 +142,8 @@ public class ChessGame implements Serializable, IOriginator {
     /**
      * Returns the name of the player associated with the specified color.
      *
-     * @param eColor The color of the player (WHITE or BLACK)
-     * @return The name of the player
+     * @param eColor the color of the player ({@link PieceColor#WHITE} or {@link PieceColor#BLACK})
+     * @return the name of the player, or null if not set
      */
     public String getPlayerName(PieceColor eColor) {
         if (eColor == PieceColor.WHITE) {
@@ -144,6 +153,12 @@ public class ChessGame implements Serializable, IOriginator {
         }
     }
 
+    /**
+     * Provides a debug representation of the game state, including the board
+     * and current player information.
+     *
+     * @return a string containing debug information about the game state
+     */
     public String debug() {
         //
         StringBuilder sb = new StringBuilder();
@@ -160,7 +175,7 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
     /**
-     * Starts a new game with initial board setup.
+     * Starts a new game by resetting the board to the initial chess setup.
      */
     public void start() {
         board.clearBoard();
@@ -168,18 +183,18 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
     /**
-     * Returns the current board pieces as a string.
+     * Returns the current board pieces as a string representation.
      *
-     * @return Board state string
+     * @return a string representing the pieces on the board
      */
     public String getBoardPiecesString() {
         return board.printPieces();
     }
 
     /**
-     * Gets the current player's color.
+     * Gets the color of the current player.
      *
-     * @return Current player
+     * @return the current player's color ({@link PieceColor#WHITE} or {@link PieceColor#BLACK})
      */
     public PieceColor getcCurrentPlayer() {
         return cCurrentPlayer;
@@ -188,17 +203,20 @@ public class ChessGame implements Serializable, IOriginator {
     /**
      * Returns the opposing player's color.
      *
-     * @return Opponent player
+     * @return the opponent's color ({@link PieceColor#WHITE} or {@link PieceColor#BLACK})
      */
     public PieceColor getcOpponent() {
         return cCurrentPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
     }
 
     /**
-     * Gets valid moves for a piece at the given position.
+     * Gets the valid moves for a piece at the specified position.
+     * Returns an empty set if the position is invalid, empty, or the piece
+     * does not belong to the current player.
      *
-     * @param pos Position on board
-     * @return Set of valid move strings
+     * @param pos the position of the piece (e.g., "e2")
+     * @return a set of valid move positions as strings (e.g., {"e3", "e4"})
+     * @throws IllegalArgumentException if the position is null
      */
     public Set<String> getPossibleMovesFromPieceAt(String pos) {
         if (pos == null) throw new IllegalArgumentException("Position can't be null");
@@ -313,16 +331,16 @@ public class ChessGame implements Serializable, IOriginator {
     /**
      * Returns the winner of the game, if determined.
      *
-     * @return The color of the winning player, or null if the game is not over
+     * @return the color of the winning player ({@link PieceColor#WHITE} or {@link PieceColor#BLACK}), or null if the game is not over or ended in a draw
      */
     public PieceColor getWinner() {
         return cWinner;
     }
 
     /**
-     * Checks if the game has ended (checkmate or no king).
+     * Checks if the game has ended due to checkmate, stalemate, or a missing king.
      *
-     * @return true if game is over
+     * @return true if the game is over, false otherwise
      */
     public boolean isGameOver() {
         boolean bWhiteKing = false;
@@ -373,16 +391,6 @@ public class ChessGame implements Serializable, IOriginator {
             }
         }
         return false;
-    }
-
-
-    /**
-     * Resets the game to its initial state.
-     */
-    public void resetGame() {
-        cCurrentPlayer = PieceColor.WHITE;
-        board = new Board();
-        board.initializeBoard();
     }
 
     /**
@@ -456,10 +464,11 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
     /**
-     * Promotes a pawn to a new piece at a specific position.
+     * Promotes a pawn at the specified position to a new piece type.
      *
-     * @param position  Position of the pawn
-     * @param pieceType New piece type (Q, R, B, N)
+     * @param position  the position of the pawn to promote (e.g., "e8")
+     * @param pieceType the type of piece to promote to ('Q', 'R', 'B', or 'N')
+     * @throws IllegalArgumentException if the piece type is invalid or no pawn is at the position
      */
     public void promotePawn(String position, char pieceType) {
         //System.out.println("Promotion received: " + pieceType + " at " + position);
@@ -501,6 +510,13 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
 
+    /**
+     * Checks if a move will result in a pawn promotion for the piece at the specified position.
+     *
+     * @param SoldPos the starting position of the piece (e.g., "e7")
+     * @param SnewPos the destination position (e.g., "e8")
+     * @return true if the move will require a pawn promotion, false otherwise
+     */
     public boolean willNeedPromotion(String SoldPos, String SnewPos) {
         Position oldPos = new Position(SoldPos);
         Position newPos = new Position(SnewPos);
@@ -513,11 +529,12 @@ public class ChessGame implements Serializable, IOriginator {
 
 
     /**
-     * Moves a piece from one position to another.
+     * Moves a piece from one position to another, if the move is valid.
+     * Handles special moves like castling and en passant.
      *
-     * @param SoldPos Starting position
-     * @param SnewPos Ending position
-     * @return true if move was valid
+     * @param SoldPos the starting position of the piece (e.g., "e2")
+     * @param SnewPos the destination position (e.g., "e4")
+     * @return true if the move was successful, false if invalid or game is over
      */
     public boolean movePiece(String SoldPos, String SnewPos) {
         if (isGameOver()) return false;
@@ -603,11 +620,13 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
     /**
-     * Removes a piece from the board.
+     * Removes a piece from the specified position on the board.
      *
-     * @param pos Position of the piece to remove
+     * @param pos the position of the piece to remove (e.g., "e4")
+     * @throws IllegalArgumentException if the position is null or invalid
      */
     public void removePiece(String pos) {
+        // FIXME WILL WE USE THIS IN BOARD EDITOR? IF NOT JUST DELETE IT
         if (pos == null) throw new IllegalArgumentException("Position can't be null");
 
         char[] split = pos.toCharArray();
@@ -622,10 +641,10 @@ public class ChessGame implements Serializable, IOriginator {
 
 
     /**
-     * Loads a board state from string representation.
+     * Loads a board state from a string representation and sets the current player.
      *
-     * @param state         Board data
-     * @param currentPlayer Current player
+     * @param state         the string representation of the board state
+     * @param currentPlayer the color of the current player ({@link PieceColor#WHITE} or {@link PieceColor#BLACK})
      */
     public void loadBoardStateFromString(String state, PieceColor currentPlayer) {
         if (state == null || state.isEmpty()) {
@@ -653,9 +672,11 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
     /**
-     * Imports a partial game from a file.
+     * Imports a partial game state from a file, including the current player and piece positions.
      *
-     * @param sFileName File to import
+     * @param sFileName the name of the file to import
+     * @throws IOException      if an I/O error occurs
+     * @throws RuntimeException if the file format or content is invalid
      */
     public void importa(String sFileName) throws IOException {
         board.clearBoard();
@@ -704,9 +725,10 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
     /**
-     * Exports the current game to a file.
+     * Exports the current game state to a file, including the current player and piece positions.
      *
-     * @param sFileName File to export to
+     * @param sFileName the name of the file to export to
+     * @throws IOException if an I/O error occurs
      */
     public void exporta(String sFileName) throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -719,9 +741,11 @@ public class ChessGame implements Serializable, IOriginator {
     }
 
     /**
-     * Opens a full game state from a serialized file.
+     * Loads a full game state from a serialized file.
      *
-     * @param sFileName File to open
+     * @param sFileName the name of the file to load
+     * @throws IOException            if an I/O error occurs
+     * @throws ClassNotFoundException if the serialized object cannot be deserialized
      */
     public void open(String sFileName) throws IOException, ClassNotFoundException {
 
@@ -753,16 +777,17 @@ public class ChessGame implements Serializable, IOriginator {
 
 
     /**
-     * Saves the current game state to a file.
+     * Saves the current game state to a serialized file.
      *
-     * @param sFileName Destination file
+     * @param sFileName the name of the file to save to
+     * @throws IOException if an I/O error occurs
      */
     public void save(String sFileName) throws IOException {
         ChessGameSerialization.save(sFileName, this);
     }
 
     /**
-     * Restarts the game, reinitializing the board and players.
+     * Restarts the game, reinitializing the board and setting the current player to white.
      */
     public void restart() {
         cCurrentPlayer = PieceColor.WHITE;
