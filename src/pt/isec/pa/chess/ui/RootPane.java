@@ -147,7 +147,6 @@ public class RootPane extends BorderPane {
             }
         });
 
-
         soundToggle.setOnAction(e -> {
             boolean bSound = soundToggle.isSelected();
             SoundManager.setEnabled(bSound);

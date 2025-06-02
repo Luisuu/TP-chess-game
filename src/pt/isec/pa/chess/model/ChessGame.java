@@ -14,6 +14,7 @@ import java.util.*;
  * Handles moves, pawn promotion, game loading/saving, and turn control.
  * <p>
  * Implements {@link Serializable} for saving/loading full game state and {@link IOriginator} for memento pattern support.
+ *
  * @author Antonio Pedorso, Luis Duarte, Carolina Veloso
  * @version 1.0.0
  * @see Board
@@ -91,8 +92,7 @@ public class ChessGame implements Serializable, IOriginator {
         @Override
         public Object getSnapshot() {
             if (snapshot == null) return null;
-            try (ByteArrayInputStream bais = new ByteArrayInputStream(snapshot);
-                 ObjectInputStream ois = new ObjectInputStream(bais)) {
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(snapshot); ObjectInputStream ois = new ObjectInputStream(bais)) {
                 return ois.readObject();
             } catch (Exception e) {
                 return null;

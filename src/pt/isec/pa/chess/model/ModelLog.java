@@ -77,7 +77,7 @@ public class ModelLog {
      * Adds a listener to be notified of new log messages.
      *
      * @param propertyName Property to listen to
-     * @param listener The listener to notify
+     * @param listener     The listener to notify
      */
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(propertyName, listener);

@@ -159,7 +159,7 @@ public class ChessGameManager {
      * Checks whether a pawn move from the given position to the destination would result in a promotion.
      *
      * @param from the starting position of the piece (e.g., "e7")
-     * @param to the destination position (e.g., "e8")
+     * @param to   the destination position (e.g., "e8")
      * @return true if the move leads to a promotion, false otherwise
      */
     public boolean willNeedPromotion(String from, String to) {
