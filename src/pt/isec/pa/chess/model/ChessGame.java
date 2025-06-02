@@ -682,6 +682,10 @@ public class ChessGame implements Serializable, IOriginator {
             return;
         }
 
+        state = state.replaceAll("\\R", "");
+        state = state.replaceAll("\\s", "");
+        state = state.trim();
+
         String[] tokens = state.split(",");
         if (tokens.length == 0) {
             board = new Board();
