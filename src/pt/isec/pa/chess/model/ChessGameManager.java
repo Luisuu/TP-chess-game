@@ -291,6 +291,20 @@ public class ChessGameManager {
     }
 
     /**
+     * Returns the color of the opponent player.
+     *
+     * @return Opponent player's color
+     */
+    public PieceColor getcOpponent() {
+        try {
+            return cgGame.getcOpponent();
+        } catch (Exception ex) {
+            ModelLog.getInstance().log("Error getting opponent player: " + ex.getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Checks whether the specified player is in checkmate.
      *
      * @param color Player color

@@ -9,8 +9,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import pt.isec.pa.chess.model.ChessGameManager;
 import pt.isec.pa.chess.model.ModelLog;
-import pt.isec.pa.chess.model.data.pieces.PieceColor;
-import pt.isec.pa.chess.model.data.pieces.Position;
 
 import pt.isec.pa.chess.ui.res.SoundManager;
 
@@ -25,7 +23,6 @@ public class RootPane extends BorderPane {
     private CanvasBoard canvasBoard;
     private Label lbStatus;
     private Label lbGameOver;
-    private Position selectedPos = null;
     private LogList logWindow;
 
     Menu mnGame, mnMode, mnEditor, mnSettings;
@@ -285,7 +282,7 @@ public class RootPane extends BorderPane {
     }
 
     private void updateStatus() {
-        if (data.getPlayerName(PieceColor.WHITE) == null || data.getPlayerName(PieceColor.BLACK) == null) {
+        if (data.getPlayerName(data.getcCurrentPlayer()) == null || data.getPlayerName(data.getcOpponent()) == null) {
             lbStatus.setText("Game not started. Create or load a game from the menu.");
             lbGameOver.setVisible(false);
             return;

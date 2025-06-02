@@ -6,11 +6,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import pt.isec.pa.chess.model.ChessGameManager;
-import pt.isec.pa.chess.model.ModelLog;
 import pt.isec.pa.chess.ui.res.ImageManager;
 import javafx.scene.image.Image;
 import pt.isec.pa.chess.ui.res.SoundManager;
-
 
 import java.util.*;
 

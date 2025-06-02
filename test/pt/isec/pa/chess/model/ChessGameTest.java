@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import pt.isec.pa.chess.model.data.pieces.PieceColor;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +18,7 @@ public class ChessGameTest {
 
     @Test
     void testBoardInitialization() {
-        assertEquals(32, gameManager.getBoardPiecesString().split(",").length, "Board should have 32 pieces after initialization");
+        assertEquals(32, gameManager.getBoardPiecesString().split(",").length, "Board should have 32 pieces after default initialization");
 
         String boardState = gameManager.getBoardPiecesString();
         System.out.println("Initial board state: " + boardState);
@@ -104,8 +103,11 @@ public class ChessGameTest {
         String tempFile = "test_game.dat";
         gameManager.save(tempFile);
 
-        boolean moveResult2 = gameManager.movePiece("e7", "e5");
-        System.out.println("Move e7 to e5: " + moveResult2);
+        boolean moveResult2 = gameManager.movePiece("e7", "e6");
+        System.out.println("Move e7 to e6: " + moveResult2);
+
+        boolean moveResult3 = gameManager.movePiece("e4", "e5");
+        System.out.println("Move e4 to e5: " + moveResult3);
 
         ChessGameManager newGameManager = new ChessGameManager();
         newGameManager.open(tempFile);
