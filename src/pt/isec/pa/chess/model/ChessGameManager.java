@@ -177,10 +177,10 @@ public class ChessGameManager {
     public void promotePawn(String position, char pieceType) {
         try {
             oldGameState = cgGame.getBoardPiecesString();
+            //careTaker.save();
             cgGame.promotePawn(position, pieceType);
             pcs.firePropertyChange(PROP_BOARD_UPDATE, oldGameState, cgGame.getBoardPiecesString());
             pcs.firePropertyChange(PROP_GAME_STATE, null, null);
-            careTaker.save();
         } catch (IllegalArgumentException ex) {
             ModelLog.getInstance().log("Error promoting pawn: " + ex.getMessage());
         }
