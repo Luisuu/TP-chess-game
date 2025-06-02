@@ -117,13 +117,12 @@ public class CanvasBoard extends Canvas {
             }
             update();
         } else {
-            System.out.println("[DEBUG] Promotion triggered for move: " + selectedPos + " -> " + clicked);
+
             if (data.willNeedPromotion(selectedPos, clicked)) {
+                //System.out.println("[DEBUG] Promotion triggered for move: " + selectedPos + " -> " + clicked);
                 char chosen = parent.showPromotionDialog();
-
-
                 boolean moved = data.movePiece(selectedPos, clicked);
-                if (moved){
+                if (moved) {
                     data.promotePawn(clicked, chosen);
                     update();
                 }

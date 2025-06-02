@@ -462,7 +462,7 @@ public class ChessGame implements Serializable, IOriginator {
      * @param pieceType New piece type (Q, R, B, N)
      */
     public void promotePawn(String position, char pieceType) {
-        System.out.println("Promotion received: " + pieceType + " at " + position); // 👈 debug ici
+        //System.out.println("Promotion received: " + pieceType + " at " + position);
 
         char column = position.charAt(0);
         int row = Character.getNumericValue(position.charAt(1));
@@ -472,8 +472,8 @@ public class ChessGame implements Serializable, IOriginator {
         Position pos = new Position(column, row);
 
         Piece pawn = board.getPiece(pos);
-        if (pawn == null || !(pawn instanceof Pawn)) {
-            System.out.println("No pawn found at promotion position.");
+        if (!(pawn instanceof Pawn)) {
+            //System.out.println("No pawn found at promotion position.");
             return;
         }
 
@@ -491,12 +491,13 @@ public class ChessGame implements Serializable, IOriginator {
 
         if (newPiece != null) {
             board.addPiece(pos, newPiece);
-            System.out.println("Promotion done: " + newPiece.getClass().getSimpleName());
+            //System.out.println("Promotion done: " + newPiece.getClass().getSimpleName());
+            ModelLog.getInstance().log("Promotion done: " + newPiece.getClass().getSimpleName());
         } else {
-            System.out.println("Promotion failed: piece not created.");
+            //System.out.println("Promotion failed: piece not created.");
         }
-        System.out.println("Promotion done: " + newPiece.getClass().getSimpleName());
-        System.out.println("[DEBUG] board after promotion: " + board.printPieces());
+        //System.out.println("Promotion done: " + newPiece.getClass().getSimpleName());
+        //System.out.println("[DEBUG] board after promotion: " + board.printPieces());
     }
 
 
