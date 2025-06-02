@@ -12,9 +12,7 @@ import javafx.scene.image.Image;
 import pt.isec.pa.chess.ui.res.SoundManager;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.Double.min;
 
@@ -50,6 +48,32 @@ public class CanvasBoard extends Canvas {
                 Arrays.sort(oldGameTokens);
                 Arrays.sort(newGameTokens);
 
+                Map<Character, Integer> oldCounts = new HashMap<>();
+                for (String token : oldGameTokens) {
+                    if (!token.isEmpty()) {
+                        char piece = Character.toUpperCase(token.charAt(0));
+                        oldCounts.put(piece, oldCounts.getOrDefault(piece, 0) + 1);
+                    }
+                }
+
+                Map<Character, Integer> newCounts = new HashMap<>();
+                for (String token : newGameTokens) {
+                    if (!token.isEmpty()) {
+                        char piece = Character.toUpperCase(token.charAt(0));
+                        newCounts.put(piece, newCounts.getOrDefault(piece, 0) + 1);
+                    }
+                }
+
+                for (Map.Entry<Character, Integer> entry : newCounts.entrySet()) {
+                    char piece = entry.getKey();
+                    int newCount = entry.getValue();
+                    int oldCount = oldCounts.getOrDefault(piece, 0);
+                    if (piece != 'P' && newCount > oldCount) {
+                        SoundManager.play("promotion.mp3");
+                        return;
+                    }
+                }
+
                 for (int i = 0; i < Math.min(oldGameTokens.length, newGameTokens.length); i++) {
                     if (!oldGameTokens[i].equals(newGameTokens[i])) {
                         fromXd = oldGameTokens[i];
@@ -60,10 +84,11 @@ public class CanvasBoard extends Canvas {
                 }
 
                 if (pieceXd != null && fromXd != null && toXd != null) {
-                    if (pieceXd == 'K') {
+                    Character upperPieceXd = Character.toUpperCase(pieceXd);
+
+                    if (upperPieceXd == 'K') {
                         char fromCol = fromXd.charAt(1);
                         char toCol = toXd.charAt(1);
-
                         int colDiff = Math.abs(toCol - fromCol);
                         if (colDiff == 2) {
                             SoundManager.play("castling.mp3");
